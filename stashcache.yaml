@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: stashcache
+  name: stashcache
+  namespace: osg
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: stashcache
+    spec:
+      initContainers:
+      - name: chowndata
+        image: busybox
+        command: ["sh", "-c", "chown -R 999:997 /data1"]
+        #volumeMounts:
+        #- name: datavol
+        #  mountPath: /data1/stash
+      containers:
+      - name: stashcache
+        image: efajardo/prp-stashcache
+        #args: ["sleep", "infinity"]
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/grid-security/xrd
+          readOnly: true
+        - name: config
+          mountPath: /etc/xrootd
+        #- name: datavol
+        #  mountPath: /data1/stash
+      volumes:
+      - name: certs
+        secret:
+          secretName: certs
+      - name: config
+        configMap:
+          name: stashcache
+      #- name: datavol
+      #  persistentVolumeClaim:
+      #    claimName: datavol
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: stashcache
+  name: stashcache
+  namespace: osg
+spec:
+  type: NodePort
+  ports:
+  - port: 1094
+    name: xrootd
+  - port: 8000
+    name: web
+  selector:
+    k8s-app: stashcache
+---
+

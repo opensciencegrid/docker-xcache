@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: stashcache
+  namespace: osg
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: stashcache.nautilus.optiputer.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: stashcache
+          servicePort: 8000
