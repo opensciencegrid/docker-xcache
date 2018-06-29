@@ -30,8 +30,8 @@ spec:
           readOnly: true
         - name: config
           mountPath: /etc/xrootd
-        #- name: datavol
-        #  mountPath: /data1/stash
+        - name: datavol
+          mountPath: /data1/stash
       volumes:
       - name: certs
         secret:
@@ -39,9 +39,12 @@ spec:
       - name: config
         configMap:
           name: stashcache
-      #- name: datavol
-      #  persistentVolumeClaim:
-      #    claimName: datavol
+      - name: datavol
+        hostPath:
+          path: /data1
+          type: Directory
+        #persistentVolumeClaim:
+        #  claimName: datavol
 ---
 kind: Service
 apiVersion: v1
