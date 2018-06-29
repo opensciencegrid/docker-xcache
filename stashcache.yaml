@@ -16,9 +16,9 @@ spec:
       - name: chowndata
         image: busybox
         command: ["sh", "-c", "chown -R 999:997 /data1"]
-        #volumeMounts:
-        #- name: datavol
-        #  mountPath: /data1/stash
+        volumeMounts:
+        - name: datavol
+          mountPath: /data1/stash
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
