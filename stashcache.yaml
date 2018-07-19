@@ -13,6 +13,8 @@ spec:
         k8s-app: stashcache
     spec:
       hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: gpn-fiona-r740xd-node809.greatplains.net
       initContainers:
       - name: chowndata
         image: busybox
@@ -23,7 +25,6 @@ spec:
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
-        #args: ["sleep", "infinity"]
         imagePullPolicy: Always
         volumeMounts:
         - name: certs
@@ -44,24 +45,3 @@ spec:
         hostPath:
           path: /data1
           type: Directory
-        #persistentVolumeClaim:
-        #  claimName: datavol
----
-kind: Service
-apiVersion: v1
-metadata:
-  labels:
-    k8s-app: stashcache
-  name: stashcache
-  namespace: osg
-spec:
-  type: NodePort
-  ports:
-  - port: 1094
-    name: xrootd
-  - port: 8000
-    name: web
-  selector:
-    k8s-app: stashcache
----
-
