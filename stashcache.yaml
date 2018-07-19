@@ -56,7 +56,15 @@ spec:
       - name: config
         configMap:
           name: stashcache
-      - name: datavol
+      - name: datavol1
         hostPath:
           path: /data1
+          type: Directory
+      - name: datavol2
+        hostPath:
+          path: /data2
+          type: Directory
+      - name: datavol3
+        hostPath:
+          path: /data3Fixed more data folders
           type: Directory
