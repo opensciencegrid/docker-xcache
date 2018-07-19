@@ -12,6 +12,7 @@ spec:
       labels:
         k8s-app: stashcache
     spec:
+      hostNetwork: true
       initContainers:
       - name: chowndata
         image: busybox
