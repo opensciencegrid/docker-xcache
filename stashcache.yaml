@@ -13,15 +13,26 @@ spec:
         k8s-app: stashcache
     spec:
       hostNetwork: true
+      env:
+      - name: DATA1
+        value: /data1
+      - name: DATA2
+        value: /data2
+      - name: DATA3
+        value: /data3
       nodeSelector:
         kubernetes.io/hostname: gpn-fiona-r740xd-node809.greatplains.net
       initContainers:
       - name: chowndata
         image: busybox
-        command: ["sh", "-c", "chown -R 999:997 /data1"]
+        command: ["sh", "-c", "chown -R 999:997 /data*"]
         volumeMounts:
-        - name: datavol
+        - name: datavol1
           mountPath: /data1/stash
+        - name: datavol2
+          mountPath: /data2/stash
+        - name: datavol3
+          mountPath: /data3/stash
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
@@ -32,8 +43,12 @@ spec:
           readOnly: true
         - name: config
           mountPath: /etc/xrootd
-        - name: datavol
+        - name: datavol1
           mountPath: /data1/stash
+        - name: datavol2
+          mountPath: /data2/stash
+        - name: datavol3
+          mountPath: /data3/stash
       volumes:
       - name: certs
         secret:
