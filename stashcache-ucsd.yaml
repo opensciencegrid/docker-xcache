@@ -33,11 +33,11 @@ spec:
         - name: SITENAME
           value: UCSD-Kubernetes-PRP
         - name: DATA1
-          value: /data1
+          value: /data1/stash
         - name: DATA2
-          value: /data2
+          value: /data2/stash
         - name: DATA3
-          value: /data3
+          value: /data3/stash
         imagePullPolicy: Always
         volumeMounts:
         - name: certs
@@ -45,12 +45,6 @@ spec:
           readOnly: true
         - name: config
           mountPath: /etc/xrootd
-        - name: datavol1
-          mountPath: /data1/stash
-        - name: datavol2
-          mountPath: /data2/stash
-        - name: datavol3
-          mountPath: /data3/stash
       volumes:
       - name: certs
         secret:
