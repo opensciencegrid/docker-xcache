@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     k8s-app: stashcache
-  name: stashcache
+  name: stashcache-ucsd
   namespace: osg
 spec:
   replicas: 1
@@ -13,15 +13,8 @@ spec:
         k8s-app: stashcache
     spec:
       hostNetwork: true
-      env:
-      - name: DATA1
-        value: /data1
-      - name: DATA2
-        value: /data2
-      - name: DATA3
-        value: /data3
       nodeSelector:
-        kubernetes.io/hostname: gpn-fiona-r740xd-node809.greatplains.net
+        kubernetes.io/hostname: xcache-11.t2.ucsd.edu
       initContainers:
       - name: chowndata
         image: busybox
@@ -36,6 +29,13 @@ spec:
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
+        env:
+        - name: DATA1
+          value: /data1
+        - name: DATA2
+          value: /data2
+        - name: DATA3
+          value: /data3
         imagePullPolicy: Always
         volumeMounts:
         - name: certs
@@ -66,5 +66,5 @@ spec:
           type: Directory
       - name: datavol3
         hostPath:
-          path: /data3Fixed more data folders
+          path: /data3
           type: Directory
