@@ -30,6 +30,8 @@ spec:
       - name: stashcache
         image: efajardo/prp-stashcache
         env:
+        - name: SITENAME
+          value: UCSD-Kubernetes-PRP
         - name: DATA1
           value: /data1
         - name: DATA2
