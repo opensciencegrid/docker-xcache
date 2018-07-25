@@ -5,7 +5,7 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
                    yum-plugin-priorities && \
     yum -y install stashcache-daemon fetch-crl stashcache-cache-server
 
-RUN yum -y xrootd-lcmaps globus-proxy-utils
+RUN yum -y install xrootd-lcmaps globus-proxy-utils
 
 USER xrootd
 CMD ["xrootd", "-c", "/etc/xrootd/xrootd-stashcache-cache-server.cfg", "-k", "fifo", "-n", "stashcache-cache-server"]
