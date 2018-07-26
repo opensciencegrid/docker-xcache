@@ -29,7 +29,10 @@ spec:
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
+        #command: ["sh", "-c", "sleep infinity"]
         env:
+        - name: LOCAL_CACHE_DIR
+          value: /xrdpfc/stash
         - name: SITENAME
           value: UCSD-Kubernetes-PRP
         - name: DATA1
@@ -38,6 +41,8 @@ spec:
           value: /data2/stash
         - name: DATA3
           value: /data3/stash
+        - name: DATA4
+          value: /data4/stash
         imagePullPolicy: Always
         volumeMounts:
         - name: certs
