@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     k8s-app: stashcache
-  name: stashcache-chicago
+  name: stashcache-ny
   namespace: osg
 spec:
   replicas: 1
@@ -14,7 +14,7 @@ spec:
     spec:
       hostNetwork: true
       nodeSelector:
-        kubernetes.io/hostname: osg.chic.nrp.internet2.edu
+        kubernetes.io/hostname: osg.newy32aoa.nrp.internet2.edu
       initContainers:
       - name: chowndata
         image: busybox
@@ -30,7 +30,7 @@ spec:
         - name: LOCAL_CACHE_DIR
           value: /data
         - name: SITENAME
-          value: Chicago-Kubernetes-PRP
+          value: NY-Kubernetes-PRP
         imagePullPolicy: Always
         volumeMounts:
         - name: certs
