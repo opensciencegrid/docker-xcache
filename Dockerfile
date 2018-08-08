@@ -11,4 +11,4 @@ ADD supervisord.conf /etc/supervisord.conf
 
 #USER xrootd
 #CMD ["xrootd", "-c", "/etc/xrootd/xrootd-stashcache-cache-server.cfg", "-k", "fifo", "-n", "stashcache-cache-server"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord/conf"] 
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"] 
