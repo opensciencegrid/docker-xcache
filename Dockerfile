@@ -10,7 +10,7 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
     yum -y install supervisor
 
 ADD fetch-crl-kubernetes /etc/cron.d/fetch-crl-kubernetes
-ADD refresh-proxy /usr/local/sbin/refresh_proxy
+ADD refresh_proxy /usr/local/sbin/refresh_proxy
 ADD refresh_proxy.cron  /etc/cron.d/refresh_proxy.cron 
 
 RUN mkdir -p /var/log/supervisor
