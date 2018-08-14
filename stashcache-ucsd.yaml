@@ -26,6 +26,12 @@ spec:
           mountPath: /data2/stash
         - name: datavol3
           mountPath: /data3/stash
+        - name: datavol4
+          mountPath: /data4/stash 
+        - name: datavol5
+          mountPath: /data5/stash
+        - name: datavol6
+          mountPath: /data6/stash
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
@@ -43,9 +49,15 @@ spec:
           value: /data3/stash
         - name: DATA4
           value: /data4/stash
+        - name: DATA5
+          value: /data5/stash
+        - name: DATA6
+          value: /data6/stash
+        - name: DATA7
+          value: /data7/stash
         imagePullPolicy: Always
         volumeMounts:
-        - name: certs
+        - name: servicecerts
           mountPath: /etc/grid-security/xrd
           readOnly: true
         - name: config
@@ -55,11 +67,18 @@ spec:
         - name: datavol2
           mountPath: /data2/stash
         - name: datavol3
-          mountPath: /data3/stash        
+          mountPath: /data3/stash
+        - name: datavol4
+          mountPath: /data4/stash  
+        - name: datavol5
+          mountPath: /data5/stash
+        - name: datavol6
+          mountPath: /data6/stash
       volumes:
-      - name: certs
+      - name: servicecerts
         secret:
-          secretName: certs
+          secretName: servicecerts
+          defaultMode: 0777
       - name: config
         configMap:
           name: stashcache
@@ -74,4 +93,16 @@ spec:
       - name: datavol3
         hostPath:
           path: /data3
+          type: Directory
+      - name: datavol4
+        hostPath:
+          path: /data4
+          type: Directory
+      - name: datavol5
+        hostPath:
+          path: /data5
+          type: Directory
+      - name: datavol6
+        hostPath:
+          path: /data6
           type: Directory
