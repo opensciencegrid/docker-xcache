@@ -8,7 +8,7 @@ import sqlite3
 
 LIGO = 'http://cvmfs-s1goc.opensciencegrid.org/cvmfs/ligo.osgstorage.org'
 #TARGET = '/opt/kickstart/configs/certificates/grid-mapfile.ligo'
-TARGET = '/tmp/grid-mapfile.ligo'
+TARGET = '/etc/grid-security/grid-mapfile'
 
 def get_catalog_id(base_url):
     """Retrieve CVMFS catalog ID from the manifest"""
