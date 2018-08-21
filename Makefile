@@ -8,4 +8,4 @@ pushcerts:
 
 pushconfig:
 	-kubectl delete configmap stashcache -n osg  # delete if already exists, ignore errors
-	kubectl create configmap stashcache  -n osg --from-file=xrootd-stashcache-cache-server.cfg=stashcache-server.cfg --from-file=Authfile-noauth=Authfile-noauth --from-file=Authfile-auth=Authfile-auth --from-file=stashcache-robots.txt=stashcache-robots.txt --from-file=lcmaps.cfg=lcmaps.cfg
+	kubectl create configmap stashcache  -n osg --from-file=xrootd-stashcache-cache-server.cfg=stashcache-server.cfg --from-file=Authfile-noauth=Authfile-noauth --from-file=Authfile-auth=Authfile-auth --from-file=stashcache-robots.txt=stashcache-robots.txt --from-file=lcmaps.cfg=lcmaps.cfg --from-file=ligo-voms-mapfile=ligo-voms-mapfile
