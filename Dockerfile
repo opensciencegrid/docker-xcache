@@ -19,4 +19,6 @@ ADD generate_gridmap.cron /etc/cron.d/generate_gridmap.cron
 RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
 
+RUN adduser ligo
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"] 
