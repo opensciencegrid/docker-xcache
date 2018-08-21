@@ -4,7 +4,7 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
     yum -y install epel-release \
                    yum-plugin-priorities && \
     yum -y install stashcache-daemon stashcache-cache-server && \
-    yum -y install lcmaps-plugins-scas-client xrootd-lcmaps globus-proxy-utils vo-clien && \
+    yum -y install lcmaps-plugins-scas-client xrootd-lcmaps globus-proxy-utils vo-client && \
     yum -y install fetch-crl cronie && \
     yum -y install emacs && \
     yum -y install supervisor
