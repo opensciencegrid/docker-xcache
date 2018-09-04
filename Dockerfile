@@ -9,12 +9,12 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
     yum -y install emacs wget && \
     yum -y install supervisor
 
-RUN wget -r -nH -nd -np -R index.html* http://xrd-cache-1.t2.ucsd.edu/RPMS/rhel7/
-RUN yum -y install xrootd* python2*
+#RUN wget -r -nH -nd -np -R index.html* http://xrd-cache-1.t2.ucsd.edu/RPMS/rhel7/
+#RUN yum -y install xrootd* python2*
 
 ADD fetch-crl-kubernetes /etc/cron.d/fetch-crl-kubernetes
 ADD refresh_proxy /usr/local/sbin/refresh_proxy
-ADD fix_certs.sh /usr/local/sbin/fix_certs.sh
+#ADD fix_certs.sh /usr/local/sbin/fix_certs.sh
 ADD refresh_proxy.cron  /etc/cron.d/refresh_proxy.cron 
 ADD grid-mapfile.ligo-cvmfs.py /usr/local/sbin/grid-mapfile.ligo-cvmfs.py
 ADD generate_gridmap.cron /etc/cron.d/generate_gridmap.cron
