@@ -34,11 +34,18 @@ spec:
           mountPath: /data6/stash
       containers:
       - name: stashcache
+        resources:
+           limits:
+              memory: 16Gi
+           requests:
+              memory: 3Gi
         image: efajardo/prp-stashcache
         #command: ["sh", "-c", "sleep infinity"]
         env:
         - name: LOCAL_CACHE_DIR
           value: /xrdpfc/stash
+        - name: X509_USER_PROXY
+          value: /tmp/x509up_xrootd xrdcp
         - name: SITENAME
           value: UCSD-Kubernetes-PRP
         - name: DATA1
@@ -57,9 +64,10 @@ spec:
           value: /data7/stash
         imagePullPolicy: Always
         volumeMounts:
-        - name: servicecerts
-          mountPath: /etc/grid-security/xrd
-          readOnly: true
+        - name: hostcert
+          mountPath: /etc/grid-security/hostcert.pem
+        - name: hostkey
+          mountPath: /etc/grid-security/hostkey.pem
         - name: config
           mountPath: /etc/xrootd
         - name: datavol1
@@ -75,10 +83,14 @@ spec:
         - name: datavol6
           mountPath: /data6/stash
       volumes:
-      - name: servicecerts
-        secret:
-          secretName: servicecerts
-          defaultMode: 0777
+      - name : hostcert
+        hostPath:
+           path: /etc/grid-security/hostcert.pem
+           type: File
+      - name : hostkey
+        hostPath:
+           path: /etc/grid-security/hostkey.pem
+           type: File
       - name: config
         configMap:
           name: stashcache

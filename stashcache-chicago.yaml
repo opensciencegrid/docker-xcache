@@ -33,18 +33,23 @@ spec:
           value: Chicago-Kubernetes-PRP
         imagePullPolicy: Always
         volumeMounts:
-        - name: servicecerts
-          mountPath: /etc/grid-security/xrd
-          readOnly: true
+        #- name: hostcert
+        #  mountPath: /etc/grid-security/hostcert.pem
+        #- name: hostkey
+        #  mountPath: /etc/grid-security/hostkey.pem
         - name: config
           mountPath: /etc/xrootd
         - name: datavol
           mountPath: /data
       volumes:
-      - name: servicecerts
-        secret:
-          secretName: servicecerts
-          defaultMode: 0777
+      #- name : hostcert
+      #  hostPath:
+      #     path: /etc/grid-security/hostcert.pem
+      #     type: File
+      #- name : hostkey
+      #  hostPath:
+      #     path: /etc/grid-security/hostkey.pem
+      #     type: File
       - name: config
         configMap:
           name: stashcache
