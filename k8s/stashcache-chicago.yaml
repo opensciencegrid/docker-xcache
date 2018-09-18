@@ -18,38 +18,38 @@ spec:
       initContainers:
       - name: chowndata
         image: busybox
-        #command: ["sh", "-c", "chown -R 999:997 /data*"]
+        command: ["sh", "-c", "chown -R 999:997 /data/stash"]
         volumeMounts:
         - name: datavol
-          mountPath: /data
+          mountPath: /data/stash
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
         #command: ["sh", "-c", "sleep infinity"]
         env:
         - name: LOCAL_CACHE_DIR
-          value: /data
+          value: /data/stash
         - name: SITENAME
           value: Chicago-Kubernetes-PRP
         imagePullPolicy: Always
         volumeMounts:
-        #- name: hostcert
-        #  mountPath: /etc/grid-security/hostcert.pem
-        #- name: hostkey
-        #  mountPath: /etc/grid-security/hostkey.pem
+        - name: hostcert
+          mountPath: /etc/grid-security/hostcert.pem
+        - name: hostkey
+          mountPath: /etc/grid-security/hostkey.pem
         - name: config
           mountPath: /etc/xrootd
         - name: datavol
-          mountPath: /data
+          mountPath: /data/stash
       volumes:
-      #- name : hostcert
-      #  hostPath:
-      #     path: /etc/grid-security/hostcert.pem
-      #     type: File
-      #- name : hostkey
-      #  hostPath:
-      #     path: /etc/grid-security/hostkey.pem
-      #     type: File
+      - name : hostcert
+        hostPath:
+           path: /etc/grid-security/hostcert.pem
+           type: File
+      - name : hostkey
+        hostPath:
+           path: /etc/grid-security/hostkey.pem
+           type: File
       - name: config
         configMap:
           name: stashcache
