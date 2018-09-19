@@ -1,5 +1,6 @@
 #!/bin/bash                                                                                                                                                                 
 
+XRD_CERT_DIR=/etc/grid-security/xrd
 cp -f $XRD_CERT_DIR/*.pem /tmp/
 chown root:root /tmp/*.pem
 chmod 600 /tmp/*.pem
