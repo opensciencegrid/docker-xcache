@@ -38,12 +38,14 @@ spec:
            limits:
               memory: 16Gi
            requests:
-              memory: 3Gi
+              memory: 13Gi
         image: efajardo/prp-stashcache
         #command: ["sh", "-c", "sleep infinity"]
         env:
         - name: LOCAL_CACHE_DIR
           value: /xrdpfc/stash
+        - name: RAMSIZE
+          value: 13g
         - name: X509_USER_PROXY
           value: /tmp/x509up_xrootd xrdcp
         - name: SITENAME

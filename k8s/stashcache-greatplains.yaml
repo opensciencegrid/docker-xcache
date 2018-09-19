@@ -25,12 +25,19 @@ spec:
       containers:
       - name: stashcache
         image: efajardo/prp-stashcache
+        resources:
+           limits:
+              memory: 16Gi
+           requests:
+              memory: 13Gi
         #command: ["sh", "-c", "sleep infinity"]
         env:
         - name: LOCAL_CACHE_DIR
           value: /data/stash
         - name: SITENAME
           value: GreatPLains-Kubernetes-PRP
+        - name: RAMSIZE
+          value: 13g
         imagePullPolicy: Always
         volumeMounts:
         #- name: hostcert
