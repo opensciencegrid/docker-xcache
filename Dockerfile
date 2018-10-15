@@ -8,7 +8,6 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
 #    yum -y install fetch-crl cronie && \
     yum -y install stashcache-cache-server --enablerepo=osg-testing && \
     yum -y install stashcache-cache-server-auth --enablerepo=osg-testing && \
-    yum	-y install stashcache-cache-daemon --enablerepo=osg-testing && \
     yum -y install emacs wget && \
     yum -y install supervisor
 
