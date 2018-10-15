@@ -3,9 +3,12 @@ FROM centos:centos7
 RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm && \
     yum -y install epel-release \
                    yum-plugin-priorities && \
-    yum -y install stashcache-daemon stashcache-cache-server --enablerepo=osg-testing && \
-    yum -y install lcmaps-plugins-scas-client xrootd-lcmaps globus-proxy-utils vo-client vo-client-lcmaps-voms && \
-    yum -y install fetch-crl cronie && \
+#    yum -y install stashcache-daemon stashcache-cache-server --enablerepo=osg-testing && \
+#    yum -y install lcmaps-plugins-scas-client xrootd-lcmaps globus-proxy-utils vo-client vo-client-lcmaps-voms && \
+#    yum -y install fetch-crl cronie && \
+    yum -y install stashcache-cache-server --enablerepo=osg-testing && \
+    yum -y install stashcache-cache-server-auth --enablerepo=osg-testing && \
+    yum	-y install stashcache-cache-daemon --enablerepo=osg-testing && \
     yum -y install emacs wget && \
     yum -y install supervisor
 
