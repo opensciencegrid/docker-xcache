@@ -16,6 +16,10 @@ ADD refresh_proxy.cron  /etc/cron.d/refresh-proxy
 ADD grid-mapfile.ligo-cvmfs.py /usr/local/sbin/grid-mapfile.ligo-cvmfs.py
 ADD generate_gridmap.cron /etc/cron.d/generate-gridmap
 
+ADD hcc-testing.repo /etc/yum.repos.d/hcc-testing.repo 
+RUN yum -y update xrootd* --enablerepo=hcc-testing
+
+
 RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
 
