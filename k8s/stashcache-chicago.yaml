@@ -62,6 +62,6 @@ spec:
           name: stashcache
       - name: datavol
         hostPath:
-          path: /tank
+          path: /tank/DATA
           type: Directory
 
