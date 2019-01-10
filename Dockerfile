@@ -12,6 +12,4 @@ ADD cron.d/* /etc/cron.d/
 ADD sbin/* /usr/local/sbin/
 ADD supervisor/* /etc/
 
-RUN adduser ligo
-
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"] 
