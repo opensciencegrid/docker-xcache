@@ -9,6 +9,7 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
 
 ADD cron.d/* /etc/cron.d/
 ADD sbin/* /usr/local/sbin/
-ADD supervisor/* /etc/
+ADD supervisor/supervisord.conf /etc/
+ADD supervisor/supervisord.d/* /etc/supervisord.d
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"] 
