@@ -15,7 +15,6 @@ ADD refresh_proxy.cron  /etc/cron.d/refresh-proxy
 ADD grid-mapfile.ligo-cvmfs.py /usr/local/sbin/grid-mapfile.ligo-cvmfs.py
 ADD generate_gridmap.cron /etc/cron.d/generate-gridmap
 
-RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
 
 RUN mkdir -p /xrdpfc/stash && chown -R xrootd:xrootd /xrdpfc
