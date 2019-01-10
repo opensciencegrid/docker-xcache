@@ -1,6 +1,5 @@
 FROM centos:centos7
 
-ADD hcc-testing.repo /etc/yum.repos.d/hcc-testing.repo
 RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm \
                    epel-release \
                    yum-plugin-priorities && \

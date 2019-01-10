@@ -1,6 +1,0 @@
-[hcc-testing]
-name=HCC Packages for Enterprise Linux 7 - Testing - $basearch
-baseurl=http://t2.unl.edu/store/repos/hcc/7/hcc-el7-testing/$basearch
-enabled=0
-gpgcheck=0
-priority=9
