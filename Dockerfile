@@ -3,7 +3,7 @@ FROM centos:centos7
 RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm \
                    epel-release \
                    yum-plugin-priorities && \
-    yum -y install xcache --enablerepo=osg-development && \
+    yum -y install stash-cache --enablerepo=osg-minefield && \
     yum -y install supervisor cronie && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
