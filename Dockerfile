@@ -9,9 +9,7 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
 RUN yum clean all && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
-ADD refresh_proxy /usr/local/sbin/refresh_proxy
-ADD fix_certs.sh /usr/local/sbin/fix_certs.sh
-ADD grid-mapfile.ligo-cvmfs.py /usr/local/sbin/grid-mapfile.ligo-cvmfs.py
+ADD sbin/* /usr/local/sbin/
 ADD supervisor/* /etc/
 
 RUN mkdir -p /xrdpfc/stash && chown -R xrootd:xrootd /xrdpfc
