@@ -1,14 +1,12 @@
 FROM centos:centos7
 
 ADD hcc-testing.repo /etc/yum.repos.d/hcc-testing.repo
-RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm && \
-    yum -y install epel-release \
+RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm \
+                   epel-release \
                    yum-plugin-priorities && \
-    yum -y install cronie && \
-    yum -y install stashcache-cache-server --enablerepo=osg-testing && \
-    yum -y install stashcache-cache-server-auth --enablerepo=osg-testing && \
     yum -y install xcache --enablerepo=osg-development && \
-    yum -y install supervisor
+    yum -y install supervisor cronie
+RUN yum clean all && rm -rf /var/cache/yum/
 
 ADD fetch-crl-kubernetes /etc/cron.d/fetch-crl-kubernetes
 ADD refresh_proxy /usr/local/sbin/refresh_proxy
