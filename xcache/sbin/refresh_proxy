@@ -1,9 +1,0 @@
-#!/bin/bash                                                                                                                                                                 
-
-XRD_CERT_DIR=/etc/grid-security/xrd
-cp -f $XRD_CERT_DIR/*.pem /tmp/
-chown root:root /tmp/*.pem
-chmod 600 /tmp/*.pem
-/bin/grid-proxy-init -cert /tmp/xrdcert.pem -key /tmp/xrdkey.pem -out /tmp/x509up_xrootd.new -valid 48:00
-chown xrootd:xrootd /tmp/x509up_xrootd.new && \
-mv -f /tmp/x509up_xrootd.new /tmp/x509up_xrootd && rm -f /tmp/*.pem

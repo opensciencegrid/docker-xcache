@@ -1,1 +1,0 @@
-30 */2 * * * root /usr/local/sbin/refresh_proxy > /dev/null 2>&1
