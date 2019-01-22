@@ -1,4 +1,4 @@
-FROM opensciencegrid/xcache
+FROM opensciencegrid/xcache:latest
 
 RUN yum -y install stash-cache --enablerepo=osg-minefield \
     osg-ca-generator && \
