@@ -1,5 +1,7 @@
 FROM centos:centos7
 
+LABEL maintainer OSG Software <help@opensciencegrid.org>
+
 ENV CACHEDIR /stash
 
 RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-latest.rpm \
