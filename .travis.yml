@@ -1,0 +1,9 @@
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: build xcache base
+      script: ./travis/build_docker.sh "xcache"
+    - stage: build xcache implementations
+      script: ./travis/build_docker.sh "stash-cache"
