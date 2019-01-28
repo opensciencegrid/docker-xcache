@@ -8,6 +8,7 @@ RUN yum -y install stash-cache --enablerepo=osg-minefield \
 
 ADD cron.d/* /etc/cron.d/
 ADD supervisord.d/* /etc/supervisord.d/
+ADD stash-cache-auth-init.sh /usr/local/sbin/
 
 # dev
 RUN osg-ca-generator --host
