@@ -12,7 +12,5 @@ ADD stash-cache-auth-init.sh /usr/local/sbin/
 
 # dev
 RUN osg-ca-generator --host
-RUN cp /etc/grid-security/{hostcert.pem,xrd/xrdcert.pem} && \
-    cp /etc/grid-security/{hostkey.pem,xrd/xrdkey.pem}
 RUN echo -e "set cachedir = $CACHEDIR\nset sitename = OSG\n" >> \
     /etc/xrootd/config.d/10-cache-site-local.cfg
