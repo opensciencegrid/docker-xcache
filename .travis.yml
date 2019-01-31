@@ -1,13 +1,7 @@
 services:
   - docker
 
-jobs:
-  include:
-    - stage: build xcache base
-      script: ./travis/build_docker.sh "xcache"
-    - stage: build xcache implementations
-      script: ./travis/build_docker.sh "stash-cache"
-    - script: ./travis/build_docker.sh "atlas-xcache"
+script: ./travis/build_docker.sh
 
 notifications:
   email: false
