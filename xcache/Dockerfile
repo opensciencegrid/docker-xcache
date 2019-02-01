@@ -2,7 +2,8 @@ FROM centos:centos7
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
-ENV CACHEDIR /stash
+# Default root dir
+ENV ROOTDIR /mnt/stash
 
 # Create the xrootd user with a fixed GID/UID
 RUN groupadd -o -g 10940 xrootd
@@ -24,5 +25,9 @@ RUN mkdir $CACHEDIR && chown -R xrootd:xrootd $CACHEDIR
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
+
+# Allow users to set the XRootD rootdir and sitename via env var
+RUN echo -e "set rootdir = \$XC_ROOTDIR\nset sitename = \$XC_SITENAME\n" >> \
+    /etc/xrootd/config.d/10-common-site-local.cfg
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
