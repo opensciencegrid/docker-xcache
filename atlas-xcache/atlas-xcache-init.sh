@@ -1,5 +1,7 @@
 #!/bin/bash
 
+/usr/local/sbin/fix_certs.sh
+
 while read disk; do
     if [ ! -d "$disk" ]; then
         echo "WARNING: Missing directory: $disk"
