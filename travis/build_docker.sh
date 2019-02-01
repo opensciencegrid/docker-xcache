@@ -15,7 +15,7 @@ done
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 for repo in xcache stash-cache atlas-xcache; do
-    for tag in development $timestamp; do
+    for tag in $timestamp development; do
         docker push $org/$repo:$tag
     done
 done
