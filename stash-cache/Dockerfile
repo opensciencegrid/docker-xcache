@@ -8,9 +8,5 @@ RUN yum -y install stash-cache --enablerepo=osg-minefield \
 
 ADD cron.d/* /etc/cron.d/
 ADD supervisord.d/* /etc/supervisord.d/
-ADD stash-cache-auth-init.sh /usr/local/sbin/
+ADD stash-cache-init.sh /usr/local/sbin/
 
-# dev
-RUN osg-ca-generator --host
-RUN echo -e "set cachedir = \$CACHEDIR\nset sitename = \$SITENAME\n" >> \
-    /etc/xrootd/config.d/10-cache-site-local.cfg

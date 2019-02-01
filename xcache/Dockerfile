@@ -20,8 +20,6 @@ ADD cron.d/* /etc/cron.d/
 ADD sbin/* /usr/local/sbin/
 ADD supervisord.conf /etc/
 
-RUN mkdir $CACHEDIR && chown -R xrootd:xrootd $CACHEDIR
-
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
