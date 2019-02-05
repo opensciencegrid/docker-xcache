@@ -1,7 +1,17 @@
 #!/bin/bash -xe
 
-cp /etc/grid-security/{hostcert.pem,xrd/xrdcert.pem}
-cp /etc/grid-security/{hostkey.pem,xrd/xrdkey.pem}
-chmod 644  /etc/grid-security/xrd/xrdcert.pem
-chmod 600 /etc/grid-security/xrd/xrdkey.pem
-chown xrootd:xrootd /etc/grid-security/xrd/xrd*.pem
+grid_security='/etc/grid-security/'
+xrd="$grid-security/xrd/"
+
+tmpcert=`mktemp`
+tmpkey=`mktemp`
+
+chmod 644 $tmpcert
+chmod 600 $tmpkey
+chown xrootd:xrootd $tmpcert $tmpkey
+
+cp $grid_security/hostcert.pem $tmpcert
+cp $grid_security/hostkey.pem $tmpkey
+
+mv $tmpcert $xrd/xrdcert.pem
+mv $tmpkey $xrd/xrdcert.pem
