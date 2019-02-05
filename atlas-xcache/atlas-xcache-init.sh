@@ -11,7 +11,7 @@ while read disk; do
 done < /etc/xrootd/cache-disks.config
 
 if [ -n "$DISABLE_OSG_MONITORING" ]; then
-    echo -e "set DisableOsgMonitoring = $DISABLE_OSG_MONITORING\n" >> /etc/xrootd/config.d/10-common-site-local.cfg
+    echo -e "set DisableOsgMonitoring = $DISABLE_OSG_MONITORING\n" >> /etc/xrootd/config.d/10-docker-env-var.cfg
 fi
 
 su xrootd -c "xrootd -c /etc/xrootd/xrootd-atlas-xcache.cfg -k fifo -n atlas-xcache -k 10 -s /var/run/xrootd/xrootd-atlas-xcache.pid -l /var/log/xrootd/xrootd.log"

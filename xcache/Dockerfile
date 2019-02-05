@@ -19,13 +19,10 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
 ADD cron.d/* /etc/cron.d/
 ADD sbin/* /usr/local/sbin/
 ADD supervisord.conf /etc/
+ADD xrootd/10-docker-env-var.cfg /etc/xrootd/config.d/
 
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
-
-# Allow users to set the XRootD rootdir and sitename via env var
-RUN echo -e "set rootdir = \$XC_ROOTDIR\nset sitename = \$XC_SITENAME\n" >> \
-    /etc/xrootd/config.d/10-common-site-local.cfg
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
