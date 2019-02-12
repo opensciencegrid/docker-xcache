@@ -2,7 +2,3 @@ services:
   - docker
 
 script: ./travis/build_docker.sh
-
-notifications:
-  email: false
-
