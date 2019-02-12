@@ -3,4 +3,6 @@ services:
 
 script: ./travis/build_docker.sh
 
-if: branch = master
+branches:
+  only:
+  - master
