@@ -25,4 +25,5 @@ ADD xrootd/10-docker-env-var.cfg /etc/xrootd/config.d/
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/local/sbin/supervisord_startup.sh"]
+

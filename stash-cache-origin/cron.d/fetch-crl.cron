@@ -1,5 +1,0 @@
-# Cron job running by default every 6 hours, at 45 minutes past the hour
-# with  +/- 3 minutes sleep to work inside a docker container
-
-45 */6 * * * root /usr/sbin/fetch-crl -q -r 360 -T 10
-
