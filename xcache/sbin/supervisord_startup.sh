@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Allow the derived images to run any additional runtime costumizations
+# Allow the derived images to run any additional runtime customizations
 source /usr/local/sbin/xcache_image_init.sh
 
 # Give the chance to the pod to initialize host-specific info
