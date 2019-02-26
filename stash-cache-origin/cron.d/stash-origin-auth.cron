@@ -1,0 +1,1 @@
+*/15 * * * * /usr/libexec/xcache/authfile-update --origin
