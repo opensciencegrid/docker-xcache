@@ -3,8 +3,9 @@
 
 org='opensciencegrid'
 timestamp=`date +%Y%m%d-%H%M`
+docker_repos='xcache stash-cache stash-origin atlas-xcache'
 
-for repo in xcache stash-cache atlas-xcache; do
+for repo in $docker_repos; do
     docker build \
            -t $org/$repo:development \
            -t $org/$repo:$timestamp \
@@ -19,7 +20,7 @@ fi
 # Credentials for docker push
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-for repo in xcache stash-cache atlas-xcache; do
+for repo in $docker_repos; do
     for tag in $timestamp development; do
         docker push $org/$repo:$tag
     done
