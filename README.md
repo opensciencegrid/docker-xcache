@@ -1,18 +1,11 @@
-# prp-stashcache
-Stashcache Docker Container. It is based on the OSG stashcache instructions deployed here:
+XCache Docker Images [![Build Status](https://travis-ci.org/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.org/opensciencegrid/docker-xcache)
+====================
 
-http://opensciencegrid.org/docs/data/stashcache/install-cache/
+XCache provides a caching service for data federations that serve one or more Virtual Organizations (VOs) based on the
+[XRootD](http://xrootd.org/) software.
+This repository contains the following Docker image sources:
 
-Supervisord is the main process on the container and it starts three main process:
-
-* Stashcache
-* (Optional) SecureStashcache
-* HTCondor for some monitoring information
-
-(Optional) For Secure Stashcache host certificates are required. The container expects them to find them on the underlying host in the following locations:
-
-/etc/grid-security/hostcert.pem /etc/grid-security/hostkey.pem
-
-
-
-
+- [XCache](xcache/README.md) (the image that serves as the base for all other implementations)
+- [ATLAS XCache](atlas-xcache/README.md)
+- Stash Cache
+- Stash Origin
