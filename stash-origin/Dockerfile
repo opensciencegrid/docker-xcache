@@ -7,3 +7,5 @@ ADD cron.d/* /etc/cron.d/
 ADD sbin/* /usr/local/sbin/
 ADD supervisord.d/* /etc/supervisord.d/
 
+ADD xrootd/* /etc/xrootd/config.d/
+
