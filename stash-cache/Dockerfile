@@ -8,5 +8,5 @@ RUN yum -y install stash-cache --enablerepo=osg-minefield \
 
 ADD cron.d/* /etc/cron.d/
 ADD supervisord.d/* /etc/supervisord.d/
-ADD stash-cache-init.sh /usr/local/sbin/
+ADD xcache_image_init.sh /usr/local/sbin/
 
