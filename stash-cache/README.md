@@ -10,18 +10,49 @@ users.
 A set of caches are operated across the OSG for the benefit of nearby sites;
 in addition, each site may run its own cache in order to reduce the amount of data transferred over the WAN.
 
-This document describes how to configure, start, and verify a Stash Cache container.
+This document describes how to configure, start, and verify a **Minimal** Stash Cache container.  There are no requirements to start a **Minimal** Stash Cache container.  Please follow [these instructions](https://opensciencegrid.org/docs/data/stashcache/install-cache/) to create a production Stash Cache server.
 
-Configuration
--------------
+Running a Container
+-------------------
+
+To run the container, use `docker run` with the following options, replacing the text within angle brackets with your
+own values:
+
+
+```
+$ docker run --rm --publish <HOST PORT>:8000 \
+             opensciencegrid/stash-cache:development
+```
+
+The `HOST PORT` is the port on your computer which will accept caching requests.  You may see some failures.  
+
+
+You can verify that it worked with the command:
+
+```
+$ curl http://localhost:8212/user/dweitzel/public/blast/queries/query1
+```
+
+Which should output:
+
+```
+>Derek's first query!
+MPVSDSGFDNSSKTMKDDTIPTEDYEEITKESEMGDATKITSKIDANVIEKKDTDSENNITIAQDDEKVSWLQRVVEFFE
+```
+
+Optional Configuration
+----------------------
 
 Before starting the container, write the following configuration on your docker host:
 
 1. Write a file containing the following required environment variables and values for your XCache:
 
-    - `XC_ROOTDIR`: The directory containing files to export from the cache
-    - `XC_SITENAME`: The server name used for monitoring and reporting
-    - `XC_PORT`: TCP port that XCache listens on
+    ```
+    # The directory containing files to export from the cache
+    XC_ROOTDIR=<dir>
+    # The server name used for monitoring and reporting
+    XC_SITENAME
+    ```
 
 ### Disabling OSG monitoring (optional) ###
 
@@ -33,18 +64,3 @@ the following in your environment variable configuration:
 DISABLE_OSG_MONITORING = true
 ```
 
-Running a Container
--------------------
-
-To run the container, use `docker run` with the following options, replacing the text within angle brackets with your
-own values:
-
-
-```
-$ docker run --env-file=<PATH TO ENV FILE> \
-             --volume <PATH TO HOST CERT>:/etc/grid-security/hostcert.pem \
-             --volume <PATH TO HOST KEY>:/etc/grid-security/hostkey.pem \
-             --publish <HOST PORT>:<XC_PORT> \
-             --hostname <XCACHE HOSTNAME> \
-             opensciencegrid/stash-cache:development
-```
