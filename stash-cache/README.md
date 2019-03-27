@@ -51,7 +51,7 @@ Before starting the container, write the following configuration on your docker 
     # The directory containing files to export from the cache
     XC_ROOTDIR=<dir>
     # The server name used for monitoring and reporting
-    XC_SITENAME
+    XC_RESOURCENAME
     ```
 
 ### Disabling OSG monitoring (optional) ###
