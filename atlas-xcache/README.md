@@ -16,7 +16,7 @@ Before starting the container, write the following configuration on your docker 
 1. Write a file containing the following required environment variables and values for your XCache:
 
     - `XC_ROOTDIR`: The directory containing files to export from the cache
-    - `XC_SITENAME`: The server name used for monitoring and reporting
+    - `XC_RESOURCENAME`: The server name used for monitoring and reporting
     - `XC_SPACE_HIGH_WM`: High watermark for disk usage;
       when usage goes above the high watermark, the cache deletes until it hits the low watermark
     - `XC_SPACE_LOW_WM`: Low watermark for disk usage;
