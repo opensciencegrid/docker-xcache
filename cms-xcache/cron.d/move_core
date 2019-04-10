@@ -1,0 +1,1 @@
+22 3,9,15,21 * * * root /usr/local/sbin/move_core > /dev/null 2>&1

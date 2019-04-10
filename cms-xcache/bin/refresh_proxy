@@ -1,0 +1,11 @@
+#!/bin/bash
+
+voms-proxy-init -cert /etc/grid-security/cache_cert/hostcert.pem -key /etc/grid-security/cache_cert/hostkey.pem  -out /tmp/proxy.new -hours 72 -voms cms && \
+chown xrootd:xrootd /tmp/proxy.new && \
+mv /tmp/proxy.new /tmp/x509_xrdcache
+
+
+if [ ! -e /tmp/x509up_u`id -u xrootd` ]; 
+    then
+    ln -sf /tmp/x509_xrdcache /tmp/x509up_u`id -u xrootd`
+fi

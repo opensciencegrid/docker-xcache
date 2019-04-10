@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mv /var/tmp/core-xcache* /core/cores/
