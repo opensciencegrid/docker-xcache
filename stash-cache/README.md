@@ -40,6 +40,56 @@ Which should output:
 MPVSDSGFDNSSKTMKDDTIPTEDYEEITKESEMGDATKITSKIDANVIEKKDTDSENNITIAQDDEKVSWLQRVVEFFE
 ```
 
+Converting to Production
+------------------------
+
+Additional configuration is needed to make XCache production.
+
+1. Add a persistant caching directory.  Add the volume argument to the run command.
+2. Add environment variables to set the name of the cache and the directory of the persistant cache.  It is important to remember that the directory set in the environment variable points to the directory **inside** the container.  It is later mapped to a host directory with the `--volume` option.
+
+An example final `docker run` command:
+```
+$ docker run --rm --publish <HOST PORT>:8000 \
+             --volume /srv/cache:/cache
+             --env-file=/opt/xcache/.env
+             opensciencegrid/stash-cache:development
+```
+
+And an example environment file:
+```
+XC_RESOURCENAME=ProductionCache
+XC_ROOTDIR=/cache
+```
+
+It is recommended to use a container orchistration service such as [docker-compose](https://docs.docker.com/compose/) or [kubernetes](https://kubernetes.io/), or start the XCache container with systemd.
+
+An example systemd service file for xcache.  This will require creating the environment file in the directory `/opt/xcache/.env`.  
+
+```
+[Unit]
+Description=XCache Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull opensciencegrid/stash-cache:development
+ExecStart=/usr/bin/docker run --rm --name %n --publish 8000:8000 --volume /srv/cache:/cache --env-file /opt/xcache/.env opensciencegrid/stash-cache:development
+
+[Install]
+WantedBy=multi-user.target
+```
+
+This systemd file can be saved to `/etc/systemd/system/docker.stash-cache.service` and started with:
+
+```
+$ systemctl start docker.stash-cache
+```
+
 Optional Configuration
 ----------------------
 
