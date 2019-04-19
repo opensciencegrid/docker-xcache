@@ -87,6 +87,7 @@ WantedBy=multi-user.target
 This systemd file can be saved to `/etc/systemd/system/docker.stash-cache.service` and started with:
 
 ```
+$ systemctl enable docker.stash-cache
 $ systemctl start docker.stash-cache
 ```
 
