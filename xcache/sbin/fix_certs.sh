@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 grid_security='/etc/grid-security/'
-xrd="$grid-security/xrd/"
+xrd="$grid_security/xrd/"
 
 tmpcert=`mktemp`
 tmpkey=`mktemp`
@@ -14,4 +14,4 @@ cp $grid_security/hostcert.pem $tmpcert
 cp $grid_security/hostkey.pem $tmpkey
 
 mv $tmpcert $xrd/xrdcert.pem
-mv $tmpkey $xrd/xrdcert.pem
+mv $tmpkey $xrd/xrdkey.pem
