@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 grid_security='/etc/grid-security/'
-xrd="$grid-security/xrd/"
+xrd="$grid_security/xrd/"
 
 tmpcert=`mktemp`
 tmpkey=`mktemp`
