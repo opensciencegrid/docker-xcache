@@ -40,7 +40,7 @@ Which should output:
 MPVSDSGFDNSSKTMKDDTIPTEDYEEITKESEMGDATKITSKIDANVIEKKDTDSENNITIAQDDEKVSWLQRVVEFFE
 ```
 
-Converting to Production
+Readying for Production
 ------------------------
 
 Additional configuration is needed to make StashCache production-ready.
