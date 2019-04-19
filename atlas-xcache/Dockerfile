@@ -10,4 +10,4 @@ COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY xrootd/xrootd-atlas-xcache.cfg /etc/xrootd/
 COPY xrootd/config.d/* /etc/xrootd/config.d/
 COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
-COPY sbin/xcache_image_init.sh /usr/local/sbin/
+COPY image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
