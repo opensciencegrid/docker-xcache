@@ -43,7 +43,7 @@ MPVSDSGFDNSSKTMKDDTIPTEDYEEITKESEMGDATKITSKIDANVIEKKDTDSENNITIAQDDEKVSWLQRVVEFFE
 Converting to Production
 ------------------------
 
-Additional configuration is needed to make XCache production.
+Additional configuration is needed to make StashCache production-ready.
 
 1. Add a persistant caching directory.  Add the volume argument to the run command.
 2. Add environment variables to set the name of the cache and the directory of the persistant cache.  It is important to remember that the directory set in the environment variable points to the directory **inside** the container.  It is later mapped to a host directory with the `--volume` option.
