@@ -53,7 +53,7 @@ An example final `docker run` command:
 $ docker run --rm --publish <HOST PORT>:8000 \
              --volume /srv/cache:/cache
              --env-file=/opt/xcache/.env
-             opensciencegrid/stash-cache:development
+             opensciencegrid/stash-cache:fresh
 ```
 
 And an example environment file:
