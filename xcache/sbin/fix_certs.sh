@@ -14,4 +14,4 @@ cp $grid_security/hostcert.pem $tmpcert
 cp $grid_security/hostkey.pem $tmpkey
 
 mv $tmpcert $xrd/xrdcert.pem
-mv $tmpkey $xrd/xrdcert.pem
+mv $tmpkey $xrd/xrdkey.pem
