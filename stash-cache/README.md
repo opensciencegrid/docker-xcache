@@ -56,7 +56,7 @@ $ docker run --rm --publish <HOST PORT>:8000 \
              opensciencegrid/stash-cache:fresh
 ```
 
-And an example environment file:
+Where the environment file on the docker host, `/opt/xcache/.env`, has the following contents:
 ```
 XC_RESOURCENAME=ProductionCache
 XC_ROOTDIR=/cache
