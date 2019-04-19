@@ -1,4 +1,4 @@
-FROM opensciencegrid/xcache:development
+FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 

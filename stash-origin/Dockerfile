@@ -1,4 +1,4 @@
-FROM opensciencegrid/xcache:development
+FROM opensciencegrid/xcache:fresh
 
 RUN yum -y install stash-origin --enablerepo=osg-development && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
