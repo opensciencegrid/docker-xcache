@@ -1,4 +1,4 @@
-FROM opensciencegrid/xcache:development
+FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
@@ -8,7 +8,7 @@ RUN yum -y install stash-cache --enablerepo=osg-minefield \
 
 ADD cron.d/* /etc/cron.d/
 ADD supervisord.d/* /etc/supervisord.d/
-ADD stash-cache-init.sh /usr/local/sbin/
+ADD image-config.d/* /etc/osg/image-config.d/
 
 # Add a placeholder authfile, incase this cache isn't registered
 # and can't pull down a new one
