@@ -1,4 +1,4 @@
-FROM opensciencegrid/xcache:development
+FROM opensciencegrid/xcache:fresh
 
 RUN yum -y install xrootd --enablerepo=osg-minefield
 RUN yum -y install gperftools-libs
