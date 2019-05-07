@@ -1,1 +1,1 @@
-0 0 * * * /usr/libexec/xcache/renew-proxy
+0 0 * * * xrootd /usr/libexec/xcache/renew-proxy
