@@ -1,2 +1,2 @@
 # OSG monitoring cron that respects the opt-out XRootD configuration
-*/5 * * * * * [ -n "$DISABLE_OSG_MONITORING" ] || /usr/libexec/xcache/xcache-reporter --one-shot
+*/5 * * * * * root [ -n "$DISABLE_OSG_MONITORING" ] || /usr/libexec/xcache/xcache-reporter --one-shot
