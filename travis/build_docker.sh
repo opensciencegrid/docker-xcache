@@ -17,6 +17,10 @@ if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
     exit 0
 fi
 
+docker run --name test_stash_cache stash-cache > /dev/null 2>&1 &
+docker exec -it test_stash_cache yum install -y osg-test
+docker exec -it test_stash_cache osg-test -mvad
+
 # Credentials for docker push
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
