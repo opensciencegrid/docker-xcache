@@ -12,7 +12,7 @@ for repo in $docker_repos; do
            $repo
 done
 
-docker run --name test_stash_cache stash-cache &
+docker run --name test_stash_cache stash-cache:fresh &
 docker ps
 docker exec -it test_stash_cache yum install -y osg-test
 docker exec -it test_stash_cache osg-test -mvad
