@@ -12,7 +12,8 @@ for repo in $docker_repos; do
            $repo
 done
 
-docker run --name test_stash_cache opensciencegrid/stash-cache:fresh &
+docker run --rm --publish 8000:8000 \
+       --name test_stash_cache opensciencegrid/stash-cache:fresh &
 docker ps
 docker exec -it test_stash_cache yum install -y osg-test
 docker exec -it test_stash_cache osg-test -mvad
