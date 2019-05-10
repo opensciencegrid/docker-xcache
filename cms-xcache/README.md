@@ -26,8 +26,6 @@ Before starting the container, write the following configuration on your docker 
     - `XC_BLOCKSIZE`: The size of the blocks in the cache
     - `XC_PREFETCH`: Number of blocks to prefetch from a file at once
 
-1. Write `cache-disks.config` with paths to disks that you will mount within the container.
-
 ### Disabling OSG monitoring (optional) ###
 
 By default, XCache reports to the OSG so that OSG staff can monitor the health of data federations.
