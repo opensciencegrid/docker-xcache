@@ -13,6 +13,7 @@ for repo in $docker_repos; do
 done
 
 docker run --name test_stash_cache stash-cache > /dev/null 2>&1 &
+sleep 60
 docker exec -it test_stash_cache yum install -y osg-test
 docker exec -it test_stash_cache osg-test -mvad
 
