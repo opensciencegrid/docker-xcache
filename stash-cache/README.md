@@ -21,7 +21,7 @@ own values:
 
 ```
 $ docker run --rm --publish <HOST PORT>:8000 \
-             opensciencegrid/stash-cache:development
+             opensciencegrid/stash-cache:fresh
 ```
 
 The `HOST PORT` is the port on your computer which will accept caching requests.  You may see some failures.  
@@ -77,8 +77,8 @@ TimeoutStartSec=0
 Restart=always
 ExecStartPre=-/usr/bin/docker stop %n
 ExecStartPre=-/usr/bin/docker rm %n
-ExecStartPre=/usr/bin/docker pull opensciencegrid/stash-cache:development
-ExecStart=/usr/bin/docker run --rm --name %n --publish 8000:8000 --volume /srv/cache:/cache --env-file /opt/xcache/.env opensciencegrid/stash-cache:development
+ExecStartPre=/usr/bin/docker pull opensciencegrid/stash-cache:fresh
+ExecStart=/usr/bin/docker run --rm --name %n --publish 8000:8000 --volume /srv/cache:/cache --env-file /opt/xcache/.env opensciencegrid/stash-cache:fresh
 
 [Install]
 WantedBy=multi-user.target
