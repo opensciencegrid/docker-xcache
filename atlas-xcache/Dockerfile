@@ -6,6 +6,7 @@ RUN yum install -y voms-clients-cpp vo-client xrootd xrootd-client --enablerepo=
     yum install -y xrootd-rucioN2N-for-Xcache --enablerepo=osg-contrib && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
+COPY update-agis-status.sh /usr/local/sbin/
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY xrootd/xrootd-atlas-xcache.cfg /etc/xrootd/
 COPY xrootd/config.d/* /etc/xrootd/config.d/
