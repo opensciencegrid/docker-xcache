@@ -1,6 +1,5 @@
 FROM opensciencegrid/xcache:fresh
 
-RUN yum -y install xrootd --enablerepo=osg-minefield
 RUN yum -y install gperftools-libs
 
 ADD xrootd/xcache-cmsd.cfg /etc/xrootd/
