@@ -17,6 +17,7 @@ RUN yum -y install http://repo.opensciencegrid.org/osg/3.4/osg-3.4-el7-release-l
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
+RUN chmod 0644 /etc/cron.d/*
 ADD sbin/* /usr/local/sbin/
 ADD supervisord.conf /etc/
 ADD xrootd/10-docker-env-var.cfg /etc/xrootd/config.d/
