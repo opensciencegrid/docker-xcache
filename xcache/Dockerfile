@@ -14,6 +14,7 @@ RUN yum -y install xcache --enablerepo=osg-minefield && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
+RUN chmod 0644 /etc/cron.d/*
 ADD sbin/* /usr/local/sbin/
 ADD image-config.d/* /etc/osg/image-config.d/
 ADD xrootd/10-docker-env-var.cfg /etc/xrootd/config.d/
