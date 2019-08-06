@@ -3,7 +3,7 @@
 
 org='opensciencegrid'
 timestamp=`date +%Y%m%d-%H%M`
-docker_repos='xcache stash-cache stash-origin atlas-xcache'
+docker_repos='xcache stash-cache stash-origin atlas-xcache cms-xcache'
 
 for repo in $docker_repos; do
     docker build \

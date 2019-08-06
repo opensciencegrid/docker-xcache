@@ -1,0 +1,1 @@
+39 3,9,15,21 * * * xrootd /usr/libexec/xcache/renew-proxy --voms cms > /dev/null 2>&1
