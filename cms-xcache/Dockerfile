@@ -10,3 +10,6 @@ COPY supervisord.d/10-cms-xcache.conf /etc/supervisord.d/
 COPY sbin/* /usr/local/sbin/
 COPY cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
+COPY image-config.d/* /etc/osg/image-config.d/
+
+EXPOSE 1094
