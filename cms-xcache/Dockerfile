@@ -9,3 +9,4 @@ COPY limits.d/10-cms-xcache-limits.conf /etc/security/limits.d/
 COPY supervisord.d/10-cms-xcache.conf /etc/supervisord.d/
 COPY sbin/* /usr/local/sbin/
 COPY cron.d/* /etc/cron.d/
+RUN chmod 0644 /etc/cron.d/*
