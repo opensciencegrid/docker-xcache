@@ -1,3 +1,3 @@
 #!/bin/bash
 /usr/local/sbin/fix_certs.sh
-su xrootd /usr/libexec/xcache/renew-proxy --voms cms
+su xrootd -c '/usr/libexec/xcache/renew-proxy --voms cms'
