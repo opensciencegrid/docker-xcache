@@ -2,8 +2,7 @@ FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
-RUN yum install -y voms-clients-cpp vo-client xrootd xrootd-client --enablerepo=osg-minefield && \
-    yum install -y xrootd-rucioN2N-for-Xcache --enablerepo=osg-contrib && \
+RUN yum install -y atlas-xcache --enablerepo=osg-minefield --enablerepo=osg-contrib && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 COPY update-agis-status.sh /usr/local/sbin/

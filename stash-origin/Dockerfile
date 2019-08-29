@@ -1,6 +1,6 @@
 FROM opensciencegrid/xcache:fresh
 
-RUN yum -y install stash-origin --enablerepo=osg-development && \
+RUN yum -y install stash-origin --enablerepo=osg-minefield && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
