@@ -10,7 +10,6 @@ RUN groupadd -o -g 10940 xrootd
 RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
 
 RUN yum -y install xcache --enablerepo=osg-minefield && \
-    yum -y install vo-client && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
