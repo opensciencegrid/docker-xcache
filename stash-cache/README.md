@@ -62,7 +62,7 @@ XC_RESOURCENAME=ProductionCache
 XC_ROOTDIR=/cache
 ```
 
-It is recommended to use a container orchistration service such as [docker-compose](https://docs.docker.com/compose/) or [kubernetes](https://kubernetes.io/), or start the XCache container with systemd.
+It is recommended to use a container orchestration service such as [docker-compose](https://docs.docker.com/compose/) or [kubernetes](https://kubernetes.io/), or start the XCache container with systemd.
 
 An example systemd service file for xcache.  This will require creating the environment file in the directory `/opt/xcache/.env`.  
 
