@@ -94,7 +94,7 @@ $ systemctl start docker.stash-cache
 Optional Configuration
 ----------------------
 
-Before starting the container, write the following configuration on your docker host:
+In addition to the configuration avove before starting the container, write the following configuration on your docker host:
 
 1. Write in same file as above(`/opt/xcache/.env') containing the following required environment  variables and values for your XCache:
 
