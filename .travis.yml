@@ -1,7 +1,10 @@
 services:
   - docker
 
-script: ./travis/build_docker.sh
+script: 
+  - ./travis/build_docker.sh
+  - ./travis/test_stashcache.sh
+  - ./travis/push_docker.sh
 
 branches:
   only:
