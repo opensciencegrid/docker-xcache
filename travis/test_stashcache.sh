@@ -9,7 +9,7 @@ docker run --rm --publish 1094:1094 \
        --volume $(pwd)/travis/stashcache-origin-config/authfile:/etc/xrootd/public-origin-authfile \
        --name test_origin opensciencegrid/stash-origin:fresh &
 docker ps 
-sleep 10
-docker exec -it test_origin ps aux
+sleep 30
+docker exec -it test_origin sh -c "ps aux | grep xrootd"
 
 
