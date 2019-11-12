@@ -2,7 +2,7 @@
 # Script for testing StashCache docker images
 
 
-docker run --rm --publish 1094:1094 \
+docker run --rm \
        --network="host" \
        --env-file=$(pwd)/travis/stashcache-origin-config/origin-env \
        --volume $(pwd)/travis/stashcache-origin-config/empty_stash-origin-auth.conf:/etc/supervisord.d/stash-origin-auth.conf \
@@ -11,8 +11,7 @@ docker run --rm --publish 1094:1094 \
        --volume $(pwd)/travis/stashcache-origin-config/test_file:/tmp/stashcache-travis-ci-test/test_file \
        --name test_origin opensciencegrid/stash-origin:fresh &
 docker ps 
-sleep 30
-docker exec -it test_origin sh -c "ps aux | grep xrootd"
+sleep 20
 
 online_md5="$(curl -sL http://localhost:1094/stashcache-travis-ci-test/test_file | md5sum | cut -d ' ' -f 1)"
 local_md5="$(md5sum $(pwd)/travis/stashcache-origin-config/test_file | cut -d ' ' -f 1)"
@@ -20,5 +19,3 @@ if [ "$online_md5" != "$local_md5" ]; then
     echo "MD5sums do not match on origin"
     exit 1
 fi
-
-
