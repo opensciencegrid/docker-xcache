@@ -2,14 +2,13 @@
 # Script for testing StashCache docker images
 
 
-docker run --rm --publish 1094:1094 \
-       --env-file=$(pwd)/travis/stashcache-origin-config/origin-env \
-       --volume $(pwd)/travis/stashcache-origin-config/empty_stash-origin-auth.conf:/etc/supervisord.d/stash-origin-auth.conf \
-       --volume $(pwd)/travis/stashcache-origin-config/10-origin-authfile.cfg:/etc/xrootd/config.d/10-origin-authfile.cfg \
-       --volume $(pwd)/travis/stashcache-origin-config/authfile:/etc/xrootd/public-origin-authfile \
-       --name test_origin opensciencegrid/stash-origin:fresh &
+docker run --rm --publish 8000:8000 \
+       --env-file=$(pwd)/travis/stashcache-cache-config/cache-env \
+       --volume $(pwd)/travis/stashcache-cache-config/10-stash-cache.conf:/etc/supervisord.d/10-stash-cache.conf \
+       --volume $(pwd)/travis/stashcache-cache-config/90-docker-ci.cfg:/etc/xrootd/config.d//90-docker-ci.cfg  \
+       --name test_cache opensciencegrid/stash-cache:fresh &
 docker ps 
 sleep 30
-docker exec -it test_origin sh -c "ps aux | grep xrootd"
+docker exec -it test_cache sh -c "ps aux | grep xrootd"
 
 
