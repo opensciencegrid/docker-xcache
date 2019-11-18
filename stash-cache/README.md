@@ -96,7 +96,7 @@ Optional Configuration
 
 In addition to the configuration avove before starting the container, write the following configuration on your docker host:
 
-1. Write in same file as above(`/opt/xcache/.env') containing the following required environment  variables and values for your XCache:
+1. Write in same file as above(`/opt/xcache/.env`) containing the following required environment  variables and values for your XCache:
 
     - `XC_SPACE_HIGH_WM`: High watermark for disk usage;
       when usage goes above the high watermark, the cache deletes until it hits the low watermark
