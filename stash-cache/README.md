@@ -94,16 +94,18 @@ $ systemctl start docker.stash-cache
 Optional Configuration
 ----------------------
 
-Before starting the container, write the following configuration on your docker host:
+In addition to the configuration avove before starting the container, write the following configuration on your docker host:
 
-1. Write a file containing the following required environment variables and values for your XCache:
+1. Write in same file as above(`/opt/xcache/.env`) containing the following required environment  variables and values for your XCache:
 
-    ```
-    # The directory containing files to export from the cache
-    XC_ROOTDIR=<dir>
-    # The server name used for monitoring and reporting
-    XC_RESOURCENAME
-    ```
+    - `XC_SPACE_HIGH_WM`: High watermark for disk usage;
+      when usage goes above the high watermark, the cache deletes until it hits the low watermark
+    - `XC_SPACE_LOW_WM`: Low watermark for disk usage;
+      when usage goes above the high watermark, the cache deletes until it hits the low watermark
+    - `XC_PORT`: TCP port that XCache listens on
+    - `XC_RAMSIZE`: Amount of memory to use for blocks in flight
+    - `XC_BLOCKSIZE`: The size of the blocks in the cache
+    - `XC_PREFETCH`: Number of blocks to prefetch from a file at once
 
 ### Disabling OSG monitoring (optional) ###
 
