@@ -1,14 +1,12 @@
 #!/bin/bash -xe
 # Script for building and pushing XCache docker images
 
-org='opensciencegrid'
-timestamp=`date +%Y%m%d-%H%M`
-docker_repos='xcache stash-cache stash-origin atlas-xcache cms-xcache'
+timestamp="$1"
 
-for repo in $docker_repos; do
+for repo in $DOCKER_REPOS; do
     docker build \
-           -t $org/$repo:fresh \
-           -t $org/$repo:$timestamp \
+           -t $DOCKER_ORG/$repo:fresh \
+           -t $DOCKER_ORG/$repo:$timestamp \
            $repo
 done
 
