@@ -9,8 +9,8 @@ fi
 # Credentials for docker push                                                                                                                                                                                       
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-for repo in $docker_repos; do
+for repo in $DOCKER_REPOS; do
     for tag in $timestamp fresh; do
-        docker push $org/$repo:$tag
+        docker push $DOCKER_ORG/$repo:$tag
     done
 done
