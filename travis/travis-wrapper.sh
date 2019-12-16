@@ -3,9 +3,7 @@
 
 timestamp=`date +%Y%m%d-%H%M`
 
-cd travis
-
-./build_docker.sh $timestamp
-./test_stashcache_origin.sh
-./test_stashcache.sh
-./push_docker.sh $timestamp
+./travis/build_docker.sh $timestamp
+./travis/test_stashcache_origin.sh
+./travis/test_stashcache.sh
+./travis/push_docker.sh $timestamp
