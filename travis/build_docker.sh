@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 # Script for building and pushing XCache docker images
 
-timestamp=`date +%Y%m%d-%H%M`
+timestamp="$1"
 
 for repo in $DOCKER_REPOS; do
     docker build \
