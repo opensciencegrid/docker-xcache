@@ -1,0 +1,9 @@
+u * /user/ligo -rl \
+    /Gluex rl \
+    /chtc/PUBLIC rl \
+    /gwdata rl \
+    /hcc/PUBLIC rl \
+    /icecube/PUBLIC rl \
+    /osgconnect/public rl \
+    /pnfs/fnal.gov rl \
+    /user rl 
