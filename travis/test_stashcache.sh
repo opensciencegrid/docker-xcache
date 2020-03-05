@@ -10,6 +10,7 @@ docker run --rm \
        --name test_cache opensciencegrid/stash-cache:fresh &
 docker ps 
 sleep 20
+docker exec test_cache tail -n 300 /var/log/xrood/stash-cache/xrootd.log
 
 online_md5="$(curl -sL http://localhost:8000/stashcache-travis-ci-test/test_file | md5sum | cut -d ' ' -f 1)"
 local_md5="$(md5sum $(pwd)/travis/stashcache-origin-config/test_file | cut -d ' ' -f 1)"
