@@ -1,0 +1,3 @@
+u * /user/ligo -rl \
+    /stashcache-travis-ci-test rl \
+    /user rl 

@@ -16,3 +16,7 @@ for repo in $DOCKER_REPOS; do
         docker push $DOCKER_ORG/$repo:$tag
     done
 done
+
+# Stopping the docker tests
+docker stop test_origin
+docker stop test_cache
