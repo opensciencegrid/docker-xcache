@@ -1,6 +1,5 @@
 #!/bin/bash
 ENABLE=`awk -F "=" '/^XC_XCACHE_CONSISTENCY_CHECK/ {print $2}' /etc/environment`
-echo "ENABLE: "$ENABLE
 
 if [ "$ENABLE" == "1" ]
 then
