@@ -12,3 +12,5 @@ ADD supervisord.d/* /etc/supervisord.d/
 
 ADD xrootd/* /etc/xrootd/config.d/
 
+RUN mkdir /origin
+RUN chown xrootd:xrootd /origin
