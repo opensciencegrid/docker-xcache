@@ -19,6 +19,7 @@ ADD image-config.d/* /etc/osg/image-config.d/
 ADD xrootd/10-docker-env-var.cfg /etc/xrootd/config.d/
 
 RUN mkdir -p /xcache/namespace
+RUN mkdir -p /xcache/disks
 RUN chown -R xrootd:xrootd /xcache/
 
 # Avoid 'Unable to create home directory' messages

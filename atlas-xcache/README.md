@@ -11,21 +11,18 @@ This document covers how to configure and start an ATLAS XCache container.
 Configuration
 -------------
 
-Before starting the container, write the following configuration on your docker host:
+Before starting the container, write a file containing the following required environment variables and values for your
+XCache:
 
-1. Write a file containing the following required environment variables and values for your XCache:
-
-    - `XC_RESOURCENAME`: The server name used for monitoring and reporting
-    - `XC_SPACE_HIGH_WM`: High watermark for disk usage;
-      when usage goes above the high watermark, the cache deletes until it hits the low watermark
-    - `XC_SPACE_LOW_WM`: Low watermark for disk usage;
-      when usage goes above the high watermark, the cache deletes until it hits the low watermark
-    - `XC_PORT`: TCP port that XCache listens on
-    - `XC_RAMSIZE`: Amount of memory to use for blocks in flight
-    - `XC_BLOCKSIZE`: The size of the blocks in the cache
-    - `XC_PREFETCH`: Number of blocks to prefetch from a file at once
-
-1. Write `cache-disks.config` with paths to disks that you will mount within the container.
+- `XC_RESOURCENAME`: The server name used for monitoring and reporting
+- `XC_SPACE_HIGH_WM`: High watermark for disk usage;
+  when usage goes above the high watermark, the cache deletes until it hits the low watermark
+- `XC_SPACE_LOW_WM`: Low watermark for disk usage;
+  when usage goes above the high watermark, the cache deletes until it hits the low watermark
+- `XC_PORT`: TCP port that XCache listens on
+- `XC_RAMSIZE`: Amount of memory to use for blocks in flight
+- `XC_BLOCKSIZE`: The size of the blocks in the cache
+- `XC_PREFETCH`: Number of blocks to prefetch from a file at once
 
 ### Disabling OSG monitoring (optional) ###
 
@@ -48,7 +45,6 @@ own values:
 $ docker run --env-file=<PATH TO ENV FILE> \
              --volume <PATH TO HOST CERT>:/etc/grid-security/hostcert.pem \
              --volume <PATH TO HOST KEY>:/etc/grid-security/hostkey.pem \
-             --volume <PATH TO DISK CONFIG>:/etc/xrootd/cache-disks.config \
              --volume <HOST PATH TO CACHE DISK 1>:<CONTAINER MOUNT POINT 1> \
              ...
              --volume <HOST PATH TO CACHE DISK N>:<CONTAINER MOUNT POINT N> \
