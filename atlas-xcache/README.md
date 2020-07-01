@@ -1,4 +1,4 @@
-ATLAS XCache Docker Image [![Build Status](https://travis-ci.org/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.org/opensciencegrid/docker-xcache)
+ATLAS XCache Docker Image [![Build Status](https://travis-ci.com/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.com/opensciencegrid/docker-xcache)
 =========================
 
 XCache provides a caching service for data federations that serve one or more Virtual Organizations (VOs) based on the

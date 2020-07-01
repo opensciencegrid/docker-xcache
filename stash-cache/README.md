@@ -1,4 +1,4 @@
-Stash Cache Docker Image [![Build Status](https://travis-ci.org/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.org/opensciencegrid/docker-xcache)
+Stash Cache Docker Image [![Build Status](https://travis-ci.com/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.com/opensciencegrid/docker-xcache)
 ========================
 
 The OSG operates the [StashCache data federation](https://opensciencegrid.org/docs/data/stashcache/overview/), which
