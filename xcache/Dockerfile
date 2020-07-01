@@ -3,7 +3,7 @@ FROM opensciencegrid/software-base:fresh
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Default root dir
-ENV ROOTDIR /mnt/stash
+ENV XC_ROOTDIR /xcache/namespace
 
 # Create the xrootd user with a fixed GID/UID
 RUN groupadd -o -g 10940 xrootd
@@ -17,6 +17,9 @@ RUN chmod 0644 /etc/cron.d/*
 ADD sbin/* /usr/local/sbin/
 ADD image-config.d/* /etc/osg/image-config.d/
 ADD xrootd/10-docker-env-var.cfg /etc/xrootd/config.d/
+
+RUN mkdir -p /xcache/namespace
+RUN chown -R xrootd:xrootd /xcache/
 
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs

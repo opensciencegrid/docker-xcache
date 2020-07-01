@@ -18,7 +18,7 @@ Contents
 - [Supervisor](supervisord.org/) to support multi-process containers
 - Periodic `fetch-crl`
 - Reporting to central OSG monitoring (see below for details)
-- XRootD configuration for `rootdir` and `resourcename` via `XC_ROOTDIR` and `XC_RESOURCENAME` environment variables
+- XRootD configuration `resourcename` via `XC_RESOURCENAME` environment variables
 - Entrypoints for downstream Docker images and Kubernetes pods
 
 Building Other Images
