@@ -14,9 +14,3 @@ cache_dir=$(dirname $namespace_dir)
 if [[ -z $(find $cache_dir -type d  -name 'disk[0-9]*') ]]; then
     echo "oss.space data $cache_dir" > /etc/xrootd/config.d/40-data-disks.cfg
 fi
-
-if [ -n "$DISABLE_OSG_MONITORING" ]; then
-    echo -e "set DisableOsgMonitoring = $DISABLE_OSG_MONITORING\n" >> /etc/xrootd/config.d/10-docker-env-var.cfg
-fi
-
-
