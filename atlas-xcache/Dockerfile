@@ -3,6 +3,7 @@ FROM opensciencegrid/xcache:fresh
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 RUN yum install -y atlas-xcache --enablerepo=osg-testing --enablerepo=osg-contrib && \
+    yum install -y python3 python3-requests
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 COPY update-agis-status.sh /usr/local/sbin/
