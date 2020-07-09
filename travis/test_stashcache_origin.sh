@@ -7,7 +7,7 @@ docker run --rm \
        --volume $(pwd)/travis/stashcache-origin-config/empty_stash-origin-auth.conf:/etc/supervisord.d/stash-origin-auth.conf \
        --volume $(pwd)/travis/stashcache-origin-config/10-origin-authfile.cfg:/etc/xrootd/config.d/10-origin-authfile.cfg \
        --volume $(pwd)/travis/stashcache-origin-config/authfile:/etc/xrootd/public-origin-authfile \
-       --volume $(pwd)/travis/stashcache-origin-config/test_file:/origin/test_file \
+       --volume $(pwd)/travis/stashcache-origin-config/test_file:/xcache/namespace/test_file \
        --name test_origin opensciencegrid/stash-origin:fresh &
 docker ps 
 sleep 20
