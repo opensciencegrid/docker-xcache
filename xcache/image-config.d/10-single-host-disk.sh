@@ -8,9 +8,11 @@ namespace_dir="$XC_ROOTDIR"
 mkdir -p $namespace_dir
 chown xrootd:xrootd $namespace_dir
 
-# Use /xcache as the data store if the user has not mounted separate data disks
-# as prescribed (e.g. /xcache/disk1, /xcache/disk2/.../xcache/diskN)
+# Ensure that a data disk dir exists using the prescribed format
+# This allows users to easily transition to a multi-disk setup
 cache_dir=$(dirname $namespace_dir)
 if [[ -z $(find $cache_dir -type d  -name 'disk[0-9]*') ]]; then
-    echo "oss.space data $cache_dir" > /etc/xrootd/config.d/40-data-disks.cfg
+    data_dir=$cache_dir/disk1
+    mkdir -p $data_dir
+    chown -R xrootd:xrootd $data_dir
 fi
