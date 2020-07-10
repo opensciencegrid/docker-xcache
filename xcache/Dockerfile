@@ -18,7 +18,7 @@ ADD sbin/* /usr/local/sbin/
 ADD image-config.d/* /etc/osg/image-config.d/
 ADD xrootd/* /etc/xrootd/config.d/
 
-RUN mkdir -p /xcache/namespace
+RUN mkdir -p "$XC_ROOTDIR"
 RUN chown -R xrootd:xrootd /xcache/
 
 # Avoid 'Unable to create home directory' messages
