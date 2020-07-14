@@ -2,6 +2,8 @@ FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
+ENV XC_IMAGE_NAME stash-cache
+
 RUN yum -y install stash-origin --enablerepo=osg-minefield && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
