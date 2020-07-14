@@ -4,7 +4,6 @@
 # (image default: /xcache/namespace).
 namespace_dir="$XC_ROOTDIR"
 mkdir -p $namespace_dir
-chown xrootd:xrootd $namespace_dir
 
 # Ensure that data and meta disk dirs exist using the prescribed format
 # This allows users to easily transition to a multi-disk setup
@@ -27,6 +26,5 @@ for dirtype in meta data; do
     if [[ -z $(ls -l "$space_dirs" 2> /dev/null) ]]; then
         default_dir="$cache_dir/$dirtype"1
         mkdir -p "$default_dir"
-        chown -R xrootd:xrootd "$default_dir"
     fi
 done
