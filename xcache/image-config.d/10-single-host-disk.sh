@@ -3,12 +3,10 @@
 # If the user is mounting a single disk onto /xcache, create oss.localroot for them
 # (image default: /xcache/namespace).
 namespace_dir="$XC_ROOTDIR"
-mkdir -p $namespace_dir
+mkdir -p "$namespace_dir"
 
 # Ensure that data and meta disk dirs exist using the prescribed format
 # This allows users to easily transition to a multi-disk setup
-cache_dir=$(dirname $namespace_dir)
-
 for dirtype in meta data; do
     # Requires $XC_ROOT_DIR to be set in container environment, which
     # is set by default in the atlas-xcache, cms-xcache, stash-cache,
@@ -24,7 +22,7 @@ for dirtype in meta data; do
     # N.B. As long as a single path specified in an oss.space
     # directive exists, XRootD is happy
     if [[ -z $(ls -l "$space_dirs" 2> /dev/null) ]]; then
-        default_dir="$cache_dir/$dirtype"1
+        default_dir="/xcache/$dirtype"1
         mkdir -p "$default_dir"
     fi
 done
