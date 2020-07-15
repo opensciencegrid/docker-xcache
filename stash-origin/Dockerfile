@@ -2,8 +2,7 @@ FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
-# Default root dir
-ENV XC_ROOTDIR /origin
+ENV XC_IMAGE_NAME stash-origin
 
 RUN yum -y install stash-origin --enablerepo=osg-minefield && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
@@ -14,6 +13,3 @@ ADD image-config.d/* /etc/osg/image-config.d/
 ADD supervisord.d/* /etc/supervisord.d/
 
 ADD xrootd/* /etc/xrootd/config.d/
-
-RUN mkdir /origin
-RUN chown xrootd:xrootd /origin

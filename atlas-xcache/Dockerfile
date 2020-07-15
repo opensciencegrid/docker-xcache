@@ -2,6 +2,8 @@ FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
+ENV XC_IMAGE_NAME atlas-xcache
+
 RUN yum install -y atlas-xcache --enablerepo=osg-testing --enablerepo=osg-contrib && \
     yum install -y python3 python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/

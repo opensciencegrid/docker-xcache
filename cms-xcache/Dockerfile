@@ -1,6 +1,9 @@
 FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
+
+ENV XC_IMAGE_NAME cms-xcache
+
 RUN yum install -y --enablerepo=osg-testing  \
                 cms-xcache \
                 xcache-consistency-check && \
