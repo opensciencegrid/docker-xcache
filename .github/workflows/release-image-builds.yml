@@ -9,11 +9,8 @@ on:
   #   - cron: '34 2 * * TUE'
 
 jobs:
-  base-image-build:
-    name: Build initial xcache ${{ matrix.yum_repo_prefix }}fresh base image
-    strategy:
-      matrix:
-        yum_repo_prefix: ["upcoming-", ""]
+  clone-repo:
+    name: Clone the repo for the subsequent jobs
     runs-on: ubuntu-latest
     steps:
       - name: Check out docker-xcache
@@ -21,6 +18,23 @@ jobs:
         with:
           path: docker-xcache
           fetch-depth: 1
+      - name: Upload docker-xcache repo artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-xcache-repo
+          path: ./docker-xcache
+  base-image-build:
+    name: Build initial xcache ${{ matrix.yum_repo_prefix }}fresh base image
+    needs: clone-repo
+    strategy:
+      matrix:
+        yum_repo_prefix: ["upcoming-", ""]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download docker-xcache
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-xcache-repo
       - name: Build XCache base image
         uses: docker/build-push-action@v1
         with:
