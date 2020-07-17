@@ -87,3 +87,24 @@ jobs:
         with:
           name: ${{ matrix.image }}-image-${{ matrix.yum_repo_prefix }}fresh
           path: /tmp/${{ matrix.image }}.tar
+  test-stash-cache:
+    name: Test Stash Cache and Origin (${{ matrix.yum_repo_prefix }}fresh)
+    strategy:
+      matrix:
+        yum_repo_prefix: ["upcoming-", ""]
+    needs: xcache-image-builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: docker-xcache-repo
+      - uses: actions/download-artifact@v2
+        with:
+          name: stash-cache-image-${{ matrix.yum_repo_prefix }}fresh
+      - uses: actions/download-artifact@v2
+        with:
+          name: stash-origin-image-${{ matrix.yum_repo_prefix }}fresh
+      - run: docker load -i stash-cache.tar
+      - run: docker load -i stash-origin.tar
+      - run: ./tests/test_stashcache_origin.sh
+      - run: ./tests/test_stashcache.sh
