@@ -2,8 +2,7 @@ name: Build XCache images from OSG Yum repositories
 on:
   push:
     branches:
-      - master
-      - SOFTWARE-4181.upcoming-containers
+      - SOFTWARE-4181.github-docker-repo
   # TODO: Change to every 5 minutes once we filter out already-built tags
   # schedule:
   #   - cron: '34 2 * * TUE'
