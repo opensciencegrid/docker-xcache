@@ -2,9 +2,12 @@ FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
+# Specify the base Yum repository to get the necessary RPMs
+ARG BASE_YUM_REPO
+
 ENV XC_IMAGE_NAME atlas-xcache
 
-RUN yum install -y atlas-xcache --enablerepo=osg-testing --enablerepo=osg-contrib && \
+RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-contrib && \
     yum install -y python3 python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 

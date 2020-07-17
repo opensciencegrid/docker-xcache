@@ -2,6 +2,9 @@ FROM opensciencegrid/software-base:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
+# Specify the base Yum repository to get the necessary RPMs
+ARG BASE_YUM_REPO
+
 # Default root dir
 ENV XC_ROOTDIR /xcache/namespace
 
@@ -9,7 +12,7 @@ ENV XC_ROOTDIR /xcache/namespace
 RUN groupadd -o -g 10940 xrootd
 RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
 
-RUN yum -y install xcache --enablerepo=osg-testing && \
+RUN yum -y install xcache --enablerepo="$BASE_YUM_REPO" && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
