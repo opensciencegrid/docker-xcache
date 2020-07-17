@@ -50,40 +50,33 @@ jobs:
         with:
           name: xcache-image-${{ matrix.yum_repo_prefix }}fresh
           path: /tmp/xcache.tar
-  # xcache-image-builds:
-  #   name: Build ${{ matrix.image }} images
-  #   strategy:
-  #     matrix:
-  #       image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
-  #       yum_repo_repo: ["upcoming-", ""]
-  #   needs:
-  #     - base-image-build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Get timestamp
-  #       id: timestamp
-  #       run: echo "::set-output name=timestamp::$(date +%Y%m%d-%H%M)"
-  #     - name: Download docker-xcache
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: docker-xcache-repo
-  #     - name: Download XCache base image artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: xcache-image
-  #     - name: Load XCache base image
-  #       run: docker load -i xcache.tar
-  #     - name: Replace FROM line in Dockerfile
-  #       working-directory: ${{ matrix.image }}
-  #       run: sed -i "s|FROM opensciencegrid/xcache:fresh|FROM brianhlin/xcache:${{ needs.xrootd-rpm-build.outputs.tags }}|" Dockerfile
-  #     - name: Build ${{ matrix.image}} image
-  #       uses: docker/build-push-action@v1
-  #       with:
-  #         repository: brianhlin/${{ matrix.image }}
-  #         username: ${{ secrets.DOCKER_USERNAME }}
-  #         password: ${{ secrets.DOCKER_PASSWORD }}
-  #         path: ./${{ matrix.image }}
-  #         tags: ${{ needs.xrootd-rpm-build.outputs.tags }}
-  #   # TODO: Add test jobs or steps here and sandwich them between
-  #   # separated image build and push. Also, push XCache base image.
-
+  xcache-image-builds:
+    name: Build ${{ matrix.image }}:${{ matrix.yum_repo_prefix}}fresh image
+    strategy:
+      matrix:
+        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
+        yum_repo_prefix: ["upcoming-", ""]
+    needs: base-image-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download docker-xcache
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-xcache-repo
+      - name: Download XCache base image artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: xcache-image-${{ matrix.yum_repo_prefix }}fresh
+      - name: Load XCache base image
+        run: docker load -i xcache.tar
+      - name: Replace FROM line in Dockerfile
+        working-directory: ${{ matrix.image }}
+        run: sed -i "s|FROM opensciencegrid/xcache:fresh|FROM brianhlin/xcache:${{ matrix.yum_repo_prefix}}fresh|" Dockerfile
+      - name: Build ${{ matrix.image}} image
+        uses: docker/build-push-action@v1
+        with:
+          repository: brianhlin/${{ matrix.image }}
+          push: false
+          path: ./${{ matrix.image }}
+          build_args: BASE_YUM_REPO=osg-${{ matrix.yum_repo_prefix }}minefield
+          tags: ${{ matrix.yum_repo_prefix }}fresh
