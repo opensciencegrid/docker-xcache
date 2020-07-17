@@ -80,3 +80,10 @@ jobs:
           path: ./${{ matrix.image }}
           build_args: BASE_YUM_REPO=osg-${{ matrix.yum_repo_prefix }}minefield
           tags: ${{ matrix.yum_repo_prefix }}fresh
+      - name: Save ${{ matrix.image }}:${{ matrix.yum_repo_prefix}}fresh image
+        run: docker save --output /tmp/${{ matrix.image }}.tar brianhlin/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}fresh
+      - name: Upload ${{ matrix.image }}:${{ matrix.yum_repo_prefix}}fresh artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.image }}-image-${{ matrix.yum_repo_prefix }}fresh
+          path: /tmp/${{ matrix.image }}.tar
