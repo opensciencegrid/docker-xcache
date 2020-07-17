@@ -4,8 +4,8 @@
 timestamp=`date +%Y%m%d-%H%M`
 
 ./travis/build_docker.sh $timestamp
-./travis/test_stashcache_origin.sh
-./travis/test_stashcache.sh
+./tests/test_stashcache_origin.sh
+./tests/test_stashcache.sh
 
 if [[ $TRAVIS_REPO_SLUG == opensciencegrid/* ]]; then
     ./travis/push_docker.sh $timestamp
