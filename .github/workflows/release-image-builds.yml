@@ -91,6 +91,7 @@ jobs:
       - name: Create dummy Dockerfile
         run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}minefield" > Dockerfile
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}minefield
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
