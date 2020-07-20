@@ -86,6 +86,8 @@ jobs:
     needs: get-timestamp
     runs-on: ubuntu-latest
     steps:
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
