@@ -84,16 +84,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: docker-xcache-repo
-      - uses: actions/download-artifact@v2
-        with:
-          name: stash-cache-image-${{ matrix.yum_repo_prefix }}fresh
-      - uses: actions/download-artifact@v2
-        with:
-          name: stash-origin-image-${{ matrix.yum_repo_prefix }}fresh
-      - run: docker load -i stash-cache.tar
-      - run: docker load -i stash-origin.tar
-      - run: ./tests/test_stashcache_origin.sh
-      - run: ./tests/test_stashcache.sh
+      - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ matrix.yum_repo_prefix }}minefield"
+      - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ matrix.yum_repo_prefix }}minefield"
   get-timestamp:
     name: Get timestamp for tagging images
     needs: test-stash-cache

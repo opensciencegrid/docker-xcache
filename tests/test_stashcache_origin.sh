@@ -1,6 +1,7 @@
 #!/bin/bash -x
 # Script for testing StashCache docker images
 
+TEST_IMAGE="$1"
 
 docker run --rm \
        --network="host" \
@@ -8,7 +9,7 @@ docker run --rm \
        --volume $(pwd)/tests/stashcache-origin-config/10-origin-authfile.cfg:/etc/xrootd/config.d/10-origin-authfile.cfg \
        --volume $(pwd)/tests/stashcache-origin-config/authfile:/etc/xrootd/public-origin-authfile \
        --volume $(pwd)/tests/stashcache-origin-config/test_file:/xcache/namespace/test_file \
-       --name test_origin opensciencegrid/stash-origin:fresh &
+       --name test_origin "$TEST_IMAGE" &
 docker ps 
 sleep 20
 
