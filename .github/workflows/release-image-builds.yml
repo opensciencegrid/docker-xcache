@@ -8,32 +8,15 @@ on:
   #   - cron: '34 2 * * TUE'
 
 jobs:
-  clone-repo:
-    name: Clone the repo for the subsequent jobs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out docker-xcache
-        uses: actions/checkout@v2
-        with:
-          path: docker-xcache
-          fetch-depth: 1
-      - name: Upload docker-xcache repo artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: docker-xcache-repo
-          path: ./docker-xcache
   base-image-build:
     name: Build initial xcache:${{ matrix.yum_repo_prefix }}fresh base image
-    needs: clone-repo
     strategy:
       matrix:
         yum_repo_prefix: ["upcoming-", ""]
     runs-on: ubuntu-latest
     steps:
-      - name: Download docker-xcache
-        uses: actions/download-artifact@v2
-        with:
-          name: docker-xcache-repo
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
       - name: Build XCache base image
         uses: docker/build-push-action@v1
         with:
@@ -53,10 +36,8 @@ jobs:
     needs: base-image-build
     runs-on: ubuntu-latest
     steps:
-      - name: Download docker-xcache
-        uses: actions/download-artifact@v2
-        with:
-          name: docker-xcache-repo
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
       - name: Replace FROM line in Dockerfile
         working-directory: ${{ matrix.image }}
         run: |
@@ -81,9 +62,8 @@ jobs:
     needs: xcache-image-builds
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: docker-xcache-repo
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
       - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ matrix.yum_repo_prefix }}minefield"
       - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ matrix.yum_repo_prefix }}minefield"
   get-timestamp:
