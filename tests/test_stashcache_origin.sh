@@ -10,7 +10,7 @@ docker run --rm \
        --volume $(pwd)/tests/stashcache-origin-config/authfile:/etc/xrootd/public-origin-authfile \
        --volume $(pwd)/tests/stashcache-origin-config/test_file:/xcache/namespace/test_file \
        --name test_origin "$TEST_IMAGE" &
-sleep 20
+sleep 45
 docker ps
 
 online_md5="$(curl -sL http://localhost:1094/test_file | md5sum | cut -d ' ' -f 1)"

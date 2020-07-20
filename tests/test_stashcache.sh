@@ -9,7 +9,7 @@ docker run --rm \
        --volume $(pwd)/tests/stashcache-cache-config/Authfile:/run/stash-cache/Authfile \
        --name test_cache "$TEST_IMAGE" &
 docker ps 
-sleep 25
+sleep 45
 curl -v -sL http://localhost:8000/test_file
 
 online_md5="$(curl -sL http://localhost:8000/test_file | md5sum | cut -d ' ' -f 1)"
