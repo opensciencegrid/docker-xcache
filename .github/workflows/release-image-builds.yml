@@ -64,6 +64,7 @@ jobs:
     steps:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ matrix.yum_repo_prefix }}minefield"
       - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ matrix.yum_repo_prefix }}minefield"
   get-timestamp:
@@ -85,6 +86,7 @@ jobs:
     needs: get-timestamp
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
