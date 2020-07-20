@@ -5,4 +5,4 @@
 ARG IMAGE_NAME
 ARG TAG_NAME
 
-FROM "opensciencegrid/$IMAGE_NAME" "xcache:$TAG_NAME"
+FROM ${IMAGE_NAME}:${TAG_NAME}

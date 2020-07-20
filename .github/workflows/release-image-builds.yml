@@ -96,5 +96,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           dockerfile: ./.github/Dockerfile.dummy
-          build_args: IMAGE_NAME=${{ matrix.yum_repo_prefix }}, TAG_NAME=${{ matrix.yum_repo_prefix }}minefield
+          build_args: IMAGE_NAME=docker.pkg.github.com/${{ github.repository }}/${{ matrix.image }}, TAG_NAME=${{ matrix.yum_repo_prefix }}minefield
           tags: ${{ matrix.yum_repo_prefix }}fresh, ${{ matrix.yum_repo_prefix }}${{ needs.get-timestamp.outputs.timestamp }}
