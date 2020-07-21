@@ -8,8 +8,18 @@ on:
       - master
 
 jobs:
+  get-timestamp:
+    name: Get timestamp for tagging images
+    runs-on: ubuntu-latest
+    outputs:
+      dtag: ${{ steps.timestamp-tag.outputs.dtag }}
+    steps:
+      - name: Get timestamp for timestamp tags
+        id: timestamp-tag
+        run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
   base-image-build:
     name: Build initial xcache:${{ matrix.yum_repo_prefix }}fresh base image
+    needs: get-timestamp
     strategy:
       matrix:
         yum_repo_prefix: ["upcoming-", ""]
@@ -26,14 +36,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           path: ./xcache
           build_args: BASE_YUM_REPO=osg-${{ matrix.yum_repo_prefix }}minefield
-          tags: ${{ matrix.yum_repo_prefix }}minefield
+          tags: ${{ matrix.yum_repo_prefix }}minefield-${{ needs.get-timestamp.outputs.dtag }}
   xcache-image-builds:
     name: Build ${{ matrix.image }}:${{ matrix.yum_repo_prefix}}fresh image
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
         yum_repo_prefix: ["upcoming-", ""]
-    needs: base-image-build
+    needs:
+      - get-timestamp
+      - base-image-build
     runs-on: ubuntu-latest
     steps:
       - name: Check out docker-xcache
@@ -42,7 +54,7 @@ jobs:
         working-directory: ${{ matrix.image }}
         run: |
           sed -i \
-            "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:${{ matrix.yum_repo_prefix}}minefield|" \
+            "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:${{ matrix.yum_repo_prefix}}minefield-${{ needs.get-timestamp.outputs.dtag }}|" \
             Dockerfile
       - name: Build ${{ matrix.image }}:${{ matrix.yum_repo_prefix }}fresh image
         uses: docker/build-push-action@v1
@@ -53,9 +65,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ matrix.image }}
           build_args: BASE_YUM_REPO=osg-${{ matrix.yum_repo_prefix }}minefield
-          tags: ${{ matrix.yum_repo_prefix }}minefield
+          tags: ${{ matrix.yum_repo_prefix }}minefield$-{{ needs.get-timestamp.outputs.dtag }}
   test-stash-cache:
     name: Test Stash Cache and Origin (${{ matrix.yum_repo_prefix }}fresh)
+    needs:
+      - get-timestamp
+      - xcache-image-builds
     strategy:
       matrix:
         yum_repo_prefix: ["upcoming-", ""]
@@ -65,18 +80,8 @@ jobs:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ matrix.yum_repo_prefix }}minefield"
-      - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ matrix.yum_repo_prefix }}minefield"
-  get-timestamp:
-    name: Get timestamp for tagging images
-    needs: test-stash-cache
-    runs-on: ubuntu-latest
-    outputs:
-      timestamp: ${{ steps.timestamp-tag.outputs.timestamp }}
-    steps:
-      - name: Get timestamp for timestamp tags
-        id: timestamp-tag
-        run: echo "::set-output name=timestamp::$(date +%Y%m%d-%H%M)"
+      - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ matrix.yum_repo_prefix }}minefield-${{ needs.get-timestamp.outputs.dtag }}"
+      - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ matrix.yum_repo_prefix }}minefield-${{ needs.get-timestamp.outputs.dtag }}"
   push-images:
     name: Push ${{ matrix.image }}:${{ matrix.yum_repo_prefix }}fresh image
     if: github.event_name == 'push'
@@ -84,15 +89,17 @@ jobs:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
         yum_repo_prefix: ["upcoming-", ""]
-    needs: get-timestamp
+    needs:
+      - get-timestamp
+      - test-stash-cache
     runs-on: ubuntu-latest
     steps:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
       - name: Create dummy Dockerfile
-        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}minefield" > Dockerfile
+        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}minefield-${{ needs.get-timestamp.outputs.dtag }}" > Dockerfile
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}minefield
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ matrix.yum_repo_prefix }}minefield-${{ needs.get-timestamp.outputs.dtag }}
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
