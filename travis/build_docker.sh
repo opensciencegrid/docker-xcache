@@ -7,6 +7,7 @@ for repo in $DOCKER_REPOS; do
     docker build \
            -t $DOCKER_ORG/$repo:fresh \
            -t $DOCKER_ORG/$repo:$timestamp \
+           --build-arg BASE_YUM_REPO=osg-minefield \
            $repo
 done
 

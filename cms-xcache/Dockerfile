@@ -2,9 +2,12 @@ FROM opensciencegrid/xcache:fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
+# Specify the base Yum repository to get the necessary RPMs
+ARG BASE_YUM_REPO
+
 ENV XC_IMAGE_NAME cms-xcache
 
-RUN yum install -y --enablerepo=osg-testing  \
+RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
                 cms-xcache \
                 xcache-consistency-check && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
