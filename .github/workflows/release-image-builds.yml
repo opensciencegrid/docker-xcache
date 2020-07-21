@@ -102,4 +102,4 @@ jobs:
           repository: opensciencegrid/${{ matrix.image }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ matrix.yum_repo_prefix }}fresh, ${{ matrix.yum_repo_prefix }}${{ needs.get-timestamp.outputs.timestamp }}
+          tags: ${{ matrix.yum_repo_prefix }}fresh, ${{ matrix.yum_repo_prefix }}${{ needs.get-timestamp.outputs.dtag }}
