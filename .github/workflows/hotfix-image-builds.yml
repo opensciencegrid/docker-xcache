@@ -2,7 +2,7 @@ name: Build XCache images based off of XRootD hotfix tags
 on:
   # TODO: Change to every 5 minutes once we filter out already-built tags
   schedule:
-    - cron: '17 * * * *'
+    - cron: '5 * * * *'
 
 jobs:
   xrootd-rpm-build:
@@ -23,8 +23,6 @@ jobs:
           repository: brianhlin/xrootd
           path: xrootd
           fetch-depth: 0
-      # FIXME: filter out old, already built tags (e.g. query Docker
-      # Hub for pushed tags, cache XRootD HEAD sha)
       - name: Find hotfix tags
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
