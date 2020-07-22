@@ -1,7 +1,7 @@
 #!/bin/bash
 
 tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-hotfix-[A-Za-z]+'
-git tag -l | egrep $tag_regex > git_tags
+git tag -l | sort | egrep $tag_regex > git_tags
 
 token=$(curl -s \
              -H "Content-Type: application/json" \
@@ -13,6 +13,7 @@ curl -s \
      -H "Authorization: JWT ${token}" \
      https://hub.docker.com/v2/repositories/brianhlin/stash-cache/tags/?page_size=100 | \
     jq -r '.results|.[]|.name' | \
+    sort | \
     egrep $tag_regex > dockerhub_tags
 
 # cowardly only build one hotfix tag at a time
