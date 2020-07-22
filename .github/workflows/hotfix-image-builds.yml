@@ -9,7 +9,7 @@ jobs:
     name: Find XRootD hotfix tags and build RPMs
     runs-on: ubuntu-latest
     outputs:
-      tags: ${{ steps.hotfix-tags.outputs.tags }}
+      hotfix-tag: ${{ steps.hotfix-tags.outputs.tag }}
     steps:
       # TODO: move this step to 'base-image-build' when our RPM
       # building actions are external to this repo
@@ -32,8 +32,8 @@ jobs:
         working-directory: ./xrootd
       - name: Checkout hotfix
         # skip if no hotfix tags are found
-        if: steps.hotfix-tags.outputs.tags != 0
-        run: git checkout ${{ steps.hotfix-tags.outputs.tags }}
+        if: steps.hotfix-tags.outputs.tag != 0
+        run: git checkout ${{ steps.hotfix-tags.outputs.tag }}
         working-directory: ./xrootd
         # TODO: Write an osg-build action that can build an RPM from an arbitrary Git repository
   #     - name: Build XRootD RPMs
@@ -47,7 +47,7 @@ jobs:
   base-image-build:
     name: Build xcache base image
     # skip if no hotfix tags are found
-    if: needs.xrootd-rpm-build.outputs.tags != 0
+    if: needs.xrootd-rpm-build.outputs.tag != 0
     needs: xrootd-rpm-build
     runs-on: ubuntu-latest
     steps:
@@ -59,38 +59,23 @@ jobs:
         with:
           repository: brianhlin/xcache
           path: ./xcache
-          push: false
-          tags: ${{ needs.xrootd-rpm-build.outputs.tags }}
-      - name: Save XCache base image
-        run: docker save --output /tmp/xcache.tar brianhlin/xcache:${{ needs.xrootd-rpm-build.outputs.tags }}
-      - name: Upload XCache base image artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: xcache-image
-          path: /tmp/xcache.tar
+          tags: ${{ needs.xrootd-rpm-build.outputs.tag }}
   xcache-image-builds:
     name: Build ${{ matrix.image }} images
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
     # skip if no hotfix tags are found
-    if: needs.xrootd-rpm-build.outputs.tags != 0
+    if: needs.xrootd-rpm-build.outputs.tag != 0
     needs:
-      - xrootd-rpm-build
       - base-image-build
     runs-on: ubuntu-latest
     steps:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
-      - name: Download XCache base image artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: xcache-image
-      - name: Load XCache base image
-        run: docker load -i xcache.tar
       - name: Replace FROM line in Dockerfile
-        working-directory: ${{ matrix.image }}
-        run: sed -i "s|FROM opensciencegrid/xcache:fresh|FROM brianhlin/xcache:${{ needs.xrootd-rpm-build.outputs.tags }}|" Dockerfile
+        working-directory: ./docker-xcache/${{ matrix.image }}
+        run: sed -i "s|FROM opensciencegrid/xcache:fresh|FROM brianhlin/xcache:${{ needs.xrootd-rpm-build.outputs.tag }}|" Dockerfile
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
@@ -98,6 +83,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           path: ./${{ matrix.image }}
-          tags: ${{ needs.xrootd-rpm-build.outputs.tags }}
+          tags: ${{ needs.xrootd-rpm-build.outputs.tag }}
     # TODO: Add test jobs or steps here and sandwich them between
     # separated image build and push. Also, push XCache base image.

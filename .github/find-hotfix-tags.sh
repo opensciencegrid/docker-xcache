@@ -18,4 +18,4 @@ curl -s \
 # cowardly only build one hotfix tag at a time
 build_candidate=$(comm -23 git_tags dockerhub_tags | head -n 1)
 
-echo "::set-output name=tags::$build_candidate"
+echo "::set-output name=tag::$build_candidate"
