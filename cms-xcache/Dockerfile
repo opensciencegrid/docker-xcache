@@ -9,6 +9,7 @@ ENV XC_IMAGE_NAME cms-xcache
 
 RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
                 cms-xcache \
+                gperftools-libs \
                 xcache-consistency-check && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
