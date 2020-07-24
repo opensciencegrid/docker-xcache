@@ -14,7 +14,7 @@ RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
 
 RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
         xcache \
-        gperftools-libs && \
+        gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
