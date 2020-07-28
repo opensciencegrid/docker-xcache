@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 # this script will update state of Service Protocol in AGIS
-# usage: ./update-agis-status.sh <protocol_id> <new_status>
+# usage: ./update-cric-status.sh <protocol_id> <new_status>  
 # protocol_id can be seen at the end of the link normally used to edit protocol eg. http://atlas-agis.cern.ch/agis/serviceprotocol/edit/433/
-# new_status can be: ACTIVE or DISABLED
+# new_status can be: ACTIVE or DISABLED  
 
 usage () {
     echo "$0 <protocol_id> <new_status>"
@@ -19,4 +19,7 @@ if [[ $new_status != "ACTIVE" && $new_status != "DISABLED" ]]; then
     exit 1
 fi
 
-curl -k --cert /etc/grid-certs/usercert.pem --cert-type PEM --key /etc/grid-certs/userkey.pem --key-type PEM "https://atlas-agis-api.cern.ch/request/serviceprotocol/update/?json&id=$protocol_id&state=$new_status&state_comment=Automatic+update"
+curl -k --cert /etc/grid-certs/usercert.pem \
+    --cert-type PEM --key /etc/grid-certs/userkey.pem \
+    --key-type PEM \
+    "https://atlas-cric.cern.ch/api/core/serviceprotocol/update/set_data/?json&id=$protocol_id&state=$new_status"
