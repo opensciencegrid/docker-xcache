@@ -5,8 +5,8 @@ on:
     - cron: '30 * * * *'
 
 jobs:
-  xrootd-rpm-build:
-    name: Find XRootD hotfix tags and build RPMs
+  base-image-build:
+    name: Find XRootD hotfix tags and build XCache base image
     runs-on: ubuntu-latest
     outputs:
       hotfix-tag: ${{ steps.hotfix-tags.outputs.tag }}
@@ -45,16 +45,6 @@ jobs:
               --privileged \
               opensciencegrid/osg-build:el7 \
               osg-build --verbose mock --mock-config-from-koji=osg-upcoming-el7-build _build_dir
-  base-image-build:
-    name: Build xcache base image
-    # skip if no hotfix tags are found
-    if: needs.xrootd-rpm-build.outputs.hotfix-tag != 0
-    needs: xrootd-rpm-build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out docker-xcache
-        uses: actions/checkout@v2
-      # TODO: Modify the Dockerfile so that it can build from local RPMs
       - name: Build XCache base image
         uses: docker/build-push-action@v1
         with:
@@ -66,10 +56,10 @@ jobs:
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
-    # skip if no hotfix tags are found
-    if: needs.xrootd-rpm-build.outputs.hotfix-tag != 0
     needs:
       - base-image-build
+    # skip if no hotfix tags are found
+    if: needs.base-image-build.outputs.hotfix-tag != 0
     runs-on: ubuntu-latest
     steps:
       - name: Check out docker-xcache
