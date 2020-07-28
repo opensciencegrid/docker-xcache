@@ -13,7 +13,7 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
 
 COPY update-agis-status.sh /usr/local/sbin/
 COPY update-cric-status.sh /usr/local/sbin/
-COPY reporter.py stats.py /
+COPY reporter.py stats.py /usr/local/sbin/
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
