@@ -2,7 +2,7 @@ name: Build XCache images based off of XRootD hotfix tags
 on:
   # TODO: Change to every 5 minutes once we filter out already-built tags
   schedule:
-    - cron: '5 * * * *'
+    - cron: '30 * * * *'
 
 jobs:
   xrootd-rpm-build:
@@ -30,24 +30,25 @@ jobs:
         id: hotfix-tags
         run: ../docker-xcache/.github/find-hotfix-tags.sh
         working-directory: ./xrootd
-      - name: Checkout hotfix
-        # skip if no hotfix tags are found
+      - name: Prepare hotfix sources
         if: steps.hotfix-tags.outputs.tag != 0
-        run: git checkout ${{ steps.hotfix-tags.outputs.tag }}
-        working-directory: ./xrootd
-        # TODO: Write an osg-build action that can build an RPM from an arbitrary Git repository
-  #     - name: Build XRootD RPMs
-  #       id: build-rpms
-  #       uses: ./docker-xcache/.github/actions/osg-build
-  #     - name: Upload RPM artifacts for subsequent jobs (https://github.com/actions/upload-artifact)
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: xrootd-rpms
-  #         path: path/to/artifacts/*.rpm
+        run: |
+            ./docker-xcache/.github/prep-hotfix-sources.sh \
+              ${{ steps.hotfix-tags.outputs.tag }} \
+              ./xrootd \
+              ./xrootd/packaging/rhel/xrootd.spec.in
+      - if: steps.hotfix-tags.outputs.tag != 0
+        run: |
+            docker run \
+              -v $(pwd)/xrootd/:/xrootd \
+              -v $(pwd)/_build_dir:/u/_build_dir \
+              --privileged \
+              opensciencegrid/osg-build:el7 \
+              osg-build --verbose mock --mock-config-from-koji=osg-upcoming-el7-build _build_dir
   base-image-build:
     name: Build xcache base image
     # skip if no hotfix tags are found
-    if: needs.xrootd-rpm-build.outputs.tag != 0
+    if: needs.xrootd-rpm-build.outputs.hotfix-tag != 0
     needs: xrootd-rpm-build
     runs-on: ubuntu-latest
     steps:
@@ -66,7 +67,7 @@ jobs:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
     # skip if no hotfix tags are found
-    if: needs.xrootd-rpm-build.outputs.tag != 0
+    if: needs.xrootd-rpm-build.outputs.hotfix-tag != 0
     needs:
       - base-image-build
     runs-on: ubuntu-latest
