@@ -12,6 +12,15 @@ ENV XC_ROOTDIR /xcache/namespace
 RUN groupadd -o -g 10940 xrootd
 RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
 
+RUN mkdir -p /var/lib/xcache/
+# ADD complains when there aren't files that match a wildcard so we
+# this needs to be relatively unrestricted to support the case where
+# there aren't any pre-built RPMs
+ADD packaging/* /var/lib/xcache/
+
+# Install any pre-built RPMs
+RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="$BASE_YUM_REPO" || \
+    true
 RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
         xcache \
         gperftools-devel && \

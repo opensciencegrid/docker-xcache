@@ -6,7 +6,7 @@ on:
 
 jobs:
   base-image-build:
-    name: Find XRootD hotfix tags and build XCache base image
+    name: Build XCache base image with XRootD hot fixes
     runs-on: ubuntu-latest
     outputs:
       hotfix-tag: ${{ steps.hotfix-tags.outputs.tag }}
@@ -37,7 +37,8 @@ jobs:
               ${{ steps.hotfix-tags.outputs.tag }} \
               ./xrootd \
               ./xrootd/packaging/rhel/xrootd.spec.in
-      - if: steps.hotfix-tags.outputs.tag != 0
+      - name: Build XRootD hotfix RPMs
+        if: steps.hotfix-tags.outputs.tag != 0
         run: |
             docker run \
               -v $(pwd)/xrootd/:/xrootd \
@@ -45,11 +46,22 @@ jobs:
               --privileged \
               opensciencegrid/osg-build:el7 \
               osg-build --verbose mock --mock-config-from-koji=osg-upcoming-el7-build _build_dir
+      - name: Move hotfix RPMs
+        if: steps.hotfix-tags.outputs.tag != 0
+        # FIXME: remove the hardcoded major version from 'xrootd' and 'xrootd-server' RPMs below
+        run: |
+            sudo mv _build_dir/_build_results/xrootd-5*.rpm \
+              _build_dir/_build_results/xrootd-debuginfo-*.rpm \
+              _build_dir/_build_results/xrootd-*libs-*.rpm \
+              _build_dir/_build_results/xrootd-selinux-*.rpm \
+              _build_dir/_build_results/xrootd-server-5*.rpm \
+              docker-xcache/xcache/packaging/
       - name: Build XCache base image
         uses: docker/build-push-action@v1
         with:
           repository: brianhlin/xcache
-          path: ./xcache
+          path: ./docker-xcache/xcache
+          build_args: BASE_YUM_REPO=osg-upcoming-minefield
           tags: ${{ needs.xrootd-rpm-build.outputs.tag }}
   xcache-image-builds:
     name: Build ${{ matrix.image }} images
