@@ -4,9 +4,9 @@
 
 name: Build XCache images based off of XRootD hotfix tags
 on:
-  # TODO: Change to every 5 minutes once we filter out already-built tags
   schedule:
-    - cron: '30 * * * *'
+    # Builds take ~15-25 min
+    - cron: '*/30 * * * *'
 
 jobs:
   base-image-build:
@@ -24,7 +24,7 @@ jobs:
       - name: Check out XRootD
         uses: actions/checkout@v2
         with:
-          repository: brianhlin/xrootd
+          repository: xrootd/xrootd
           path: xrootd
           fetch-depth: 0
       - name: Find hotfix tags
