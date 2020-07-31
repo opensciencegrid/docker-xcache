@@ -65,7 +65,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           path: ./docker-xcache/xcache
           build_args: BASE_YUM_REPO=osg-upcoming-minefield
-          tags: ${{ needs.xrootd-rpm-build.outputs.tag }}
+          tags: ${{ steps.hotfix-tags.outputs.tag }}
   xcache-image-builds:
     name: Build ${{ matrix.image }} images
     strategy:
