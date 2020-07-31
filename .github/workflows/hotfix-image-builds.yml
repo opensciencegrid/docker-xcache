@@ -1,3 +1,7 @@
+# TODO: detect the appropriate OSG repos and OS for build and installation
+# Currently we assume that upstream's version corresponds to what's in
+# osg-upcoming-el7-build and osg-upcoming-minefield
+
 name: Build XCache images based off of XRootD hotfix tags
 on:
   # TODO: Change to every 5 minutes once we filter out already-built tags
