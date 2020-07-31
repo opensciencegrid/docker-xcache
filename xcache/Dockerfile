@@ -4,6 +4,7 @@ LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO
+ARG DEBUG
 
 # Default root dir
 ENV XC_ROOTDIR /xcache/namespace
@@ -21,6 +22,13 @@ ADD packaging/* /var/lib/xcache/
 # Install any pre-built RPMs
 RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="$BASE_YUM_REPO" || \
     true
+
+# Install debugging tools if DEBUG set
+RUN [[ -z "$DEBUG" ]] || \
+    yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+    gdb \
+    strace
+
 RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
         xcache \
         gperftools-devel && \
@@ -34,6 +42,9 @@ ADD xrootd/* /etc/xrootd/config.d/
 
 RUN mkdir -p "$XC_ROOTDIR"
 RUN chown -R xrootd:xrootd /xcache/
+
+# Remove the core file soft limit
+RUN [[ -z "$DEBUG" ]] || ulimit -S -c unlimited
 
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
