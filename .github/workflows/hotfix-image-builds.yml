@@ -59,7 +59,10 @@ jobs:
       - name: Build XCache base image
         uses: docker/build-push-action@v1
         with:
-          repository: brianhlin/xcache
+          repository: ${{ github.repository }}/xcache
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           path: ./docker-xcache/xcache
           build_args: BASE_YUM_REPO=osg-upcoming-minefield
           tags: ${{ needs.xrootd-rpm-build.outputs.tag }}
@@ -77,15 +80,20 @@ jobs:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
       - name: Replace FROM line in Dockerfile
-        working-directory: ./docker-xcache/${{ matrix.image }}
-        run: sed -i "s|FROM opensciencegrid/xcache:fresh|FROM brianhlin/xcache:${{ needs.xrootd-rpm-build.outputs.tag }}|" Dockerfile
+        working-directory: ${{ matrix.image }}
+        run: |
+            sed -i \
+              "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:${{ needs.base-image-build.outputs.hotfix-tag }}|" \
+              Dockerfile
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
-          repository: brianhlin/${{ matrix.image }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ github.repository }}/${{ matrix.image }}
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           path: ./${{ matrix.image }}
-          tags: ${{ needs.xrootd-rpm-build.outputs.tag }}
+          build_args: BASE_YUM_REPO=osg-upcoming-minefield
+          tags: ${{ needs.base-image-build.outputs.hotfix-tag }}
     # TODO: Add test jobs or steps here and sandwich them between
     # separated image build and push. Also, push XCache base image.
