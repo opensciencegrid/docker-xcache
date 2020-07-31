@@ -95,5 +95,19 @@ jobs:
           path: ./${{ matrix.image }}
           build_args: BASE_YUM_REPO=osg-upcoming-minefield
           tags: ${{ needs.base-image-build.outputs.hotfix-tag }}
-    # TODO: Add test jobs or steps here and sandwich them between
-    # separated image build and push. Also, push XCache base image.
+  # FIXME: Restore tests once issues with XCache 1.5.0 are addressed
+  # test-stash-cache:
+  #   name: Test Stash Cache and Origin
+  #   needs:
+  #     - base-image-build
+  #     - xcache-image-builds
+  #   # skip if no hotfix tags are found
+  #   if: needs.base-image-build.outputs.hotfix-tag != 0
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out docker-xcache
+  #       uses: actions/checkout@v2
+  #     - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+  #     - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ needs.base-imge-build.outputs.hotfix-tag }}"
+  #     - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ needs.base-imge-build.outputs.hotfix-tag }}"
+
