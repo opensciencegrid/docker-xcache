@@ -114,4 +114,28 @@ jobs:
   #     - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
   #     - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ needs.base-imge-build.outputs.hotfix-tag }}"
   #     - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ needs.base-imge-build.outputs.hotfix-tag }}"
-
+  push-images:
+    name: Push ${{ matrix.image }} image
+    strategy:
+      matrix:
+        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
+    needs:
+      - base-image-build
+      - xcache-image-builds
+    # skip if no hotfix tags are found
+    if: needs.base-image-build.outputs.hotfix-tag != 0
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
+      - name: Create dummy Dockerfile
+        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}" > Dockerfile
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}
+      - name: Build ${{ matrix.image}} image
+        uses: docker/build-push-action@v1
+        with:
+          repository: opensciencegrid/${{ matrix.image }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ needs.base-imge-build.outputs.hotfix-tag }}
