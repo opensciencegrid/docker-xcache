@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-hotfix-[A-Za-z]+'
+tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-osghotfix-[A-Za-z]+'
 git tag -l | sort | egrep $tag_regex > git_tags
 
 token=$(curl -s \
