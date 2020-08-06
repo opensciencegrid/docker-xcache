@@ -9,6 +9,7 @@ docker run --rm \
        --volume $(pwd)/tests/stashcache-origin-config/10-origin-authfile.cfg:/etc/xrootd/config.d/10-origin-authfile.cfg \
        --volume $(pwd)/tests/stashcache-origin-config/authfile:/etc/xrootd/public-origin-authfile \
        --volume $(pwd)/tests/stashcache-origin-config/test_file:/xcache/namespace/test_file \
+       --volume $(pwd)/tests/stashcache-origin-config/dummy_scitokens.conf:/run/stash-origin-auth/scitokens.conf \
        --name test_origin "$TEST_IMAGE" &
 sleep 45
 docker ps
