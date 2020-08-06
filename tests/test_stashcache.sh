@@ -7,6 +7,7 @@ docker run --rm \
        --network="host" \
        --volume $(pwd)/tests/stashcache-cache-config/90-docker-ci.cfg:/etc/xrootd/config.d//90-docker-ci.cfg  \
        --volume $(pwd)/tests/stashcache-cache-config/Authfile:/run/stash-cache/Authfile \
+       --volume $(pwd)/tests/stashcache-cache-config/dummy_scitokens.conf:/run/stash-cache-auth/scitokens.conf \
        --name test_cache "$TEST_IMAGE" &
 docker ps 
 sleep 45
