@@ -16,3 +16,6 @@ ADD image-config.d/* /etc/osg/image-config.d/
 ADD supervisord.d/* /etc/supervisord.d/
 
 ADD xrootd/* /etc/xrootd/config.d/
+# Add a placeholder scitokens.conf file, in case this origin isn't registered
+# and can't pull down a new one
+ADD scitokens.conf /run/stash-origin-auth/scitokens.conf
