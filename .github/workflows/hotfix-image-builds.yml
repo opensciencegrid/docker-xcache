@@ -11,6 +11,7 @@ on:
 jobs:
   base-image-build:
     name: Build XCache base image with XRootD hot fixes
+    if: github.repository == 'opensciencegrid/docker-xcache'
     runs-on: ubuntu-latest
     outputs:
       hotfix-tag: ${{ steps.hotfix-tags.outputs.tag }}
