@@ -84,7 +84,6 @@ jobs:
       - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ matrix.yum_repo_prefix }}minefield-${{ needs.get-timestamp.outputs.dtag }}"
   push-images:
     name: Push ${{ matrix.image }}:${{ matrix.yum_repo_prefix }}fresh image
-    if: github.event_name == 'push'
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
