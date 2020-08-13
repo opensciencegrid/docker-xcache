@@ -18,6 +18,8 @@ ADD image-config.d/* /etc/osg/image-config.d/
 # Add a placeholder authfile, incase this cache isn't registered
 # and can't pull down a new one
 ADD Authfile /run/stash-cache/Authfile
+# Same for scitokens.conf
+ADD scitokens.conf /run/stash-cache-auth/scitokens.conf
 
 EXPOSE 8000
 
