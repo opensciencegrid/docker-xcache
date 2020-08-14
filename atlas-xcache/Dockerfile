@@ -8,7 +8,7 @@ ARG BASE_YUM_REPO
 ENV XC_IMAGE_NAME atlas-xcache
 
 RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-contrib && \
-    yum install -y python3 gcc python3-dev python3-requests && \
+    yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 RUN python3 -m pip install psutil
