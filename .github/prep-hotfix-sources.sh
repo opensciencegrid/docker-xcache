@@ -11,7 +11,7 @@ mkdir -p "$build_dir/{osg,upstream}"
 [[ $HOTFIX_TAG =~ ^(v[0-9]+\.[0-9]+\.[0-9]+)-(.*) ]]
 version=${BASH_REMATCH[1]}
 # Remove illegal dashes in release string
-release=$(tr '-' '.' <<< 1.${HOTFIX_TAG#*-})
+release=${BASH_REMATCH[2]//-/.}
 sed -e "s/__VERSION__/$version/" \
     -e "s/__RELEASE__/$release/" "$SPEC_PATH" > \
         "$build_dir/osg/xrootd.spec"
