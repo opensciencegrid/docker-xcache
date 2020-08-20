@@ -5,16 +5,14 @@ REPO_PATH=$2
 SPEC_PATH=$3
 
 # Create OSG build dirs
-build_dir=$(pwd)/_build_dir
-for dirname in osg upstream; do
-    mkdir -p $build_dir/$dirname
-done
+build_dir=$PWD/_build_dir
+mkdir -p $build_dir/{osg,upstream}
 
 version=$(echo "$HOTFIX_TAG" | sed "s/v\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/")
 # Remove illegal dashes in release string
 release=$(tr '-' '.' <<< 1.${HOTFIX_TAG#*-})
-sed "s/__VERSION__/$version/" "$SPEC_PATH" | \
-    sed "s/__RELEASE__/$release/" > \
+sed -e "s/__VERSION__/$version/" \
+    -e "s/__RELEASE__/$release/" "$SPEC_PATH" > \
         $build_dir/osg/xrootd.spec
 
 cd $REPO_PATH

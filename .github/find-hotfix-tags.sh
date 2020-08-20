@@ -1,7 +1,7 @@
 #!/bin/bash
 
 tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-osghotfix-[A-Za-z]+'
-git tag -l | sort | egrep $tag_regex > git_tags
+git tag -l | sort | egrep -x "$tag_regex" > git_tags
 
 token=$(curl -s \
              -H "Content-Type: application/json" \
