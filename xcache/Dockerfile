@@ -43,9 +43,6 @@ ADD xrootd/* /etc/xrootd/config.d/
 RUN mkdir -p "$XC_ROOTDIR"
 RUN chown -R xrootd:xrootd /xcache/
 
-# Remove the core file soft limit
-RUN [[ -z "$DEBUG" ]] || ulimit -S -c unlimited
-
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
