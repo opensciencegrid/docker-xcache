@@ -1,0 +1,142 @@
+# TODO: detect the appropriate OSG repos and OS for build and installation
+# Currently we assume that upstream's version corresponds to what's in
+# osg-upcoming-el7-build and osg-upcoming-minefield
+
+name: Build XCache images based off of XRootD hotfix tags
+on:
+  schedule:
+    # Builds take ~15-25 min
+    - cron: '*/30 * * * *'
+
+jobs:
+  base-image-build:
+    name: Build XCache base image with XRootD hot fixes
+    if: github.repository == 'opensciencegrid/docker-xcache'
+    runs-on: ubuntu-latest
+    outputs:
+      hotfix-tag: ${{ steps.hotfix-tags.outputs.tag }}
+    steps:
+      # TODO: move this step to 'base-image-build' when our RPM
+      # building actions are external to this repo
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
+        with:
+          path: docker-xcache
+      - name: Check out XRootD
+        uses: actions/checkout@v2
+        with:
+          repository: xrootd/xrootd
+          path: xrootd
+          fetch-depth: 0
+      - name: Find hotfix tags
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        id: hotfix-tags
+        run: ../docker-xcache/.github/find-hotfix-tags.sh
+        working-directory: ./xrootd
+      - name: Prepare hotfix sources
+        if: steps.hotfix-tags.outputs.tag != 0
+        run: |
+            ./docker-xcache/.github/prep-hotfix-sources.sh \
+              ${{ steps.hotfix-tags.outputs.tag }} \
+              ./xrootd \
+              ./xrootd/packaging/rhel/xrootd.spec.in
+      - name: Build XRootD hotfix RPMs
+        if: steps.hotfix-tags.outputs.tag != 0
+        run: |
+            docker run \
+              -v $(pwd)/xrootd/:/xrootd \
+              -v $(pwd)/_build_dir:/u/_build_dir \
+              --privileged \
+              opensciencegrid/osg-build:el7 \
+              osg-build --verbose mock --mock-config-from-koji=osg-upcoming-el7-build _build_dir
+      - name: Move hotfix RPMs
+        if: steps.hotfix-tags.outputs.tag != 0
+        # FIXME: remove the hardcoded major version from 'xrootd' and 'xrootd-server' RPMs below
+        run: |
+            sudo mv _build_dir/_build_results/xrootd-5*.rpm \
+              _build_dir/_build_results/xrootd-debuginfo-*.rpm \
+              _build_dir/_build_results/xrootd-*libs-*.rpm \
+              _build_dir/_build_results/xrootd-selinux-*.rpm \
+              _build_dir/_build_results/xrootd-server-5*.rpm \
+              docker-xcache/xcache/packaging/
+      - name: Build XCache base image
+        uses: docker/build-push-action@v1
+        with:
+          repository: ${{ github.repository }}/xcache
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          path: ./docker-xcache/xcache
+          build_args: BASE_YUM_REPO=osg-upcoming-minefield,DEBUG=true
+          tags: ${{ steps.hotfix-tags.outputs.tag }}
+  xcache-image-builds:
+    name: Build ${{ matrix.image }} images
+    strategy:
+      matrix:
+        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
+    needs:
+      - base-image-build
+    # skip if no hotfix tags are found
+    if: needs.base-image-build.outputs.hotfix-tag != 0
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
+      - name: Replace FROM line in Dockerfile
+        working-directory: ${{ matrix.image }}
+        run: |
+            sed -i \
+              "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:${{ needs.base-image-build.outputs.hotfix-tag }}|" \
+              Dockerfile
+      - name: Build ${{ matrix.image}} image
+        uses: docker/build-push-action@v1
+        with:
+          repository: ${{ github.repository }}/${{ matrix.image }}
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          path: ./${{ matrix.image }}
+          build_args: BASE_YUM_REPO=osg-upcoming-minefield
+          tags: ${{ needs.base-image-build.outputs.hotfix-tag }}
+  # FIXME: Restore tests once issues with XCache 1.5.0 are addressed
+  # test-stash-cache:
+  #   name: Test Stash Cache and Origin
+  #   needs:
+  #     - base-image-build
+  #     - xcache-image-builds
+  #   # skip if no hotfix tags are found
+  #   if: needs.base-image-build.outputs.hotfix-tag != 0
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out docker-xcache
+  #       uses: actions/checkout@v2
+  #     - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+  #     - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:${{ needs.base-imge-build.outputs.hotfix-tag }}"
+  #     - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:${{ needs.base-imge-build.outputs.hotfix-tag }}"
+  push-images:
+    name: Push ${{ matrix.image }} image
+    strategy:
+      matrix:
+        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
+    needs:
+      - base-image-build
+      - xcache-image-builds
+    # skip if no hotfix tags are found
+    if: needs.base-image-build.outputs.hotfix-tag != 0
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out docker-xcache
+        uses: actions/checkout@v2
+      - name: Create dummy Dockerfile
+        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}" > Dockerfile
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}
+      - name: Build ${{ matrix.image}} image
+        uses: docker/build-push-action@v1
+        with:
+          repository: opensciencegrid/${{ matrix.image }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ needs.base-imge-build.outputs.hotfix-tag }}
