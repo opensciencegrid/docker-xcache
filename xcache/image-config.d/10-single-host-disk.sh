@@ -1,9 +1,25 @@
 #!/bin/bash
 
+# If the user is not using the prescribed location, don't separate out
+# the namespace, metadata, or data dirs since that may clear the cache
+if [[ "$XC_ROOTDIR" != /xcache/namespace ]]; then
+    exit
+fi
+
 # If the user is mounting a single disk onto /xcache, create oss.localroot for them
 # (image default: /xcache/namespace).
 namespace_dir="$XC_ROOTDIR"
 mkdir -p "$namespace_dir"
+
+# Only set oss.space directives for caches using prescribed locations
+if [[ "$XC_IMAGE_NAME" != stash-origin ]]; then
+        cat <<EOF >> /etc/xrootd/50-docker-spaces.cfg
+pfc.spaces data meta
+oss.space meta /xcache/meta*
+oss.space data /xcache/data*
+EOF
+fi
+
 
 # Ensure that data and meta disk dirs exist using the prescribed format
 # This allows users to easily transition to a multi-disk setup
