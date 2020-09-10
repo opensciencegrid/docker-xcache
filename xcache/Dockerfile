@@ -4,6 +4,7 @@ LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO
+ARG DEBUG
 
 # Default root dir
 ENV XC_ROOTDIR /xcache/namespace
@@ -11,6 +12,22 @@ ENV XC_ROOTDIR /xcache/namespace
 # Create the xrootd user with a fixed GID/UID
 RUN groupadd -o -g 10940 xrootd
 RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
+
+RUN mkdir -p /var/lib/xcache/
+# ADD complains when there aren't files that match a wildcard so we
+# this needs to be relatively unrestricted to support the case where
+# there aren't any pre-built RPMs
+ADD packaging/* /var/lib/xcache/
+
+# Install any pre-built RPMs
+RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="$BASE_YUM_REPO" || \
+    true
+
+# Install debugging tools if DEBUG set
+RUN [[ -z "$DEBUG" ]] || \
+    yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+    gdb \
+    strace
 
 RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
         xcache \
