@@ -10,7 +10,7 @@ ARG DEBUG
 ENV XC_ROOTDIR /xcache/namespace
 
 # Default logrotate XRootd logs
-ENV XC_NUM_LOGROTATE 7
+ENV XC_NUM_LOGROTATE 10
 
 # Create the xrootd user with a fixed GID/UID
 RUN groupadd -o -g 10940 xrootd
