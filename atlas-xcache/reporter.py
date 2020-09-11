@@ -6,9 +6,7 @@ from glob import glob
 import struct
 import time
 import requests
-
-# Collects data from v3 cinfo files and sends for indexing.
-# Will be replaced with gstream once gstream has been validated.
+# from datetime import datetime
 
 BASE_DIR = '/xcache-meta/namespace'
 
@@ -43,7 +41,7 @@ def get_info(filename):
 
     fv, = struct.unpack('i', fin.read(4))
     # print ("file version:", fv)
-    if fv<3:
+    if fv < 3:
         return
     bs, = struct.unpack('q', fin.read(8))
     # print ('bucket size:', bs)
@@ -54,7 +52,8 @@ def get_info(filename):
     # print ('buckets:', buckets)
 
     StateVectorLengthInBytes = int((buckets - 1) / 8 + 1)
-    sv = struct.unpack(str(StateVectorLengthInBytes) + 'B', fin.read(StateVectorLengthInBytes))  # disk written state vector
+    sv = struct.unpack(str(StateVectorLengthInBytes) + 'B',
+                       fin.read(StateVectorLengthInBytes))  # disk written state vector
     # print ('disk written state vector:\n ->', sv, '<-')
 
     inCache = 0
@@ -88,36 +87,40 @@ def get_info(filename):
         detach_time, = struct.unpack('Q', fin.read(8))
         ios, = struct.unpack('i', fin.read(4))
         dur, = struct.unpack('i', fin.read(4))
-        bype, = struct.unpack('q', fin.read(8))
+        nmrg, = struct.unpack('i', fin.read(4))
+        reserved_for_future_use, = struct.unpack('i', fin.read(4))
         bhit, = struct.unpack('q', fin.read(8))
         bmis, = struct.unpack('q', fin.read(8))
-        bwri, = struct.unpack('q', fin.read(8))
+        bype, = struct.unpack('q', fin.read(8))
         # print (
-        #     'access:', a, 
-        #     'attached at:', datetime.fromtimestamp(attach_time), 
-        #     'detached at:', datetime.fromtimestamp(detach_time), 
+        #     'access:', a,
+        #     'attached at:', datetime.fromtimestamp(attach_time),
+        #     'detached at:', datetime.fromtimestamp(detach_time),
         #     'ios', ios,
         #     'duration', dur,
-        #     'bytes hit:', bhit, 
-        #     'bytes miss:', bmis, 
-        #     'bytes bypassed:', bype, 
-        #     'bytes written:', bwri
+        #     'n merged', nmrg,
+        #     'reserved_for_future_use', reserved_for_future_use,
+        #     'bytes hit:', bhit,
+        #     'bytes miss:', bmis,
+        #     'bytes bypassed:', bype
         # )
         if detach_time > start_time and detach_time < end_time:
             dp = rec.copy()
             dp['access'] = a
             dp['attached_at'] = attach_time * 1000
             dp['detached_at'] = detach_time * 1000
-            dp['ios']=ios
-            dp['duration']=dur
+            dp['ios'] = ios
+            dp['duration'] = dur
+            dp['merged'] = nmrg
             dp['bytes_hit'] = bhit
             dp['bytes_miss'] = bmis
             dp['bytes_bypassed'] = bype
-            dp['bytes_written'] = bwri
+            # dp['reserved_for_future_use'] = reserved_for_future_use
             reports.append(dp)
 
 
-files = [y for x in os.walk(BASE_DIR) for y in glob(os.path.join(x[0], '*.cinfo'))]
+files = [y for x in os.walk(BASE_DIR)
+         for y in glob(os.path.join(x[0], '*.cinfo'))]
 # files += [y for x in os.walk(BASE_DIR) for y in glob(os.path.join(x[0], '*%'))]
 for filename in files:
     try:
