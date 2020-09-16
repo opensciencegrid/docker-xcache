@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 
 HOTFIX_TAG=$1
 REPO_PATH=$2
