@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 
 HOTFIX_TAG=$1
 REPO_PATH=$2
@@ -6,7 +6,7 @@ SPEC_PATH=$3
 
 # Create OSG build dirs
 build_dir=$PWD/_build_dir
-mkdir -p "$build_dir/{osg,upstream}"
+mkdir -p "$build_dir"/{osg,upstream}
 
 [[ $HOTFIX_TAG =~ ^(v[0-9]+\.[0-9]+\.[0-9]+)-(.*) ]]
 version=${BASH_REMATCH[1]}
