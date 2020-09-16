@@ -6,7 +6,9 @@ SPEC_PATH=$3
 
 # Create OSG build dirs
 build_dir=$PWD/_build_dir
-mkdir -p "$build_dir/{osg,upstream}"
+for subdir in osg upstream; do
+    mkdir -p "$build_dir/$subdir"
+done
 
 [[ $HOTFIX_TAG =~ ^(v[0-9]+\.[0-9]+\.[0-9]+)-(.*) ]]
 version=${BASH_REMATCH[1]}
