@@ -8,7 +8,7 @@ SPEC_PATH=$3
 build_dir=$PWD/_build_dir
 mkdir -p "$build_dir"/{osg,upstream}
 
-[[ $HOTFIX_TAG =~ ^(v[0-9]+\.[0-9]+\.[0-9]+)-(.*) ]]
+[[ $HOTFIX_TAG =~ ^v([0-9]+\.[0-9]+\.[0-9]+)-(.*) ]]
 version=${BASH_REMATCH[1]}
 # Remove illegal dashes in release string
 release=${BASH_REMATCH[2]//-/.}
