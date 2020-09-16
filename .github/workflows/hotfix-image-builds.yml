@@ -133,6 +133,7 @@ jobs:
         run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}" > Dockerfile
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}
+      - run : docker logout
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
