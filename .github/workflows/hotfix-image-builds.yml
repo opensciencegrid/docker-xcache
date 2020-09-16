@@ -139,4 +139,4 @@ jobs:
           repository: opensciencegrid/${{ matrix.image }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ needs.base-imge-build.outputs.hotfix-tag }}
+          tags: ${{ needs.base-image-build.outputs.hotfix-tag }}
