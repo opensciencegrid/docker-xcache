@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-osghotfix-[A-Za-z]+'
+tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-osghotfix-[A-Za-z0-9]+'
 git tag -l | sort | egrep -x "$tag_regex" > git_tags
 
 mkjson () {
