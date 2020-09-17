@@ -34,7 +34,7 @@ curl -s \
     egrep -x "$tag_regex" > dockerhub_tags
 
 echo "Found Stash Cache Docker Hub hotfix tags:"
-cat docker_hub
+cat dockerhub_tags
 
 # cowardly only build one hotfix tag at a time
 build_candidate=$(comm -23 git_tags dockerhub_tags | head -n 1)
