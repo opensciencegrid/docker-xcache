@@ -2,6 +2,8 @@
 
 tag_regex='v[0-9]+\.[0-9]+\.[0-9]+-osghotfix-[A-Za-z0-9]+'
 git tag -l | sort | egrep -x "$tag_regex" > git_tags
+echo "Found XRootD GitHub hotfix tags:"
+cat git_tags
 
 mkjson () {
   python -c '
@@ -31,8 +33,11 @@ curl -s \
     sort | \
     egrep -x "$tag_regex" > dockerhub_tags
 
+echo "Found Stash Cache Docker Hub hotfix tags:"
+cat docker_hub
+
 # cowardly only build one hotfix tag at a time
 build_candidate=$(comm -23 git_tags dockerhub_tags | head -n 1)
 
-echo "Found hotfix tag: $build_candidatuild_candidatee"
+echo "Found hotfix tag: $build_candidate"
 echo "::set-output name=tag::$build_candidate"
