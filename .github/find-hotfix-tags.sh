@@ -28,7 +28,7 @@ token=$(curl -s \
 
 curl -s \
      -H "Authorization: JWT ${token}" \
-     "https://hub.docker.com/v2/repositories/brianhlin/stash-cache/tags/?page_size=100" | \
+     "https://hub.docker.com/v2/repositories/opensciencegrid/stash-cache/tags/?page_size=100" | \
     jq -r '.results|.[]|.name' | \
     sort | \
     egrep -x "$tag_regex" > dockerhub_tags
