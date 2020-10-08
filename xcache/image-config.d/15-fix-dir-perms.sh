@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+
+if [[ $XC_FIX_DIR_OWNERS != 'yes' ]]; then
+    return
+fi
 
 namespace_dir=$(cconfig -c "/etc/xrootd/xrootd-$XC_IMAGE_NAME.cfg" 2>&1 \
                      | awk "/^oss.localroot/ {print \$2}")

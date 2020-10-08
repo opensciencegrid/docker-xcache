@@ -7,6 +7,10 @@ ARG BASE_YUM_REPO
 
 ENV XC_IMAGE_NAME stash-origin
 
+# Do not stomp on host volume mount ownership
+# Files and dirs should be readable to UID/GID 10940:10940 or the world
+ENV XC_FIX_DIR_OWNERS no
+
 RUN yum -y install stash-origin --enablerepo="$BASE_YUM_REPO" && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
