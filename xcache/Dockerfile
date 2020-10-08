@@ -12,6 +12,9 @@ ENV XC_ROOTDIR /xcache/namespace
 # Default logrotate XRootd logs
 ENV XC_NUM_LOGROTATE 10
 
+# Set namespace, data, and meta dir ownership to XRootD
+ENV XC_FIX_DIR_OWNERS yes
+
 # Create the xrootd user with a fixed GID/UID
 RUN groupadd -o -g 10940 xrootd
 RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
