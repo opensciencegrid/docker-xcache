@@ -99,7 +99,7 @@ def get_info(filename):
         #     'ios', ios,
         #     'duration', dur,
         #     'n merged', nmrg,
-        #     'reserved_for_future_use', reserved_for_future_use,
+        #     'reserved for future_use', reserved_for_future_use,
         #     'bytes hit:', bhit,
         #     'bytes miss:', bmis,
         #     'bytes bypassed:', bype

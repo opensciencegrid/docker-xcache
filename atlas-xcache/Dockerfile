@@ -14,6 +14,23 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
 COPY update-agis-status.sh /usr/local/sbin/
 COPY update-cric-status.sh /usr/local/sbin/
 COPY reporter.py stats.py /usr/local/sbin/
+COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
+COPY xcache.cfg /etc/xrootd/
+
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
+
+
+RUN echo "g /atlas / rl" > /etc/xrootd/auth_db; \
+    touch /etc/xrootd/xcache.cfg /var/run/x509up
+
+# not sure this line is needed
+RUN mkdir -p /xrd/var/log /xrd/var/spool /xrd/var/run /tests
+
+# not sure the two lines bellow are needed at all
+# if needed change ownership of directories
+RUN if [ $(stat -c "%U:%G" /xrd/var ) != "xrootd:xrootd" ]; then chown -R xrootd:xrootd /xrd/var; fi
+RUN if [ $(stat -c "%U:%G" /xrd ) != "xrootd:xrootd" ]; then chown -R xrootd:xrootd /xrd; fi
+
+CMD [ "/usr/local/sbin/runme.sh" ]
