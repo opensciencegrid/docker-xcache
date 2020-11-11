@@ -97,4 +97,4 @@ jobs:
           repository: opensciencegrid/${{ matrix.image }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: fresh, upcoming-${{ needs.get-timestamp.outputs.dtag }}
+          tags: fresh, ${{ needs.get-timestamp.outputs.dtag }}
