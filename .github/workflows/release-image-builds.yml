@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
   repository_dispatch:
     types:
       - dispatch-build
@@ -77,6 +80,7 @@ jobs:
       - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}"
   push-images:
     name: Push ${{ matrix.image }}:fresh image
+    if: github.event_name == 'push' && github.repository == 'opensciencegrid/docker-xcache'
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
