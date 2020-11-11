@@ -1,4 +1,4 @@
-Stash Origin Docker Image [![Build Status](https://travis-ci.org/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.org/opensciencegrid/docker-xcache)
+Stash Origin Docker Image ![Build XCache images from OSG Yum repositories](https://github.com/opensciencegrid/docker-xcache/workflows/Build%20XCache%20images%20from%20OSG%20Yum%20repositories/badge.svg)
 =========================
 
 The OSG operates the [StashCache data federation](https://opensciencegrid.org/docs/data/stashcache/overview/), which
