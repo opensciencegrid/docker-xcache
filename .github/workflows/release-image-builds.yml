@@ -36,8 +36,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           path: ./xcache
-          build_args: BASE_YUM_REPO=osg-upcoming-minefield
-          tags: upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}
+          build_args: BASE_YUM_REPO=osg-upcoming-testing
+          tags: upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}
   xcache-image-builds:
     name: Build ${{ matrix.image }}:fresh image
     strategy:
@@ -54,7 +54,7 @@ jobs:
         working-directory: ${{ matrix.image }}
         run: |
           sed -i \
-            "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}|" \
+            "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}|" \
             Dockerfile
       - name: Build ${{ matrix.image }}:fresh image
         uses: docker/build-push-action@v1
@@ -64,8 +64,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ matrix.image }}
-          build_args: BASE_YUM_REPO=osg-upcoming-minefield
-          tags: upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}
+          build_args: BASE_YUM_REPO=osg-upcoming-testing
+          tags: upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}
   test-stash-cache:
     name: Test Stash Cache and Origin (fresh)
     needs:
@@ -76,8 +76,8 @@ jobs:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}"
-      - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}"
+      - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}"
+      - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}"
   push-images:
     name: Push ${{ matrix.image }}:fresh image
     if: github.event_name == 'pull_request' && github.repository == 'opensciencegrid/docker-xcache'
@@ -92,9 +92,9 @@ jobs:
       - name: Check out docker-xcache
         uses: actions/checkout@v2
       - name: Create dummy Dockerfile
-        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}" > Dockerfile
+        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}" > Dockerfile
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:upcoming-minefield-${{ needs.get-timestamp.outputs.dtag }}
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
