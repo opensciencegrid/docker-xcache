@@ -24,6 +24,14 @@ XCache:
 - `XC_BLOCKSIZE`: The size of the blocks in the cache
 - `XC_PREFETCH`: Number of blocks to prefetch from a file at once
 
+### Use a local redirector (optional) ###
+
+To configure your cache to make use of a local site redirector, set the following environment variables in the same file
+as above:
+
+- `XC_REDIRECTOR_FQDN`: the hostname of your local site redirector
+- `XC_REDIRECTOR_PORT`: the port of your local site redirector
+
 ### Disabling OSG monitoring (optional) ###
 
 By default, XCache reports to the OSG so that OSG staff can monitor the health of data federations.
