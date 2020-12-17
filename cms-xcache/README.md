@@ -26,11 +26,13 @@ XCache:
 
 ### Use a local redirector (optional) ###
 
-To configure your cache to make use of a local site redirector, set the following environment variables in the same file
-as above:
+To configure your cache to make use of a local site redirector, set the `XC_LOCAL_REDIRECTORS` in the same file as above
+to a comma-delimited list of redirectors specified by `<FQDN>:<PORT>`.
+For example:
 
-- `XC_REDIRECTOR_FQDN`: the hostname of your local site redirector
-- `XC_REDIRECTOR_PORT`: the port of your local site redirector
+```
+XC_LOCAL_REDIRECTORS=redir1.example.edu:1094,redir2.example.edu:1094
+```
 
 ### Disabling OSG monitoring (optional) ###
 
