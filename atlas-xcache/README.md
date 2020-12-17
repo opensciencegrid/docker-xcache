@@ -26,8 +26,8 @@ XCache:
 
 ### Use a local redirector (optional) ###
 
-To configure your cache to make use of a local site redirector, set the `XC_LOCAL_REDIRECTORS` in the same file as above
-to a comma-delimited list of redirectors specified by `<FQDN>:<PORT>`.
+To configure your cache in clustered mode to make use of a local cache redirector, set the `XC_LOCAL_REDIRECTORS` in the
+same file as above to a comma-delimited list of redirectors specified by `<FQDN>:<PORT>`.
 For example:
 
 ```
