@@ -11,9 +11,8 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
-COPY update-agis-status.sh /usr/local/sbin/
 COPY update-cric-status.sh /usr/local/sbin/
-COPY reporter.py stats.py /usr/local/sbin/
+COPY reporter.py stats.py heartbeat.py /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 COPY xcache.cfg /etc/xrootd/
 

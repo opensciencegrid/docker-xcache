@@ -69,13 +69,6 @@ echo "Starting cache ..."
 
 su -p xrootd -c "/usr/bin/xrootd -c /etc/xrootd/xcache.cfg &"
 
-if  [ -z "$AGIS_PROTOCOL_ID" ]; then
-  echo 'not updating AGIS protocol status.'
-else
-  echo "making AGIS protocol ${AGIS_PROTOCOL_ID} active..."
-  /usr/local/sbin/update-agis-status.sh ${AGIS_PROTOCOL_ID} ACTIVE
-fi
-
 if  [ -z "$CRIC_PROTOCOL_ID" ]; then
   echo 'not updating CRIC protocol status.'
 else
