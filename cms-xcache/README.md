@@ -6,8 +6,6 @@ XCache provides a caching service for data federations that serve one or more Vi
 This image, based on the [OSG XCache image](https://hub.docker.com/r/opensciencegrid/xcache), implements XCache for the
 [CMS](https://github.com/opensciencegrid/topology/blob/master/virtual-organizations/CMS.yaml) data federation.
 
-This document covers how to configure and start an ATLAS XCache container.
-
 Configuration
 -------------
 
