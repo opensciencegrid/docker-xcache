@@ -3,7 +3,8 @@ FROM opensciencegrid/xcache:fresh
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
-ARG BASE_YUM_REPO
+# ARG BASE_YUM_REPO
+ENV BASE_YUM_REPO osg-upcoming-development
 
 ENV XC_IMAGE_NAME atlas-xcache
 
@@ -12,7 +13,7 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 COPY update-cric-status.sh /usr/local/sbin/
-COPY reporter.py stats.py heartbeat.py /usr/local/sbin/
+COPY reporter.py stats.py heartbeat.sh /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 COPY xcache.cfg /etc/xrootd/
 
