@@ -3,7 +3,8 @@ FROM opensciencegrid/software-base:fresh
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
-ARG BASE_YUM_REPO
+# ARG BASE_YUM_REPO
+ENV BASE_YUM_REPO osg-upcoming-development
 ARG DEBUG
 
 # Default root dir
@@ -36,8 +37,8 @@ RUN [[ -z "$DEBUG" ]] || \
     strace
 
 RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
-        xcache \
-        gperftools-devel && \
+    xcache \
+    gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/
