@@ -1,4 +1,4 @@
-ATLAS XCache Docker Image [![Build Status](https://travis-ci.com/opensciencegrid/docker-xcache.svg?branch=master)](https://travis-ci.com/opensciencegrid/docker-xcache)
+ATLAS XCache Docker Image ![Build XCache images from OSG Yum repositories](https://github.com/opensciencegrid/docker-xcache/workflows/Build%20XCache%20images%20from%20OSG%20Yum%20repositories/badge.svg)
 =========================
 
 XCache provides a caching service for data federations that serve one or more Virtual Organizations (VOs) based on the
@@ -23,6 +23,17 @@ XCache:
 - `XC_RAMSIZE`: Amount of memory to use for blocks in flight
 - `XC_BLOCKSIZE`: The size of the blocks in the cache
 - `XC_PREFETCH`: Number of blocks to prefetch from a file at once
+
+### Use a local redirector (optional) ###
+
+To configure your cache in clustered mode to make use of a local cache redirector, set the `XC_LOCAL_REDIRECTORS` in the
+same file as above to a comma-delimited list of redirectors specified by `<FQDN>:<PORT>`.
+For example:
+
+```
+XC_LOCAL_REDIRECTORS=redir1.example.edu:1094,redir2.example.edu:1094
+```
+
 
 ### Disabling OSG monitoring (optional) ###
 

@@ -37,7 +37,7 @@ for dirtype in meta data; do
     # wildcards (*).
     # N.B. As long as a single path specified in an oss.space
     # directive exists, XRootD is happy
-    if [[ -z $(ls -l "$space_dirs" 2> /dev/null) ]]; then
+    if [[ -z $(ls -l $space_dirs 2> /dev/null) ]]; then
         default_dir="/xcache/$dirtype"1
         mkdir -p "$default_dir"
     fi
