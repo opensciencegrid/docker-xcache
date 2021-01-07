@@ -16,8 +16,10 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
 COPY update-cric-status.sh /usr/local/sbin/
 COPY reporter.py stats.py heartbeat.sh /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
+
+COPY config.d/* /etc/xrootd/config.d/
 # COPY xcache.cfg /etc/xrootd/
-COPY xcache_hc.cfg /etc/xrootd/xcache.cfg
+# COPY xcache_hc.cfg /etc/xrootd/xcache.cfg
 
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/

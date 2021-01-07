@@ -25,3 +25,10 @@ size=$5
 curl --request POST "$service" \
     --header 'Content-Type: application/json' \
     --data "{\"site\":\"$site\",\"id\":\"$instanceID\",\"address\":\"$address\",\"size\":\"$size\"}"
+
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+  echo "heartbeat sent"
+else
+  echo "heartbeat could not be sent"
+fi

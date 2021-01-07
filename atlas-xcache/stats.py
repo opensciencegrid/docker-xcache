@@ -70,7 +70,8 @@ class Xdisk:
         self.set_device()
 
     def __str__(self):
-        res = '{:20} device: {:10} used: {}% '.format(self.path, self.device, int(self.get_utilization() * 100))
+        res = '{:20} device: {:10} used: {}% '.format(
+            self.path, self.device, int(self.get_utilization() * 100))
         for k, v in self.iostat.items():
             res += k + ':' + str(v)+' '
         return res
@@ -116,14 +117,14 @@ class XNode:
 
 
 def report():
-    if 'XC_SITE' not in os.environ:
-        print("xcache reporter - Must set $XC_SITE. Exiting.")
+    if 'XC_RESOURCENAME' not in os.environ:
+        print("xcache reporter - Must set $XC_RESOURCENAME. Exiting.")
         return
     if 'XC_REPORT_COLLECTOR' not in os.environ:
         print("xcache reporter - Must set $XC_REPORT_COLLECTOR. Exiting.")
         return
 
-    site = os.environ['XC_SITE']
+    site = os.environ['XC_RESOURCENAME']
     collector = os.environ['XC_REPORT_COLLECTOR']
     data = []
     header = {

@@ -17,12 +17,12 @@ done
 
 # the same for metadata mount
 echo "adding metadata directory."
-export META=/xcache-meta
-mkdir -p /xcache-meta/xrdcinfos
-mkdir -p /xcache-meta/namespace
-if [ $(stat -c "%U:%G" /xcache-meta ) != "xrootd:xrootd" ]; then  chown xrootd:xrootd /xcache-meta; fi
-if [ $(stat -c "%U:%G" /xcache-meta/xrdcinfos ) != "xrootd:xrootd" ]; then  chown -R xrootd:xrootd /xcache-meta/xrdcinfos; fi
-if [ $(stat -c "%U:%G" /xcache-meta/namespace ) != "xrootd:xrootd" ]; then  chown -R xrootd:xrootd /xcache-meta/namespace; fi
+export XC_META=/xcache-meta
+mkdir -p ${XC_META}/xrdcinfos
+mkdir -p ${XC_META}/namespace
+if [ $(stat -c "%U:%G" ${XC_META} ) != "xrootd:xrootd" ]; then  chown xrootd:xrootd ${XC_META}; fi
+if [ $(stat -c "%U:%G" ${XC_META}/xrdcinfos ) != "xrootd:xrootd" ]; then  chown -R xrootd:xrootd ${XC_META}/xrdcinfos; fi
+if [ $(stat -c "%U:%G" ${XC_META}/namespace ) != "xrootd:xrootd" ]; then  chown -R xrootd:xrootd ${XC_META}/namespace; fi
 
 
 export X509_USER_PROXY=/etc/proxy/x509up
@@ -67,7 +67,9 @@ export TCMALLOC_RELEASE_RATE=10
 env
 echo "Starting cache ..."
 
-su -p xrootd -c "/usr/bin/xrootd -c /etc/xrootd/xcache.cfg &"
+# command should add -k %(ENV_XC_NUM_LOGROTATE)s
+# su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -c /etc/xrootd/xcache.cfg &"
+su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache &"
 
 if  [ -z "$CRIC_PROTOCOL_ID" ]; then
   echo 'not updating CRIC protocol status.'

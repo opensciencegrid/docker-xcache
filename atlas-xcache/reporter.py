@@ -14,14 +14,14 @@ ct = time.time()
 start_time = ct - 3600
 end_time = ct
 
-if 'XC_SITE' not in os.environ:
-    print("xcache reporter - Must set $XC_SITE. Exiting.")
+if 'XC_RESOURCENAME' not in os.environ:
+    print("xcache reporter - Must set $XC_RESOURCENAME. Exiting.")
     sys.exit(1)
 if 'XC_REPORT_COLLECTOR' not in os.environ:
     print("xcache reporter - Must set $XC_REPORT_COLLECTOR. Exiting.")
     sys.exit(1)
 
-site = os.environ['XC_SITE']
+site = os.environ['XC_RESOURCENAME']
 collector = os.environ['XC_REPORT_COLLECTOR']
 
 reports = []
