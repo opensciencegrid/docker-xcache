@@ -67,9 +67,9 @@ export TCMALLOC_RELEASE_RATE=10
 env
 echo "Starting cache ..."
 
-# command should add -k %(ENV_XC_NUM_LOGROTATE)s
-# su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -c /etc/xrootd/xcache.cfg &"
-su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache &"
+# k parameters control logrotate.
+# su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g -c /etc/xrootd/xcache.cfg &"
+su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g &"
 
 if  [ -z "$CRIC_PROTOCOL_ID" ]; then
   echo 'not updating CRIC protocol status.'
