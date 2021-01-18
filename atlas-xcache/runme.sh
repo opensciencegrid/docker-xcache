@@ -69,7 +69,7 @@ echo "Starting cache ..."
 
 # k parameters control logrotate.
 # su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g -c /etc/xrootd/xcache.cfg &"
-su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g &"
+su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g -c /etc/xrootd/xrootd-atlas-xcache.cfg &"
 
 if  [ -z "$CRIC_PROTOCOL_ID" ]; then
   echo 'not updating CRIC protocol status.'

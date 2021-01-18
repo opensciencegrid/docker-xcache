@@ -1,5 +1,5 @@
-# FROM opensciencegrid/xcache:fresh
-FROM ivukotic/docker-xcache-base:latest
+FROM opensciencegrid/xcache:fresh
+# FROM ivukotic/docker-xcache-base:latest
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
@@ -26,8 +26,9 @@ COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
 
 
-RUN echo "g /atlas / rl" > /etc/xrootd/auth_db; \
-    touch /etc/xrootd/xcache.cfg /var/run/x509up
+RUN echo "g /atlas / rl" > /etc/xrootd/auth_db
+# RUN touch /etc/xrootd/xcache.cfg 
+RUN touch /var/run/x509up
 
 # not sure this line is needed
 RUN mkdir -p /xrd/var/log /xrd/var/spool /xrd/var/run /tests
