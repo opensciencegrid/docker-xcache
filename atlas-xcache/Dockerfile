@@ -20,6 +20,7 @@ COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 COPY config.d/* /etc/xrootd/config.d/
 # COPY xcache.cfg /etc/xrootd/
 # COPY xcache_hc.cfg /etc/xrootd/xcache.cfg
+RUN rm /etc/xrootd/config.d/50-osg-monitoring.cfg
 
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
