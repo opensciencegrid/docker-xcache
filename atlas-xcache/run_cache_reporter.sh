@@ -4,7 +4,7 @@
 # .cinfo files, aggregate it and report to ES.
 
 COUNTER=0
-for dir in /xcache-data_*
+for dir in /xcache/data_*
 do
     echo "Found ${dir}."
     let COUNTER=COUNTER+1

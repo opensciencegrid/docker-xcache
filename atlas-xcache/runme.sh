@@ -4,7 +4,7 @@
 # export them as variables understandable by xcache config
 # make sure their ownership is right
 COUNTER=0
-for dir in /xcache-data_*
+for dir in /xcache/data_*
 do
     echo "Found ${dir}."
     let COUNTER=COUNTER+1
@@ -17,7 +17,7 @@ done
 
 # the same for metadata mount
 echo "adding metadata directory."
-export XC_META=/xcache-meta
+export XC_META=/xcache/meta
 mkdir -p ${XC_META}/xrdcinfos
 mkdir -p ${XC_META}/namespace
 if [ $(stat -c "%U:%G" ${XC_META} ) != "xrootd:xrootd" ]; then  chown xrootd:xrootd ${XC_META}; fi

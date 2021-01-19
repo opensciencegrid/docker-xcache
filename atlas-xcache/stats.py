@@ -19,7 +19,7 @@ class Xdisks:
         for k in dict(os.environ):
             if k.startswith('DISK'):
                 self.DISKS.append(Xdisk(os.environ[k]))
-        self.META.append(Xdisk('/xcache-meta'))
+        self.META.append(Xdisk('/xcache/meta'))
 
     def update(self):
         file_path = '/proc/diskstats'

@@ -8,7 +8,7 @@ import time
 import requests
 # from datetime import datetime
 
-BASE_DIR = '/xcache-meta/namespace'
+BASE_DIR = '/xcache/meta/namespace'
 
 ct = time.time()
 start_time = ct - 3600
