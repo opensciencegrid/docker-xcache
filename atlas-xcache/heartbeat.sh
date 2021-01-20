@@ -22,9 +22,10 @@ instanceID=$3
 address=$4
 size=$5
 
-curl --request POST "$service" \
-    --header 'Content-Type: application/json' \
-    --data "{\"site\":\"$site\",\"id\":\"$instanceID\",\"address\":\"$address\",\"size\":\"$size\"}"
+echo $service $site $instanceID $address $size
+# curl --request POST "$service" \
+#     --header 'Content-Type: application/json' \
+#     --data "{\"site\":\"$site\",\"id\":\"$instanceID\",\"address\":\"$address\",\"size\":\"$size\"}"
 
 RESULT=$?
 if [ $RESULT -eq 0 ]; then
