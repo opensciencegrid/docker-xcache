@@ -16,7 +16,7 @@ done
 
 while true; do 
 
-  /usr/local/sbin/reporter.py
+  /usr/local/sbin/reporter4.py
   sleep 3600
 
 done
