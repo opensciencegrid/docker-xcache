@@ -3,7 +3,7 @@
 # If the user is not using the prescribed location, don't separate out
 # the namespace, metadata, or data dirs since that may clear the cache
 if [[ "$XC_ROOTDIR" != /xcache/namespace ]]; then
-    exit
+    return
 fi
 
 # If the user is mounting a single disk onto /xcache, create oss.localroot for them
