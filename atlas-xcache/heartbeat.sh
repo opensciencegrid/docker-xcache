@@ -23,9 +23,10 @@ address=$4
 size=$5
 
 echo $service $site $instanceID $address $size
-# curl --request POST "$service" \
-#     --header 'Content-Type: application/json' \
-#     --data "{\"site\":\"$site\",\"id\":\"$instanceID\",\"address\":\"$address\",\"size\":\"$size\"}"
+curl --request POST "$service" \
+    -k \
+    --header 'Content-Type: application/json' \
+    --data "{\"site\":\"$site\",\"id\":\"$instanceID\",\"address\":\"$address\",\"size\":\"$size\"}"
 
 RESULT=$?
 if [ $RESULT -eq 0 ]; then
@@ -33,3 +34,5 @@ if [ $RESULT -eq 0 ]; then
 else
   echo "heartbeat could not be sent"
 fi
+
+exit 0

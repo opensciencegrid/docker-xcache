@@ -8,7 +8,7 @@ export X509_USER_PROXY=/etc/proxy/x509up
 while true; do 
   date
 
-  for i in 1 2; do  
+  for i in 1; do  
     echo "Fetching crls"
     /usr/sbin/fetch-crl -q -r 360 -p 20 -T 10
     RESULT=$?

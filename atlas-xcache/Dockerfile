@@ -1,17 +1,26 @@
 FROM opensciencegrid/xcache:fresh
+# FROM opensciencegrid/xcache:20210131-0116
+# FROM opensciencegrid/xcache:upcoming-fresh
+# FROM opensciencegrid/xcache:v5.0.2-osghotfix-test00
 # FROM ivukotic/docker-xcache-base:latest
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
 # ARG BASE_YUM_REPO
+# ENV BASE_YUM_REPO osg-rolling 4.12
+# ENV BASE_YUM_REPO osg-testing 4.12
+# ENV BASE_YUM_REPO osg-development 4.12
+# ENV BASE_YUM_REPO osg-upcoming
 ENV BASE_YUM_REPO osg-upcoming-development
+# ENV BASE_YUM_REPO osg-upcoming-testing
 
 ENV XC_IMAGE_NAME atlas-xcache
 
 RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-contrib && \
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
+
 
 COPY update-cric-status.sh /usr/local/sbin/
 COPY reporter.py stats.py heartbeat.sh /usr/local/sbin/
