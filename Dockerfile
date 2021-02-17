@@ -5,7 +5,7 @@
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=testing
 
-FROM opensciencegrid/software-base:$BASE_YUM_REPO
+FROM opensciencegrid/software-base:$BASE_YUM_REPO AS xcache
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Previous arg has gone out of scope
