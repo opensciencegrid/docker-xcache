@@ -1,9 +1,12 @@
-FROM opensciencegrid/software-base:fresh
+# Specify the base Yum repository to get the necessary RPMs
+ARG BASE_YUM_REPO=testing
+
+FROM opensciencegrid/software-base:$BASE_YUM_REPO
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
-ARG BASE_YUM_REPO
+ARG BASE_YUM_REPO=testing
 ARG DEBUG
 
 # Default root dir
@@ -35,7 +38,10 @@ RUN [[ -z "$DEBUG" ]] || \
     gdb \
     strace
 
-RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+    yum install -y --enablerepo=$yumrepo \
         xcache \
         gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/

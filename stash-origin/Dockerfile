@@ -1,9 +1,11 @@
-FROM opensciencegrid/xcache:fresh
+ARG BASE_YUM_REPO=testing
+
+FROM opensciencegrid/xcache:$BASE_YUM_REPO
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
-ARG BASE_YUM_REPO
+ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME stash-origin
 
@@ -11,7 +13,11 @@ ENV XC_IMAGE_NAME stash-origin
 # Files and dirs should be readable to UID/GID 10940:10940 or the world
 ENV XC_FIX_DIR_OWNERS no
 
-RUN yum -y install stash-origin --enablerepo="$BASE_YUM_REPO" && \
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+    yum install -y --enablerepo=$yumrepo \
+        stash-origin && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 ADD cron.d/* /etc/cron.d/

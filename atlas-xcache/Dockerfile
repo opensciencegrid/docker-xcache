@@ -1,13 +1,19 @@
-FROM opensciencegrid/xcache:fresh
+ARG BASE_YUM_REPO=testing
+
+FROM opensciencegrid/xcache:$BASE_YUM_REPO
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
-ARG BASE_YUM_REPO
+ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME atlas-xcache
 
-RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-contrib && \
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+    yum install -y --enablerepo=$yumrepo --enablerepo=osg-contrib \
+        atlas-xcache && \
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 

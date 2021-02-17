@@ -1,13 +1,18 @@
-FROM opensciencegrid/xcache:fresh
+ARG BASE_YUM_REPO=testing
+
+FROM opensciencegrid/xcache:$BASE_YUM_REPO
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
-ARG BASE_YUM_REPO
+ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME cms-xcache
 
-RUN yum install -y --enablerepo="$BASE_YUM_REPO" \
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+     yum install -y --enablerepo=$yumrepo \
                 cms-xcache \
                 xcache-consistency-check && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
