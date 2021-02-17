@@ -110,6 +110,37 @@ COPY cms-xcache/xcache-consistency-check-wrapper.sh /usr/bin/xcache-consistency-
 
 EXPOSE 1094
 
+###############
+# stash-cache #
+###############
+
+FROM xcache AS stash-cache
+LABEL maintainer OSG Software <help@opensciencegrid.org>
+
+ARG BASE_YUM_REPO=testing
+
+ENV XC_IMAGE_NAME stash-cache
+
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+    yum install -y --enablerepo=$yumrepo \
+        stash-cache && \
+    yum clean all --enablerepo=* && rm -rf /var/cache/
+
+COPY stash-cache/cron.d/* /etc/cron.d/
+RUN chmod 0644 /etc/cron.d/*
+COPY stash-cache/supervisord.d/* /etc/supervisord.d/
+COPY stash-cache/image-config.d/* /etc/osg/image-config.d/
+
+# Add a placeholder authfile, incase this cache isn't registered
+# and can't pull down a new one
+COPY stash-cache/Authfile /run/stash-cache/Authfile
+# Same for scitokens.conf
+COPY stash-cache/scitokens.conf /run/stash-cache-auth/scitokens.conf
+
+EXPOSE 8000
+
 ######################
 # atlas-xcache-debug #
 ######################
@@ -130,3 +161,12 @@ RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
     strace
 
+#####################
+# stash-cache-debug #
+#####################
+
+FROM stash-cache AS stash-cache-debug
+# Install debugging tools
+RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+    gdb \
+    strace
