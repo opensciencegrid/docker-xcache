@@ -46,7 +46,7 @@ jobs:
         build-args: BASE_YUM_REPO=${{ matrix.repo }}
         tags: opensciencegrid/xcache:${{ matrix.repo }}
         context: xcache
-        cache-to: type=local,dest=/tmp/.base-buildx-cache
+        cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
 
   xcache-image-builds:
     name: ${{ matrix.image }}:${{ matrix.repo }} image build
@@ -82,7 +82,7 @@ jobs:
           tags: opensciencegrid/${{ matrix.image }}:${{ matrix.repo}}
           context: ${{ matrix.image }}
           cache-from: type=local,src=/tmp/.base-buildx-cache
-          cache-to: type=local,dest=/tmp/.${{ matrix.image }}-buildx-cache
+          cache-to: type=local,dest=/tmp/.${{ matrix.image }}-buildx-cache,mode=max
 
   test-stash-cache:
     name: Test Stash Cache and Origin
