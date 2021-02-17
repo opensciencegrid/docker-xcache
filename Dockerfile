@@ -75,9 +75,7 @@ RUN if [[ $BASE_YUM_REPO = release ]]; then \
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
-COPY atlas-xcache/update-agis-status.sh /usr/local/sbin/
-COPY atlas-xcache/update-cric-status.sh /usr/local/sbin/
-COPY atlas-xcache/reporter.py stats.py /usr/local/sbin/
+COPY atlas-xcache/sbin/* /usr/local/sbin/
 COPY atlas-xcache/10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY atlas-xcache/supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY atlas-xcache/image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
