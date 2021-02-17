@@ -20,24 +20,24 @@ jobs:
         repo: ['development', 'testing', 'release']
     steps:
 
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Cache base image
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.base-buildx-cache
-        key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
+      - name: Cache base image
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.base-buildx-cache
+          key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Build Docker image
-      uses: docker/build-push-action@v2.2.2
-      with:
-        build-args: BASE_YUM_REPO=${{ matrix.repo }}
-        tags: opensciencegrid/xcache:${{ matrix.repo }}
-        context: xcache
-        cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
+      - name: Build Docker image
+        uses: docker/build-push-action@v2.2.2
+        with:
+          build-args: BASE_YUM_REPO=${{ matrix.repo }}
+          tags: opensciencegrid/xcache:${{ matrix.repo }}
+          context: xcache
+          cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
 
   xcache-image-builds:
     name: ${{ matrix.image }}:${{ matrix.repo }} image build
