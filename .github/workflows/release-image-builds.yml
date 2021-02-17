@@ -1,104 +1,151 @@
-name: Build XCache images from OSG Yum repositories
+name: Build OSG XCache images 
 on:
   push:
     branches:
       - master
   pull_request_target:
     branches:
-      - master
+      - '**'
   repository_dispatch:
     types:
       - dispatch-build
 
 jobs:
-  get-timestamp:
-    name: Get timestamp for tagging images
-    if: github.repository == 'opensciencegrid/docker-xcache'
+  make-date-tag:
     runs-on: ubuntu-latest
     outputs:
-      dtag: ${{ steps.timestamp-tag.outputs.dtag }}
+      dtag: ${{ steps.mkdatetag.outputs.dtag }}
     steps:
-      - name: Get timestamp for timestamp tags
-        id: timestamp-tag
-        run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
+    - name: make date tag
+      id: mkdatetag
+      run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
+
   base-image-build:
-    name: Build initial xcache:fresh base image
-    needs: get-timestamp
+    name: xcache:${{ matrix.repo }} image build
     runs-on: ubuntu-latest
-    steps:
-      - name: Check out docker-xcache
-        uses: actions/checkout@v2
-      - name: Build XCache base image
-        uses: docker/build-push-action@v1
-        with:
-          repository: ${{ github.repository }}/xcache
-          registry: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          path: ./xcache
-          build_args: BASE_YUM_REPO=osg-upcoming-testing
-          tags: upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}
-  xcache-image-builds:
-    name: Build ${{ matrix.image }}:fresh image
     strategy:
+      fail-fast: False
+      matrix:
+        repo: ['development', 'testing', 'release']
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Cache base image
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.base-buildx-cache
+        key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v2.2.2
+      with:
+        build-args: BASE_YUM_REPO=${{ matrix.repo }}
+        tags: opensciencegrid/xcache:${{ matrix.repo }}
+        context: xcache
+        cache-to: type=local,dest=/tmp/.base-buildx-cache
+
+  xcache-image-builds:
+    name: ${{ matrix.image }}:${{ matrix.repo }} image build
+    needs: [make-date-tag, base-image-build]
+    strategy:
+      fail-fast: False
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
-    needs:
-      - get-timestamp
-      - base-image-build
+        repo: ['development', 'testing', 'release']
     runs-on: ubuntu-latest
     steps:
-      - name: Check out docker-xcache
-        uses: actions/checkout@v2
-      - name: Replace FROM line in Dockerfile
-        working-directory: ${{ matrix.image }}
-        run: |
-          sed -i \
-            "s|FROM opensciencegrid/xcache:fresh|FROM docker.pkg.github.com/$GITHUB_REPOSITORY/xcache:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}|" \
-            Dockerfile
-      - name: Build ${{ matrix.image }}:fresh image
-        uses: docker/build-push-action@v1
+      - uses: actions/checkout@v2
+
+      - name: Load cached base image
+        uses: actions/cache@v2
         with:
-          repository: ${{ github.repository }}/${{ matrix.image }}
-          registry: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          path: ${{ matrix.image }}
-          build_args: BASE_YUM_REPO=osg-upcoming-testing
-          tags: upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}
+          path: /tmp/.base-buildx-cache
+          key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
+
+      - name: Cache child image
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.${{ matrix.image }}-buildx-cache
+          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v2.2.2
+        with:
+          build-args: BASE_YUM_REPO=${{ matrix.repo }}
+          tags: opensciencegrid/${{ matrix.image }}:${{ matrix.repo}}
+          context: ${{ matrix.image }}
+          cache-from: type=local,src=/tmp/.base-buildx-cache
+          cache-to: type=local,dest=/tmp/.${{ matrix.image }}-buildx-cache
+
   test-stash-cache:
-    name: Test Stash Cache and Origin (fresh)
-    needs:
-      - get-timestamp
-      - xcache-image-builds
+    name: Test Stash Cache and Origin
+    needs: [xcache-image-builds]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: False
+      matrix:
+        repo: ['development', 'testing', 'release']
     steps:
-      - name: Check out docker-xcache
-        uses: actions/checkout@v2
-      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - uses: actions/checkout@v2
+
+      - name: Load cached child image
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.${{ matrix.image }}-buildx-cache
+          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}
+
       - run: ./tests/test_stashcache_origin.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-origin:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}"
       - run: ./tests/test_stashcache.sh "docker.pkg.github.com/$GITHUB_REPOSITORY/stash-cache:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}"
+
   push-images:
-    name: Push ${{ matrix.image }}:fresh image
-    if: contains(fromJson('["push", "repository_dispatch"]'), github.event_name) && github.repository == 'opensciencegrid/docker-xcache'
+    name: Push ${{ matrix.image }}:${{ matrix.repo }} image
+    if: contains(fromJson('["push", "repository_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
-    needs:
-      - get-timestamp
-      - test-stash-cache
+        repo: ['development', 'testing', 'release']
+    needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
-      - name: Check out docker-xcache
-        uses: actions/checkout@v2
-      - name: Create dummy Dockerfile
-        run: echo "FROM docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}" > Dockerfile
-      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${{ matrix.image }}:upcoming-testing-${{ needs.get-timestamp.outputs.dtag }}
+      - uses: actions/checkout@v2
+
+      - name: Load cached child image
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.${{ matrix.image }}-buildx-cache
+          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}
+
+      - name: Generate tag list
+        id: generate-tag-list
+        env:
+          REPO: ${{ matrix.repo }}
+          IMAGE: ${{ matrix.image }}
+          TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
+        run: |
+          docker_repo=opensciencegrid/$IMAGE
+          tag_list=$docker_repo:$REPO,$docker_repo:$REPO-$TIMESTAMP
+          echo "::set-output name=taglist::$tag_list"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v1
         with:
-          repository: opensciencegrid/${{ matrix.image }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: fresh, ${{ needs.get-timestamp.outputs.dtag }}
+          push: True
+          tags: "${{ steps.generate-tag-list.outputs.taglist }}"
+          context: ${{ matrix.image }}
+          cache-from: type=local,src=/tmp/.${{ matrix.image }}-buildx-cache
