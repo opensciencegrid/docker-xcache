@@ -1,13 +1,15 @@
+##########
+# xcache #
+##########
+
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=testing
 
 FROM opensciencegrid/software-base:$BASE_YUM_REPO
-
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
-# Specify the base Yum repository to get the necessary RPMs
+# Previous arg has gone out of scope
 ARG BASE_YUM_REPO=testing
-ARG DEBUG
 
 # Default root dir
 ENV XC_ROOTDIR /xcache/namespace
@@ -32,12 +34,6 @@ ADD packaging/* /var/lib/xcache/
 RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="$BASE_YUM_REPO" || \
     true
 
-# Install debugging tools if DEBUG set
-RUN [[ -z "$DEBUG" ]] || \
-    yum -y install -y --enablerepo="$BASE_YUM_REPO" \
-    gdb \
-    strace
-
 RUN if [[ $BASE_YUM_REPO = release ]]; then \
        yumrepo=osg-upcoming; else \
        yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
@@ -58,3 +54,13 @@ RUN chown -R xrootd:xrootd /xcache/
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
+
+################
+# xcache-debug #
+################
+
+FROM xcache AS xcache-debug
+# Install debugging tools
+RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+    gdb \
+    strace
