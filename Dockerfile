@@ -82,11 +82,49 @@ COPY atlas-xcache/10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY atlas-xcache/supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY atlas-xcache/image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
 
+##############
+# cms-xcache #
+##############
+
+FROM xcache AS cms-xcache
+LABEL maintainer OSG Software <help@opensciencegrid.org>
+
+ARG BASE_YUM_REPO=testing
+
+ENV XC_IMAGE_NAME cms-xcache
+
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+     yum install -y --enablerepo=$yumrepo \
+                cms-xcache \
+                xcache-consistency-check && \
+    yum clean all --enablerepo=* && rm -rf /var/cache/
+
+COPY cms-xcache/limits.d/10-cms-xcache-limits.conf /etc/security/limits.d/
+COPY cms-xcache/supervisord.d/10-cms-xcache.conf /etc/supervisord.d/
+COPY cms-xcache/cron.d/* /etc/cron.d/
+RUN chmod 0644 /etc/cron.d/*
+COPY cms-xcache/image-config.d/* /etc/osg/image-config.d/
+COPY cms-xcache/xcache-consistency-check-wrapper.sh /usr/bin/xcache-consistency-check-wrapper.sh
+
+EXPOSE 1094
+
 ######################
 # atlas-xcache-debug #
 ######################
 
 FROM atlas-xcache AS atlas-xcache-debug
+# Install debugging tools
+RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+    gdb \
+    strace
+
+####################
+# cms-xcache-debug #
+####################
+
+FROM cms-xcache AS cms-xcache-debug
 # Install debugging tools
 RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
