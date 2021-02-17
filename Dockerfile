@@ -141,6 +141,40 @@ COPY stash-cache/scitokens.conf /run/stash-cache-auth/scitokens.conf
 
 EXPOSE 8000
 
+################
+# stash-origin #
+################
+
+
+FROM xcache AS stash-origin
+LABEL maintainer OSG Software <help@opensciencegrid.org>
+
+# Specify the base Yum repository to get the necessary RPMs
+ARG BASE_YUM_REPO=testing
+
+ENV XC_IMAGE_NAME stash-origin
+
+# Do not stomp on host volume mount ownership
+# Files and dirs should be readable to UID/GID 10940:10940 or the world
+ENV XC_FIX_DIR_OWNERS no
+
+RUN if [[ $BASE_YUM_REPO = release ]]; then \
+       yumrepo=osg-upcoming; else \
+       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
+    yum install -y --enablerepo=$yumrepo \
+        stash-origin && \
+    yum clean all --enablerepo=* && rm -rf /var/cache/yum/
+
+COPY stash-origin/cron.d/* /etc/cron.d/
+RUN chmod 0644 /etc/cron.d/*
+COPY stash-origin/image-config.d/* /etc/osg/image-config.d/
+COPY stash-origin/supervisord.d/* /etc/supervisord.d/
+
+COPY stash-origin/xrootd/* /etc/xrootd/config.d/
+# Add a placeholder scitokens.conf file, in case this origin isn't registered
+# and can't pull down a new one
+COPY stash-origin/scitokens.conf /run/stash-origin-auth/scitokens.conf
+
 ######################
 # atlas-xcache-debug #
 ######################
@@ -166,6 +200,16 @@ RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
 #####################
 
 FROM stash-cache AS stash-cache-debug
+# Install debugging tools
+RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+    gdb \
+    strace
+
+#####################
+# stash-cache-debug #
+#####################
+
+FROM stash-origin AS stash-origin-debug
 # Install debugging tools
 RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
