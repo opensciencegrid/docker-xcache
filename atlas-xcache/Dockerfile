@@ -1,16 +1,11 @@
 FROM opensciencegrid/xcache:fresh
-# FROM opensciencegrid/xcache:20210131-0116
 # FROM opensciencegrid/xcache:upcoming-fresh
-# FROM opensciencegrid/xcache:v5.0.2-osghotfix-test00
 # FROM ivukotic/docker-xcache-base:latest
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
 # ARG BASE_YUM_REPO
-# ENV BASE_YUM_REPO osg-rolling 4.12
-# ENV BASE_YUM_REPO osg-testing 4.12
-# ENV BASE_YUM_REPO osg-development 4.12
 # ENV BASE_YUM_REPO osg-upcoming
 ENV BASE_YUM_REPO osg-upcoming-development
 # ENV BASE_YUM_REPO osg-upcoming-testing

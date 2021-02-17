@@ -123,14 +123,20 @@ def report():
     if 'XC_REPORT_COLLECTOR' not in os.environ:
         print("xcache reporter - Must set $XC_REPORT_COLLECTOR. Exiting.")
         return
+    if 'XC_INSTANCE' not in os.environ:
+        print("xcache reporter - Must set $XC_INSTANCE. Exiting.")
+        return
 
     site = os.environ['XC_RESOURCENAME']
     collector = os.environ['XC_REPORT_COLLECTOR']
+    instance = os.environ['XC_INSTANCE']
+
     data = []
     header = {
         'sender': 'xCacheNode',
         'type': 'docs',
         'site': site,
+        'instance': instance,
         'timestamp': int(time.time() * 1000)
     }
     load_rec = header.copy()
