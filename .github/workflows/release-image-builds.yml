@@ -174,7 +174,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build ${{ matrix.image}} image
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2.2.2
         with:
           push: True
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
