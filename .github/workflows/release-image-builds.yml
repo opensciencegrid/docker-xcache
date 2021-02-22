@@ -27,6 +27,10 @@ jobs:
         with:
           path: /tmp/.base-buildx-cache
           key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
+          # allow cache hits from previous runs of the current branch,
+          # parent branch, then upstream branches, in that order
+          restore-keys: |
+            base-${{ matrix.repo }}-buildx-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -35,6 +39,7 @@ jobs:
         uses: docker/build-push-action@v2.2.2
         with:
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
+          pull: True
           target: xcache
           cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
 
