@@ -177,6 +177,7 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           push: True
+          build-args: BASE_YUM_REPO=${{ matrix.repo }}
           tags: "${{ steps.generate-tag-list.outputs.taglist }}"
           target: ${{ matrix.image }}
           cache-from: type=local,src=/tmp/.${{ matrix.image }}-buildx-cache
