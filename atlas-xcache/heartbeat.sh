@@ -8,7 +8,6 @@ usage () {
     echo "   <xcache site name> site where xcache is deployed."
     echo "   <xcache instance ID> this uniquely identifies xcache server."
     echo "   <xcache IP> externally accessible IP where xcache serves."
-    echo "   [size] total disk size dedicated to xcache. In Bytes."
 }
 
 if [ $# -lt 4 ]; then
@@ -20,7 +19,7 @@ service=$1
 site=$2
 instanceID=$3
 address=$4
-size=$5
+size=`df -l | grep xcache/data | awk '{sum+=$2;} END{print sum;}'`
 
 echo $service $site $instanceID $address $size
 curl --request POST "$service" \
