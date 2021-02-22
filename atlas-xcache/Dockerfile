@@ -1,6 +1,5 @@
 FROM opensciencegrid/xcache:fresh
 # FROM opensciencegrid/xcache:upcoming-fresh
-# FROM ivukotic/docker-xcache-base:latest
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
@@ -8,7 +7,6 @@ LABEL maintainer OSG Software <help@opensciencegrid.org>
 # ARG BASE_YUM_REPO
 # ENV BASE_YUM_REPO osg-upcoming
 ENV BASE_YUM_REPO osg-upcoming-development
-# ENV BASE_YUM_REPO osg-upcoming-testing
 
 ENV XC_IMAGE_NAME atlas-xcache
 
@@ -18,13 +16,11 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
 
 
 COPY update-cric-status.sh /usr/local/sbin/
-# COPY reporter.py stats.py heartbeat.sh /usr/local/sbin/
 COPY reporter4.py stats.py heartbeat.sh /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 
 COPY config.d/* /etc/xrootd/config.d/
 # COPY xcache.cfg /etc/xrootd/
-# COPY xcache_hc.cfg /etc/xrootd/xcache.cfg
 RUN rm /etc/xrootd/config.d/50-osg-monitoring.cfg
 
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
@@ -33,7 +29,6 @@ COPY image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
 
 
 RUN echo "g /atlas / rl" > /etc/xrootd/auth_db
-# RUN touch /etc/xrootd/xcache.cfg 
 RUN touch /var/run/x509up
 
 # not sure this line is needed
