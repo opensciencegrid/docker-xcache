@@ -3,7 +3,7 @@
 # this script will sends heartbeats to a service listening for them
 
 usage () {
-    echo "$0 <service endpoint> <xcache site name> <xcache instance ID> <xcache IP> [size]"
+    echo "$0 <service endpoint> <xcache site name> <xcache instance ID> <xcache IP>"
     echo "   <service endpoint> service receiving heartbeat. it listens for a POST request."
     echo "   <xcache site name> site where xcache is deployed."
     echo "   <xcache instance ID> this uniquely identifies xcache server."
