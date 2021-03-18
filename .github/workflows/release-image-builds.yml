@@ -82,7 +82,7 @@ jobs:
     name: Test Stash Cache and Origin
     needs: [xcache-image-builds]
     runs-on: ubuntu-latest
-    continue-on-error: matrix.repo == 'development'
+    continue-on-error: ${{ matrix.repo == 'development' }} 
     strategy:
       fail-fast: False
       matrix:
