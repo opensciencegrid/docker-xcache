@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.base-buildx-cache
-          key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
+          key: base-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
           # allow cache hits from previous runs of the current branch,
           # parent branch, then upstream branches, in that order
           restore-keys: |
@@ -59,13 +59,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.base-buildx-cache
-          key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
+          key: base-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
 
       - name: Cache child image
         uses: actions/cache@v2
         with:
           path: /tmp/.${{ matrix.image }}-buildx-cache
-          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}
+          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -94,13 +94,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.stash-cache-buildx-cache
-          key: stash-cache-${{ matrix.repo}}-build-${{ github.sha}}
+          key: stash-cache-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Load stash-origin build cache
         uses: actions/cache@v2
         with:
           path: /tmp/.stash-origin-buildx-cache
-          key: stash-origin-${{ matrix.repo}}-build-${{ github.sha}}
+          key: stash-origin-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -152,7 +152,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.${{ matrix.image }}-buildx-cache
-          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}
+          key: ${{ matrix.image}}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Generate tag list
         id: generate-tag-list
