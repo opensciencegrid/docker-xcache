@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.6
-
 import os
 import sys
 from glob import glob
@@ -133,7 +131,8 @@ def get_info(filename):
 
 files = [y for x in os.walk(BASE_DIR)
          for y in glob(os.path.join(x[0], '*.cinfo'))]
-# files += [y for x in os.walk(BASE_DIR) for y in glob(os.path.join(x[0], '*%'))]
+
+bad_links = 0
 for filename in files:
     try:
         last_modification_time = os.stat(filename).st_mtime
@@ -143,11 +142,14 @@ for filename in files:
     except OSError as oerr:
         if oerr.errno == 2:
             print('bad link?', oerr)
+            bad_links += 1
             # os.unlink(filename) # read only...
         else:
             print('ERROR:', oerr)
 
+print('total cinfo files:', len(files), "bad links:", bad_links)
 print("xcache reporter - files touched:", len(reports))
+
 if len(reports) > 0:
     while len(reports):
         toSend = reports[0:100]
