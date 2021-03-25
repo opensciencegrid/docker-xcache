@@ -141,12 +141,18 @@ for filename in files:
         if last_modification_time > start_time and last_modification_time < end_time:
             get_info(filename)
     except OSError as oerr:
-        print('file dissapeared?', oerr)
-
+        if oerr.errno == 2:
+            print('bad link?', oerr)
+            # os.unlink(filename) # read only...
+        else:
+            print('ERROR:', oerr)
 
 print("xcache reporter - files touched:", len(reports))
 if len(reports) > 0:
-    r = requests.post(collector, json=reports)
-    print('xcache reporter - indexing response:', r.status_code)
+    while len(reports):
+        toSend = reports[0:100]
+        r = requests.post(collector, json=toSend)
+        print('xcache reporter - indexing response:', r.status_code)
+        reports = reports[100:]
 else:
     print("xcache reporter - Nothing to report")
