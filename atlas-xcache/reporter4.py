@@ -152,9 +152,9 @@ print("xcache reporter - files touched:", len(reports))
 
 if len(reports) > 0:
     while len(reports):
-        toSend = reports[0:100]
+        toSend = reports[0:500]
         r = requests.post(collector, json=toSend)
         print('xcache reporter - indexing response:', r.status_code)
-        reports = reports[100:]
+        reports = reports[500:]
 else:
     print("xcache reporter - Nothing to report")
