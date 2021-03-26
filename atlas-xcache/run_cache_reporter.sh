@@ -14,8 +14,6 @@ done
 
 /usr/local/sbin/stats.py &
 
-python3 /usr/local/sbin/dark-data-cleaner.py
-
 while true; do 
 
   python3 /usr/local/sbin/reporter4.py

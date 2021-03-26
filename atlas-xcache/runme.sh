@@ -33,6 +33,9 @@ export XrdSecGSICACHECK=0
 export XrdSecGSICRLCHECK=0
 # export XrdSecDEBUG=3 
 
+echo "Cleaning dark data"
+python3 /usr/local/sbin/dark-data-cleaner.py
+
 # sleep until x509 things set up.
 while [ ! -f $X509_USER_PROXY ]
 do
