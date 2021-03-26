@@ -107,4 +107,7 @@ for disk in DATA_DIRS:
 for i in range(workers):
     pqueue.put('DONE')
 
+for p in processes:
+    p.join()
+
 print('Cleaning done.')
