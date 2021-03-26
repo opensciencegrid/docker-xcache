@@ -14,21 +14,12 @@ for i in range(1, 1000):
 
 print('DATA_DIRS:', DATA_DIRS)
 
-# walk directory tree and delete all empty directories
-for i in range(3):
-    dirs_deleted = 0
-    dt = os.walk(BASE_DIR)
-    for d in dt:
-        if not d[1] and not d[2]:
-            os.rmdir(d[0])
-            dirs_deleted += 1
-    print('deleted {} empty directories'.format(dirs_deleted))
 
-# find all the links to actual files
+print('finding all the metadata links...')
 files = [y for x in os.walk(BASE_DIR)
          for y in glob(os.path.join(x[0], '*'))]
 
-# remove all bad links
+print("removing all bad links...")
 bad_links = 0
 good_links = 0
 for filename in files:
@@ -48,7 +39,19 @@ for filename in files:
 
 print(datetime.now(), 'good links: {}, bad links:{}'.format(good_links, bad_links))
 
-# find all the files pointed by the links
+print("walking directory tree and deleting all empty directories...")
+for i in range(3):
+    dirs_deleted = 0
+    dt = os.walk(BASE_DIR)
+    for d in dt:
+        if not d[1] and not d[2]:
+            os.rmdir(d[0])
+            dirs_deleted += 1
+    print('deleted {} empty directories'.format(dirs_deleted))
+
+
+print("finding all the files pointed by the links...")
+
 links = [y for x in os.walk(BASE_DIR)
          for y in glob(os.path.join(x[0], '*'))]
 
@@ -58,7 +61,7 @@ for link in links:
         continue
     real_paths[os.path.realpath(link)] = link
 
-# find all data files, delete ones not having metadata link.
+print("finding all data files, deleting ones not having metadata link...")
 
 for disk in DATA_DIRS:
     all_files = 0
