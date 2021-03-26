@@ -15,11 +15,15 @@ end_time = ct
 if 'XC_RESOURCENAME' not in os.environ:
     print("xcache reporter - Must set $XC_RESOURCENAME. Exiting.")
     sys.exit(1)
+if 'XC_INSTANCE' not in os.environ:
+    print("xcache reporter - Must set $XC_INSTANCE. Exiting.")
+    sys.exit(1)
 if 'XC_REPORT_COLLECTOR' not in os.environ:
     print("xcache reporter - Must set $XC_REPORT_COLLECTOR. Exiting.")
     sys.exit(1)
 
 site = os.environ['XC_RESOURCENAME']
+instance = os.environ['XC_INSTANCE']
 collector = os.environ['XC_REPORT_COLLECTOR']
 
 reports = []
@@ -82,6 +86,7 @@ def get_info(filename):
         'sender': 'xCache',
         'type': 'docs',
         'site': site,
+        'instance': instance,
         'file': filename.replace(BASE_DIR, '').replace('/atlas/rucio/', '').replace('.cinfo', ''),
         'size': fs,
         'created_at': time_of_creation * 1000,
@@ -141,20 +146,21 @@ for filename in files:
             get_info(filename)
     except OSError as oerr:
         if oerr.errno == 2:
-            print('bad link?', oerr)
+            print('bad link?', oerr.filename)
             bad_links += 1
             # os.unlink(filename) # read only...
         else:
             print('ERROR:', oerr)
 
-print('total cinfo files:', len(files), "bad links:", bad_links)
-print("xcache reporter - files touched:", len(reports))
+print(datetime.now(), 'cinfos: {}, bad links:{}, touched:{}'.format(
+    len(files), bad_links, len(reports)))
 
 if len(reports) > 0:
     while len(reports):
         toSend = reports[0:500]
         r = requests.post(collector, json=toSend)
-        print('xcache reporter - indexing response:', r.status_code)
+        if r.status_code != 200:
+            print('xcache reporter - indexing response:', r.status_code)
         reports = reports[500:]
 else:
     print("xcache reporter - Nothing to report")
