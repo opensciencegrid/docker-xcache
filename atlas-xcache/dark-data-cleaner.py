@@ -58,10 +58,11 @@ for link in links:
         continue
     real_paths[os.path.realpath(link)] = link
 
-# find all data files
-all_files = 0
-deleted_data_files = 0
+# find all data files, delete ones not having metadata link.
+
 for disk in DATA_DIRS:
+    all_files = 0
+    deleted_data_files = 0
     files = [y for x in os.walk(disk+'/data')
              for y in glob(os.path.join(x[0], '*'))]
     for file in files:
