@@ -2,6 +2,7 @@ import os
 from glob import glob
 import time
 from datetime import datetime
+import random
 
 BASE_DIR = '/xcache/meta/namespace'
 
@@ -63,6 +64,7 @@ for link in links:
 
 print("finding all data files, deleting ones not having metadata link...")
 
+toDelete = []
 for disk in DATA_DIRS:
     all_files = 0
     deleted_data_files = 0
@@ -74,5 +76,14 @@ for disk in DATA_DIRS:
         all_files += 1
         if file not in real_paths:
             deleted_data_files += 1
-            os.unlink(file)
+            toDelete.append(file)
     print('disk:', disk, 'files:', all_files, 'deleted:', deleted_data_files)
+
+randomized_list = random.sample(toDelete, len(toDelete))
+for file in randomized_list:
+    try:
+        os.unlink(file)
+    except OSError as oerr:
+        print('could not delete file.', oerr)
+
+print('Cleaning done.')
