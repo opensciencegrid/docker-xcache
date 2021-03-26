@@ -2,7 +2,20 @@ import os
 from glob import glob
 import time
 from datetime import datetime
-import random
+from multiprocessing import Process, Queue
+
+
+def deleter_proc(queue):
+    # Read from the queue; this will be spawned as a separate Process
+    while True:
+        filepath = queue.get()
+        if filepath == 'DONE':
+            break
+        try:
+            os.unlink(filepath)
+        except OSError as oerr:
+            print('could not delete file.', oerr)
+
 
 BASE_DIR = '/xcache/meta/namespace'
 
@@ -15,6 +28,7 @@ for i in range(1, 1000):
 
 print('DATA_DIRS:', DATA_DIRS)
 
+Qu = Queue()
 
 print('finding all the metadata links...')
 files = [y for x in os.walk(BASE_DIR)
@@ -62,7 +76,18 @@ for link in links:
         continue
     real_paths[os.path.realpath(link)] = link
 
+
 print("finding all data files, deleting ones not having metadata link...")
+
+processes = []
+workers = 16
+pqueue = Queue()
+for i in range(workers):
+    deleter_p = Process(target=deleter_proc, args=((pqueue),))
+    # deleter_p.daemon = True
+    deleter_p.name = 'worker_' + str(i)
+    processes.append(deleter_p)
+    deleter_p.start()
 
 toDelete = []
 for disk in DATA_DIRS:
@@ -76,14 +101,10 @@ for disk in DATA_DIRS:
         all_files += 1
         if file not in real_paths:
             deleted_data_files += 1
-            toDelete.append(file)
+            pqueue.put(file)
     print('disk:', disk, 'files:', all_files, 'deleted:', deleted_data_files)
 
-randomized_list = random.sample(toDelete, len(toDelete))
-for file in randomized_list:
-    try:
-        os.unlink(file)
-    except OSError as oerr:
-        print('could not delete file.', oerr)
+for i in range(workers):
+    pqueue.put('DONE')
 
 print('Cleaning done.')
