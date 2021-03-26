@@ -3,6 +3,7 @@ from glob import glob
 import time
 from datetime import datetime
 from multiprocessing import Process, Queue
+import random
 
 
 def deleter_proc(queue):
@@ -84,7 +85,7 @@ workers = 16
 pqueue = Queue()
 for i in range(workers):
     deleter_p = Process(target=deleter_proc, args=((pqueue),))
-    # deleter_p.daemon = True
+    deleter_p.daemon = True
     deleter_p.name = 'worker_' + str(i)
     processes.append(deleter_p)
     deleter_p.start()
@@ -101,8 +102,13 @@ for disk in DATA_DIRS:
         all_files += 1
         if file not in real_paths:
             deleted_data_files += 1
-            pqueue.put(file)
+            toDelete.append(file)
+            # pqueue.put(file)
     print('disk:', disk, 'files:', all_files, 'deleted:', deleted_data_files)
+
+rfl = random.sample(toDelete, len(toDelete))
+for rf in rfl:
+    pqueue.put(rf)
 
 for i in range(workers):
     pqueue.put('DONE')
