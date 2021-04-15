@@ -1,6 +1,5 @@
 import os
 from glob import glob
-import time
 from datetime import datetime
 from multiprocessing import Process, Queue
 import random

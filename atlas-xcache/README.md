@@ -24,7 +24,6 @@ XCache:
 - `XC_BLOCKSIZE`: The size of the blocks in the cache
 - `XC_PREFETCH`: Number of blocks to prefetch from a file at once
 
-
 ### Disabling OSG monitoring (optional) ###
 
 By default, XCache reports to the OSG so that OSG staff can monitor the health of data federations.
