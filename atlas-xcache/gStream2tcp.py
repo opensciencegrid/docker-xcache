@@ -44,7 +44,11 @@ while True:
     # print("received message: %s" % data)
 
     hdr = data.split('\n')[0]
-    h = json.loads(hdr)
+    try:
+        h = json.loads(hdr)
+    except json.decoder.JSONDecodeError:
+        print("hdr issue", hdr)
+        continue
     parsed['pseq'] = h['pseq']
     parsed['site'] = h['src']['site']
     parsed['host'] = h['src']['host']
@@ -53,7 +57,11 @@ while True:
     accs = payload.split('\n')
     docs = []
     for a in accs:
-        a = json.loads(a)
+        try:
+            a = json.loads(a)
+        except json.decoder.JSONDecodeError:
+            print("doc issue", a)
+            continue
         doc = parsed.copy()
         doc['lfn'] = a['lfn']
         doc['size'] = a['size']
