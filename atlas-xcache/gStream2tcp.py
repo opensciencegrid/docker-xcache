@@ -72,7 +72,7 @@ while True:
         js = json.dumps(doc)
         tcp_sock.sendall(bytes(js, encoding="utf-8"))
         tcp_sock.send(b'\n')
-    count += 1
-    if not count % 1000:
-        print('resent:', count)
+        count += 1
+        if not count % 1000:
+            print('resent:', count)
 tcp_sock.close()
