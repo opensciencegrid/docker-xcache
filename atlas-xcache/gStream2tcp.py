@@ -1,8 +1,5 @@
-# this code runs in a separate container listens for gStream monitoring packets
-# decodes them, bulks them up and indexes in Elasticsearch
-
-# TODO
-# make logstash input listen on TCP too.
+# this code runs in a reporter container listens for gStream monitoring packets
+# decodes them, resends as TCP packets
 
 import os
 import sys
@@ -35,10 +32,14 @@ except OSError as e:
     print(e.errno, e.strerror)
     sys.exit(2)
 
+count = 0
 while True:
     parsed = {}
     data, addr = udp_sock.recvfrom(2048)
-    data = data.decode("utf-8")
+    try:
+        data = data.decode("utf-8")
+    except UnicodeDecodeError:
+        continue
 
     # print("received message: %s" % data)
 
@@ -70,6 +71,8 @@ while True:
 
         js = json.dumps(doc)
         tcp_sock.sendall(bytes(js, encoding="utf-8"))
-        tcp_sock.send('\n')
-
+        tcp_sock.send(b'\n')
+    count += 1
+    if not count % 1000:
+        print('resent:', count)
 tcp_sock.close()
