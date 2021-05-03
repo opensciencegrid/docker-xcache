@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.6
+
 # this code runs in a reporter container listens for gStream monitoring packets
 # decodes them, resends as TCP packets
 
