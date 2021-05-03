@@ -14,6 +14,8 @@ done
 
 /usr/local/sbin/stats.py &
 
+/usr/local/sbin/gStream2tcp.py &
+
 while true; do 
 
   python3 /usr/local/sbin/reporter4.py
