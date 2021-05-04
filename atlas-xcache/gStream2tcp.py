@@ -27,17 +27,21 @@ except OSError as e:
     print(e.errno, e.strerror)
     sys.exit(1)
 
-try:
-    tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_sock.connect((TCP_DEST, TCP_DEST_PORT))
-except OSError as e:
-    print(e.errno, e.strerror)
-    sys.exit(2)
+
+def dispatch(data):
+    try:
+        tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        tcp_sock.connect((TCP_DEST, TCP_DEST_PORT))
+        tcp_sock.sendall(bytes(data, encoding="utf-8"))
+        tcp_sock.close()
+    except OSError as e:
+        print(e.errno, e.strerror)
+
 
 count = 0
 while True:
     parsed = {}
-    data, addr = udp_sock.recvfrom(2048)
+    data, addr = udp_sock.recvfrom(8192)
     try:
         data = data.decode("utf-8")
     except UnicodeDecodeError:
@@ -57,7 +61,7 @@ while True:
 
     payload = data[len(hdr)+1:-1]
     accs = payload.split('\n')
-    docs = []
+    docs = ''
     for a in accs:
         try:
             a = json.loads(a)
@@ -79,10 +83,8 @@ while True:
         if a['remotes']:
             doc['remotes'] = a['remotes'][0]
 
-        js = json.dumps(doc)
-        tcp_sock.sendall(bytes(js, encoding="utf-8"))
-        tcp_sock.send(b'\n')
+        docs += json.dumps(doc)+'\n'
         count += 1
         if not count % 1000:
             print('resent:', count)
-tcp_sock.close()
+    dispatch(docs)
