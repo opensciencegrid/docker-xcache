@@ -16,9 +16,9 @@ done
 
 /usr/local/sbin/gStream2tcp.py &
 
-while true; do 
+# while true; do 
 
-  python3 /usr/local/sbin/reporter4.py
-  sleep 3600
+#   python3 /usr/local/sbin/reporter4.py
+#   sleep 3600
 
-done
+# done
