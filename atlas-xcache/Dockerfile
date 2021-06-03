@@ -5,8 +5,8 @@ LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Specify the base Yum repository to get the necessary RPMs
 # ARG BASE_YUM_REPO
-ENV BASE_YUM_REPO osg-upcoming
-# ENV BASE_YUM_REPO osg-upcoming-development
+# ENV BASE_YUM_REPO osg-upcoming
+ENV BASE_YUM_REPO osg-upcoming-development
 
 ENV XC_IMAGE_NAME atlas-xcache
 
