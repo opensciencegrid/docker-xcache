@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# this is obsolete as CRIC registration is not needed any more
+
 # this script will update state of Service Protocol in AGIS
 # usage: ./update-cric-status.sh <protocol_id> <new_status>  
 # protocol_id can be seen at the end of the link normally used to edit protocol eg. http://atlas-agis.cern.ch/agis/serviceprotocol/edit/433/

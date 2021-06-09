@@ -15,7 +15,7 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 
-COPY update-cric-status.sh /usr/local/sbin/
+# COPY update-cric-status.sh /usr/local/sbin/
 COPY reporter4.py gStream2tcp.py stats.py heartbeat.sh dark-data-cleaner.py /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 
