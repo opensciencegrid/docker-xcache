@@ -59,7 +59,7 @@ for i in range(3):
     dirs_deleted = 0
     dt = os.walk(BASE_DIR)
     for d in dt:
-        if d == BASE_DIR:
+        if d[0] == BASE_DIR:
             continue
         if not d[1] and not d[2]:
             os.rmdir(d[0])
