@@ -9,7 +9,6 @@ on:
   repository_dispatch:
     types:
       - dispatch-build
-  workflow_dispatch:
 
 jobs:
 
