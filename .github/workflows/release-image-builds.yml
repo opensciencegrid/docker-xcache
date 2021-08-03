@@ -39,6 +39,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
           pull: True
           target: xcache
@@ -74,6 +75,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
           target: ${{ matrix.image }}
           cache-from: type=local,src=/tmp/.base-buildx-cache
@@ -109,6 +111,7 @@ jobs:
       - name: Load stash-cache image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
           load: True  # allow access to built images through the Docker CLI
           tags: stash-cache:latest
@@ -118,6 +121,7 @@ jobs:
       - name: Load stash-origin image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
           load: True  # allow access to built images through the Docker CLI
           tags: stash-origin:latest
@@ -178,6 +182,7 @@ jobs:
       - name: Build ${{ matrix.image}} image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           push: True
           build-args: BASE_YUM_REPO=${{ matrix.repo }}
           tags: "${{ steps.generate-tag-list.outputs.taglist }}"
