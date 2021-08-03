@@ -166,7 +166,7 @@ jobs:
           IMAGE: ${{ matrix.image }}
           TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
         run: |
-          docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/opensciencegrid/}
+          docker_repo=opensciencegrid/$IMAGE
           tag_list=()
           for registry in hub.opensciencegrid.org docker.io; do
             for image_tag in "$REPO" "$REPO-$TIMESTAMP"; do
