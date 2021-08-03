@@ -75,6 +75,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           target: xcache
           cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
 
@@ -110,6 +111,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2.2.2
         with:
+          context: .
           push: True
           build-args: BASE_YUM_REPO=testing
           tags: opensciencegrid/${{ matrix.image }}:${{ needs.base-image-build.outputs.hotfix-tag }}
