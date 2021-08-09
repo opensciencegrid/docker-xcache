@@ -34,10 +34,7 @@ ADD xcache/packaging/* /var/lib/xcache/
 RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="$BASE_YUM_REPO" || \
     true
 
-RUN if [[ $BASE_YUM_REPO = release ]]; then \
-       yumrepo=osg-upcoming; else \
-       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
-    yum install -y --enablerepo=$yumrepo \
+RUN yum install -y \
         xcache \
         gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
@@ -67,10 +64,7 @@ ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME atlas-xcache
 
-RUN if [[ $BASE_YUM_REPO = release ]]; then \
-       yumrepo=osg-upcoming; else \
-       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
-    yum install -y --enablerepo=$yumrepo --enablerepo=osg-contrib \
+RUN yum install -y --enablerepo=osg-contrib \
         atlas-xcache && \
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
@@ -91,10 +85,7 @@ ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME cms-xcache
 
-RUN if [[ $BASE_YUM_REPO = release ]]; then \
-       yumrepo=osg-upcoming; else \
-       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
-     yum install -y --enablerepo=$yumrepo \
+RUN yum install -y \
                 cms-xcache \
                 xcache-consistency-check && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
@@ -119,11 +110,7 @@ ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME stash-cache
 
-RUN if [[ $BASE_YUM_REPO = release ]]; then \
-       yumrepo=osg-upcoming; else \
-       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
-    yum install -y --enablerepo=$yumrepo \
-        stash-cache && \
+RUN yum install -y stash-cache && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 COPY stash-cache/cron.d/* /etc/cron.d/
@@ -156,11 +143,7 @@ ENV XC_IMAGE_NAME stash-origin
 # Files and dirs should be readable to UID/GID 10940:10940 or the world
 ENV XC_FIX_DIR_OWNERS no
 
-RUN if [[ $BASE_YUM_REPO = release ]]; then \
-       yumrepo=osg-upcoming; else \
-       yumrepo=osg-upcoming-$BASE_YUM_REPO; fi && \
-    yum install -y --enablerepo=$yumrepo \
-        stash-origin && \
+RUN yum install -y stash-origin && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 COPY stash-origin/cron.d/* /etc/cron.d/
