@@ -22,3 +22,7 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Show version
+        run: |
+          docker run --rm ivukotic/atlas-xcache xrdcp -version
