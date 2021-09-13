@@ -25,4 +25,4 @@ jobs:
 
       - name: Show version
         run: |
-          docker run --rm ivukotic/atlas-xcache xrdcp -version
+          docker run --rm ivukotic/atlas-xcache:testing xrdcp -version
