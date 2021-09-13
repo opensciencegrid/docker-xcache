@@ -17,7 +17,8 @@ jobs:
         with:
           image: ivukotic/atlas-xcache
           tags: testing
-          directory: atlas-xcache
+          directory: "atlas-xcache"
+          dockerfile: "atlas-xcache/Dockerfile"
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
