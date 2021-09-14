@@ -16,7 +16,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v5.6
         with:
           image: ivukotic/atlas-xcache
-          tags: testing
+          tags: latest
           directory: "atlas-xcache"
           dockerfile: "atlas-xcache/Dockerfile"
           registry: docker.io
@@ -25,4 +25,4 @@ jobs:
 
       - name: Show version
         run: |
-          docker run --rm ivukotic/atlas-xcache:testing xrdcp -version
+          docker run --rm ivukotic/atlas-xcache:latest xrdcp -version
