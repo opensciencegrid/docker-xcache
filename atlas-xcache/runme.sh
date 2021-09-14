@@ -26,8 +26,8 @@ if [ $(stat -c "%U:%G" ${XC_META}/namespace ) != "xrootd:xrootd" ]; then  chown 
 
 
 export X509_USER_PROXY=/etc/proxy/x509up
-export X509_USER_CERT=/etc/grid-certs/usercert.pem
-export X509_USER_KEY=/etc/grid-certs/userkey.pem
+# export X509_USER_CERT=/etc/grid-certs/usercert.pem
+# export X509_USER_KEY=/etc/grid-certs/userkey.pem
 export XrdSecGSIPROXYVALID="96:00"
 export XrdSecGSICACHECK=0
 export XrdSecGSICRLCHECK=0

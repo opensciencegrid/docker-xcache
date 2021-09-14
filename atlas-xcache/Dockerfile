@@ -14,13 +14,10 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
-
-# COPY update-cric-status.sh /usr/local/sbin/
 COPY reporter4.py gStream2tcp.py stats.py heartbeat.sh dark-data-cleaner.py /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 
 COPY config.d/* /etc/xrootd/config.d/
-# COPY xcache.cfg /etc/xrootd/
 RUN rm /etc/xrootd/config.d/50-osg-monitoring.cfg
 
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
