@@ -42,7 +42,7 @@ RUN yum install -y \
 ADD xcache/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
 ADD xcache/sbin/* /usr/local/sbin/
-ADD xcache/image-config.d/* /etc/osg/image-config.d/
+ADD xcache/image-config.d/* /etc/osg/image-init.d/
 ADD xcache/xrootd/* /etc/xrootd/config.d/
 
 RUN mkdir -p "$XC_ROOTDIR"
@@ -72,7 +72,7 @@ RUN yum install -y --enablerepo=osg-contrib \
 COPY atlas-xcache/sbin/* /usr/local/sbin/
 COPY atlas-xcache/10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY atlas-xcache/supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
-COPY atlas-xcache/image-config.d/10-atlas-xcache.sh /etc/osg/image-config.d/
+COPY atlas-xcache/image-config.d/10-atlas-xcache.sh /etc/osg/image-init.d/
 
 ##############
 # cms-xcache #
@@ -94,7 +94,7 @@ COPY cms-xcache/limits.d/10-cms-xcache-limits.conf /etc/security/limits.d/
 COPY cms-xcache/supervisord.d/10-cms-xcache.conf /etc/supervisord.d/
 COPY cms-xcache/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
-COPY cms-xcache/image-config.d/* /etc/osg/image-config.d/
+COPY cms-xcache/image-config.d/* /etc/osg/image-init.d/
 COPY cms-xcache/xcache-consistency-check-wrapper.sh /usr/bin/xcache-consistency-check-wrapper.sh
 
 EXPOSE 1094
@@ -116,7 +116,7 @@ RUN yum install -y stash-cache && \
 COPY stash-cache/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
 COPY stash-cache/supervisord.d/* /etc/supervisord.d/
-COPY stash-cache/image-config.d/* /etc/osg/image-config.d/
+COPY stash-cache/image-config.d/* /etc/osg/image-init.d/
 
 # Add a placeholder authfile, incase this cache isn't registered
 # and can't pull down a new one
@@ -148,7 +148,7 @@ RUN yum install -y stash-origin && \
 
 COPY stash-origin/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
-COPY stash-origin/image-config.d/* /etc/osg/image-config.d/
+COPY stash-origin/image-config.d/* /etc/osg/image-init.d/
 COPY stash-origin/supervisord.d/* /etc/supervisord.d/
 
 COPY stash-origin/xrootd/* /etc/xrootd/config.d/
