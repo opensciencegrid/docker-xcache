@@ -168,7 +168,7 @@ jobs:
         run: |
           docker_repo=opensciencegrid/$IMAGE
           tag_list=()
-          for registry in docker.io; do
+          for registry in hub.opensciencegrid.org docker.io; do
             for image_tag in "$REPO" "$REPO-$TIMESTAMP"; do
               tag_list+=("$registry/$docker_repo":"$image_tag")
             done
