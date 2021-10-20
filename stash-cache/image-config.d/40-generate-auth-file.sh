@@ -9,11 +9,11 @@ chown xrootd:xrootd /run/stash-cache/*
 # later by 'xrootd' on the 'authfile-update' script.
 echo "# This file was genrated on startup" > /etc/xrootd-environment
 
-if [ ! -z ${CACHE_FQDN} ]; then
+if [[ -n ${CACHE_FQDN} ]]; then
         echo "export CACHE_FQDN=${CACHE_FQDN}" >> /etc/xrootd-environment
 fi
 
-if [ ! -z ${ORIGIN_FQDN} ]; then
+if [[ -n ${ORIGIN_FQDN} ]]; then
         echo "export ORIGIN_FQDN=${ORIGIN_FQDN}" >> /etc/xrootd-environment
 fi
 chown xrootd:xrootd /etc/xrootd-environment
