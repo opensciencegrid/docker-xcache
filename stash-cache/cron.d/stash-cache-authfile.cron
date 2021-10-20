@@ -1,1 +1,1 @@
-*/15 * * * * xrootd /usr/libexec/xcache/authfile-update --cache
+*/15 * * * * xrootd . /etc/xrootd-environment; usr/libexec/xcache/authfile-update --cache
