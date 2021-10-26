@@ -1,8 +1,5 @@
 #!/bin/sh
 
-CERTPATH=/etc/grid-certs
-export X509_USER_PROXY=/etc/proxy/x509up
-
 size=`df -l | grep xcache/data | awk '{sum+=$2;} END{print sum;}'`
 
 while true; do 
