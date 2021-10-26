@@ -1,0 +1,6 @@
+FROM rucio/rucio-clients
+
+LABEL maintainer Ilija Vukotic <ivukotic@uchicago.edu>
+COPY run_heartbeats.sh /usr/local/sbin/
+
+CMD [ "/usr/local/sbin/run_heartbeats.sh" ]

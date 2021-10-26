@@ -12,17 +12,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Docker Build & Push Action
+      - name: Docker Build & Push XCACHE image
         uses: mr-smithers-excellent/docker-build-push@v5.6
         with:
           image: ivukotic/atlas-xcache
-          tags: latest
+          tags: latest, ${{ github.sha }}
           directory: "atlas-xcache"
           dockerfile: "atlas-xcache/Dockerfile"
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Show version
+      - name: Docker Build & Push HEARTBEATS image
+        uses: mr-smithers-excellent/docker-build-push@v5.6
+        with:
+          image: ivukotic/atlas-xcache-heartbeats
+          tags: latest, ${{ github.sha }}
+          directory: "atlas-xcache"
+          dockerfile: "atlas-xcache/Dockerfile.heartbeats"
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Show XRDCP version
         run: |
           docker run --rm ivukotic/atlas-xcache:latest xrdcp -version
+
+      - name: Show Rucio client version
+        run: |
+          docker run --rm ivukotic/atlas-xcache-heartbeats:latest rucio --version

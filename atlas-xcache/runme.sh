@@ -72,11 +72,4 @@ echo "Starting cache ..."
 # su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g -c /etc/xrootd/xcache.cfg &"
 su -p xrootd -c "/usr/bin/xrootd -n atlas-xcache -k fifo -k 1g -c /etc/xrootd/xrootd-atlas-xcache.cfg &"
 
-# if  [ -z "$CRIC_PROTOCOL_ID" ]; then
-#   echo 'not updating CRIC protocol status.'
-# else
-#   echo "making CRIC protocol ${CRIC_PROTOCOL_ID} active..."
-#   /usr/local/sbin/update-cric-status.sh ${CRIC_PROTOCOL_ID} ACTIVE
-# fi
-
 sleep infinity
