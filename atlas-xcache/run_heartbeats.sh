@@ -3,6 +3,8 @@
 CERTPATH=/etc/grid-certs
 export X509_USER_PROXY=/etc/proxy/x509up
 
+size=`df -l | grep xcache/data | awk '{sum+=$2;} END{print sum;}'`
+
 while true; do 
   date
 
@@ -15,7 +17,7 @@ while true; do
   echo "Site is $RESULT. Expected $XC_RESOURCENAME"
   if [ $RESULT == $XC_RESOURCENAME ]; then
     echo "Sending Rucio heartbeat"
-    echo "needs: site, instance, address, size"
+    echo "needs: $XC_RESOURCENAME, $XC_INSTANCE, $ADDRESS, $size"
     # send Rucio heartbeat.
     # --cert /etc/grid-certs/usercert.pem \
     # --cert-type PEM --key /etc/grid-certs/userkey.pem \
@@ -23,5 +25,5 @@ while true; do
     echo "Something is wrong."
   fi
 
-  sleep 60  
+  sleep $FREQUENCY
 done
