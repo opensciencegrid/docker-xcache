@@ -40,8 +40,7 @@ Running a Container
 To run the container, use `docker run` with the following options, replacing the text within angle brackets with your
 own values:
 
-
-```
+```shell
 $ docker run --env-file=<PATH TO ENV FILE> \
              --volume <PATH TO HOST CERT>:/etc/grid-security/hostcert.pem \
              --volume <PATH TO HOST KEY>:/etc/grid-security/hostkey.pem \
