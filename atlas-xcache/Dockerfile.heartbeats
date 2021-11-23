@@ -5,6 +5,7 @@ LABEL maintainer Ilija Vukotic <ivukotic@uchicago.edu>
 USER 0:0
 
 COPY run_heartbeats.sh /usr/local/sbin/
+COPY heartbeat.py /usr/local/sbin/
 COPY rucio.cfg ca.crt /opt/rucio/etc/
 
 ENV CERTPATH=/etc/grid-certs
