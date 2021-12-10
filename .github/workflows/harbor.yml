@@ -33,7 +33,7 @@ jobs:
     - name: Build and push Docker images
       uses: docker/build-push-action@v2.2.0
       with:
-        context: .
+        context: atlas-xcache/.
         file: atlas-xcache/Dockerfile
         push: true
         tags: hub.opensciencegrid.org/ivukotic/atlas-xcache:latest
