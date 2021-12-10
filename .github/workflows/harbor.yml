@@ -8,18 +8,9 @@ on:
       - dispatch-build
       
 jobs:
-  make-date-tag:
-    runs-on: ubuntu-latest
-    outputs:
-      dtag: ${{ steps.mkdatetag.outputs.dtag }}
-    steps:
-    - name: make date tag
-      id: mkdatetag
-      run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
 
   build:
     runs-on: ubuntu-latest
-    needs: [make-date-tag]
     steps:
     - uses: actions/checkout@v2
 
@@ -44,5 +35,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: latest, ${{ needs.make-date-tag.outputs.dtag }}
-        image: hub.opensciencegrid.org/ivukotic/atlas-xcache
+        tags: hub.opensciencegrid.org/ivukotic/atlas-xcache:latest
