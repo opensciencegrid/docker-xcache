@@ -2,6 +2,16 @@
 
 size=`df -l | grep xcache/data | awk '{sum+=$2;} END{print sum;}'`
 
+# sleep until x509 things set up.
+while [ ! -f $X509_USER_PROXY ]
+do
+  sleep 10
+  echo "waiting for x509 proxy."
+done
+
+ls -lh $X509_USER_PROXY
+
+
 while true; do 
   date
   rucio whoami
