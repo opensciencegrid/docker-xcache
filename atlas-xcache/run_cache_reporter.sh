@@ -13,10 +13,25 @@ do
 done
 
 /usr/local/sbin/stats.py &
+spid=$!
 
 /usr/local/sbin/gStream2tcp.py &
+gpid=$!
 
 while true; do 
   date
+
+  ps $spid
+  if [[ $? -ne 0 ]]; then
+    echo Statistic collection died.
+    break
+  fi
+  
+  ps $gpid
+  if [[ $? -ne 0 ]]; then
+    echo gStream collection died.
+    break
+  fi
+
   sleep 3600
 done
