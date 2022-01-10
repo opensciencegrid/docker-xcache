@@ -6,6 +6,7 @@
 import os
 import sys
 import json
+from json.decoder import JSONDecodeError
 import socket
 
 env = os.environ
@@ -52,8 +53,13 @@ while True:
     hdr = data.split('\n')[0]
     try:
         h = json.loads(hdr)
-    except json.decoder.JSONDecodeError:
-        print("hdr issue", hdr)
+    except JSONDecodeError as e:
+        print("Error decoding JSON:", e)
+        print("hdr:", hdr)
+        continue
+    except TypeError as e:
+        print("Type error decoding JSON:", e)
+        print("hdr:", hdr)
         continue
     parsed['pseq'] = h['pseq']
     parsed['site'] = h['src']['site']
