@@ -80,6 +80,7 @@ while True:
         doc['blk_size'] = a['blk_size']
         doc['n_blks'] = a['n_blks']
         doc['n_blks_done'] = a['n_blks_done']
+        doc['n_cks_errs'] = a['n_cks_errs']
         doc['access_cnt'] = a['access_cnt']
         doc['attach_t'] = a['attach_t']
         doc['detach_t'] = a['detach_t']
