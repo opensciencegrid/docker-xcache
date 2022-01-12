@@ -45,7 +45,8 @@ while True:
     data, addr = udp_sock.recvfrom(8192)
     try:
         data = data.decode("utf-8")
-    except UnicodeDecodeError:
+    except UnicodeDecodeError as e:
+        print("Error decoding package:", e)
         continue
 
     # print("received message: %s" % data)
@@ -54,7 +55,7 @@ while True:
     try:
         h = json.loads(hdr)
     except JSONDecodeError as e:
-        print("Error decoding JSON:", e)
+        print("Error decoding header JSON:", e)
         continue
     except TypeError as e:
         print("Type error decoding JSON:", e)
@@ -70,7 +71,7 @@ while True:
     for a in accs:
         try:
             a = json.loads(a)
-        except json.decoder.JSONDecodeError:
+        except JSONDecodeError:
             print("doc issue", a)
             continue
         doc = parsed.copy()
