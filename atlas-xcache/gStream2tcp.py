@@ -55,7 +55,6 @@ while True:
         h = json.loads(hdr)
     except JSONDecodeError as e:
         print("Error decoding JSON:", e)
-        print("hdr:", hdr)
         continue
     except TypeError as e:
         print("Type error decoding JSON:", e)
