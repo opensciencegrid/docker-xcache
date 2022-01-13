@@ -16,8 +16,8 @@ headers = {'X-Rucio-Auth-Token': token}
 address = rucio_host+'/accounts/ivukotic'
 
 data = sys.argv[1:]
-print(data)
+# print(data)
 
 s = requests.session()
 result = s.get(address, headers=headers, verify=False)
-print(result.text)
+# print(result.text)
