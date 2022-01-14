@@ -40,27 +40,39 @@ def dispatch(data):
 
 
 count = 0
+package = 0
 while True:
-    parsed = {}
     data, addr = udp_sock.recvfrom(8192)
+    package += 1
+    skip = False
     try:
         data = data.decode("utf-8")
     except UnicodeDecodeError as e:
-        print("Error decoding package:", e)
-        continue
+        print("Error decoding package:", package, flush=True)
+        print(e, flush=True)
+        skip = True
 
+    if skip:
+        continue
     # print("received message: %s" % data)
 
     hdr = data.split('\n')[0]
     try:
         h = json.loads(hdr)
     except JSONDecodeError as e:
-        print("Error decoding header JSON:", e)
-        continue
+        print("Error decoding header JSON package:", package, flush=True)
+        print(e, flush=True)
+        skip = True
     except TypeError as e:
-        print("Type error decoding JSON:", e)
-        print("hdr:", hdr)
+        print("TYPE Error decoding header JSON package:", package, flush=True)
+        print(e, flush=True)
+        print("hdr:", hdr, flush=True)
+        skip = True
+
+    if skip:
         continue
+
+    parsed = {}
     parsed['pseq'] = h['pseq']
     parsed['site'] = h['src']['site']
     parsed['host'] = h['src']['host']
@@ -92,6 +104,8 @@ while True:
 
         docs += json.dumps(doc)+'\n'
         count += 1
-        if not count % 1000:
-            print('resent:', count)
+
     dispatch(docs)
+
+    if not package % 1000:
+        print('Packages received:', package, 'docs created:', count, flush=True)
