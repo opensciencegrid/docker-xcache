@@ -42,17 +42,18 @@ def dispatch(data):
 count = 0
 package = 0
 while True:
-    data, addr = udp_sock.recvfrom(8192)
+    bdata, addr = udp_sock.recvfrom(8192)
     package += 1
     skip = False
     try:
-        data = data.decode("utf-8")
+        data = bdata.decode("utf-8")
     except UnicodeDecodeError as e:
         print("Error decoding package:", package, flush=True)
         print(e, flush=True)
         skip = True
 
     if skip:
+        print('raw data:', bdata, flush=True)
         continue
     # print("received message: %s" % data)
 
@@ -66,10 +67,10 @@ while True:
     except TypeError as e:
         print("TYPE Error decoding header JSON package:", package, flush=True)
         print(e, flush=True)
-        print("hdr:", hdr, flush=True)
         skip = True
 
     if skip:
+        print('raw data:', bdata, flush=True)
         continue
 
     parsed = {}
