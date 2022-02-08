@@ -13,7 +13,7 @@ mkdir -p "$namespace_dir"
 
 # Only set oss.space directives for caches using prescribed locations
 if [[ "$XC_IMAGE_NAME" != stash-origin ]]; then
-        cat <<EOF >> /etc/xrootd/50-docker-spaces.cfg
+        cat <<EOF >> /etc/xrootd/config.d/50-docker-spaces.cfg
 pfc.spaces data meta
 oss.space meta /xcache/meta*
 oss.space data /xcache/data*
