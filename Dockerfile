@@ -32,7 +32,7 @@ RUN mkdir -p /var/lib/xcache/
 ADD xcache/packaging/* /var/lib/xcache/
 
 # Install any pre-built RPMs
-RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="$BASE_YUM_REPO" || \
+RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="osg-$BASE_YUM_REPO" || \
     true
 
 RUN yum install -y \
