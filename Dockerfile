@@ -25,6 +25,9 @@ ENV XC_FIX_DIR_OWNERS yes
 RUN groupadd -o -g 10940 xrootd
 RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
 
+# Create an empty macaroon-secret now so RPM installs won't create one, adding it to a layer.
+RUN mkdir -p /etc/xrootd && touch /etc/xrootd/macaroon-secret
+
 RUN mkdir -p /var/lib/xcache/
 # ADD complains when there aren't files that match a wildcard so we
 # this needs to be relatively unrestricted to support the case where
@@ -48,6 +51,8 @@ ADD xcache/xrootd/* /etc/xrootd/config.d/
 
 RUN mkdir -p "$XC_ROOTDIR"
 RUN chown -R xrootd:xrootd /xcache/
+
+RUN rm -f /etc/xrootd/macaroon-secret
 
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
