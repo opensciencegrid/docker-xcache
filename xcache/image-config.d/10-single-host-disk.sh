@@ -33,11 +33,11 @@ for dirtype in meta data; do
                      | awk "/^oss.space $dirtype/ {print \$3}")
 
     # If oss.space dirs from the config don't already exist, create
-    # one. We use 'ls -l' here since "$space_dirs" can include
+    # one. We use 'ls -1' here since "$space_dirs" can include
     # wildcards (*).
     # N.B. As long as a single path specified in an oss.space
     # directive exists, XRootD is happy
-    if [[ -z $(ls -l $space_dirs 2> /dev/null) ]]; then
+    if [[ -z $(ls -1 $space_dirs 2> /dev/null) ]]; then
         default_dir="/xcache/$dirtype"1
         mkdir -p "$default_dir"
     fi
