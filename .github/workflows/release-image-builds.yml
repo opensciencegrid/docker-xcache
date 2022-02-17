@@ -138,7 +138,7 @@ jobs:
 
   make-date-tag:
     runs-on: ubuntu-latest
-    if: contains(fromJson('["push", "repository_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
+    if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
     outputs:
       dtag: ${{ steps.mkdatetag.outputs.dtag }}
     steps:
