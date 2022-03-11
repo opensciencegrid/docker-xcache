@@ -6,7 +6,8 @@
 ARG BASE_YUM_REPO=testing
 ARG BASE_OSG_SERIES=3.5
 
-FROM opensciencegrid/software-base:$BASE_OSG_SERIES-el7-$BASE_YUM_REPO AS xcache
+#FROM opensciencegrid/software-base:$BASE_OSG_SERIES-el7-$BASE_YUM_REPO AS xcache
+FROM opensciencegrid/software-base:$BASE_OSG_SERIES-el7-bh AS xcache
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Previous arg has gone out of scope
@@ -22,8 +23,8 @@ ENV XC_NUM_LOGROTATE 10
 ENV XC_FIX_DIR_OWNERS yes
 
 # Create the xrootd user with a fixed GID/UID
-RUN groupadd -o -g 10940 xrootd
-RUN useradd -o -u 10940 -g 10940 -s /bin/sh xrootd
+RUN groupadd -o -g 0 xrootd
+RUN useradd -o -u 10940 -g 0 -s /bin/sh xrootd
 
 # Create an empty macaroon-secret now so RPM installs won't create one, adding it to a layer.
 RUN mkdir -p /etc/xrootd && touch /etc/xrootd/macaroon-secret
@@ -40,8 +41,11 @@ RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="osg-$BASE_YUM_REPO" || \
 
 RUN yum install -y \
         xcache \
+	sudo \
         gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
+
+RUN echo "xrootd ALL=(ALL) NOPASSWD: /bin/chown -R xrootd\:xrootd *" >> /etc/sudoers.d/10-chown
 
 ADD xcache/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
@@ -57,6 +61,16 @@ RUN rm -f /etc/xrootd/macaroon-secret
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
+
+# changes for OKD
+RUN chgrp -R root /etc/xrootd && chmod -R g+w /etc/xrootd && \
+    chgrp root /var/spool/xrootd  && \
+    chmod g+w /etc/environment /var/log /var/spool/xrootd /xcache && \
+    chgrp root /etc/grid-security/xrd && chmod -R g+w /etc/grid-security/xrd /etc/grid-security/certificates && \
+    chgrp -R root /run/xcache-auth /run/xrootd && chmod g+w /run/xcache-auth /run/xrootd && \
+    chgrp -R root /var/log/xrootd && chmod g+w /var/log/xrootd && \
+    chmod g+w /run && \
+    chmod g+w /var/log/supervisor
 
 ################
 # atlas-xcache #
@@ -79,6 +93,8 @@ COPY atlas-xcache/sbin/* /usr/local/sbin/
 COPY atlas-xcache/10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY atlas-xcache/supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY atlas-xcache/image-config.d/10-atlas-xcache.sh /etc/osg/image-init.d/
+
+USER xrootd
 
 ##############
 # cms-xcache #
@@ -103,7 +119,11 @@ RUN chmod 0644 /etc/cron.d/*
 COPY cms-xcache/image-config.d/* /etc/osg/image-init.d/
 COPY cms-xcache/xcache-consistency-check-wrapper.sh /usr/bin/xcache-consistency-check-wrapper.sh
 
+RUN chgrp root /var/lib/xcache-consistency-check && chmod g+w /var/lib/xcache-consistency-check
+
 EXPOSE 1094
+
+USER xrootd
 
 ###############
 # stash-cache #
@@ -116,7 +136,7 @@ ARG BASE_YUM_REPO=testing
 
 ENV XC_IMAGE_NAME stash-cache
 
-RUN yum install -y stash-cache && \
+RUN yum install -y stash-cache hostname && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 COPY stash-cache/cron.d/* /etc/cron.d/
@@ -130,12 +150,13 @@ COPY stash-cache/Authfile /run/stash-cache/Authfile
 # Same for scitokens.conf
 COPY stash-cache/scitokens.conf /run/stash-cache-auth/scitokens.conf
 
+RUN touch /etc/xrootd-environment && chown xrootd:xrootd /etc/xrootd-environment
+USER xrootd
 EXPOSE 8000
 
 ################
 # stash-origin #
 ################
-
 
 FROM xcache AS stash-origin
 LABEL maintainer OSG Software <help@opensciencegrid.org>
@@ -161,17 +182,19 @@ COPY stash-origin/xrootd/* /etc/xrootd/config.d/
 # Add a placeholder scitokens.conf file, in case this origin isn't registered
 # and can't pull down a new one
 COPY stash-origin/scitokens.conf /run/stash-origin-auth/scitokens.conf
+USER xrootd
 
 ######################
 # atlas-xcache-debug #
 ######################
 
 FROM atlas-xcache AS atlas-xcache-debug
+
 # Install debugging tools
 RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
     strace
-
+USER xrootd
 ####################
 # cms-xcache-debug #
 ####################
@@ -181,7 +204,7 @@ FROM cms-xcache AS cms-xcache-debug
 RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
     strace
-
+USER xrootd
 #####################
 # stash-cache-debug #
 #####################
@@ -191,6 +214,7 @@ FROM stash-cache AS stash-cache-debug
 RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
     strace
+USER xrootd
 
 #####################
 # stash-cache-debug #
@@ -201,3 +225,4 @@ FROM stash-origin AS stash-origin-debug
 RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
     gdb \
     strace
+USER xrootd
