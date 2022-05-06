@@ -21,6 +21,7 @@ while true; do
     fi
   done
 
+  [ -d "/etc/CA" ] && cp -rfn /etc/grid-security/* /etc/CA/
   date
 
   echo 'updating proxy'
