@@ -33,7 +33,7 @@ CERTPATH=/etc/grid-certs
 export X509_USER_PROXY=/etc/proxy/x509up
 
 
-for true; do 
+while true; do 
   date
 
   for i in 1; do  
