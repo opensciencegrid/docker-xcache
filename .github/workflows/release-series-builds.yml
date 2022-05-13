@@ -21,7 +21,7 @@ jobs:
       fail-fast: False
       matrix:
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.5', '3.6']
+        osg_series: ['3.6']
     steps:
 
       - uses: actions/checkout@v2
@@ -58,7 +58,7 @@ jobs:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.5', '3.6']
+        osg_series: ['3.6']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -98,7 +98,7 @@ jobs:
       fail-fast: False
       matrix:
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.5', '3.6']
+        osg_series: ['3.6']
     steps:
       - uses: actions/checkout@v2
 
@@ -161,7 +161,7 @@ jobs:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.5', '3.6']
+        osg_series: ['3.6']
     needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
