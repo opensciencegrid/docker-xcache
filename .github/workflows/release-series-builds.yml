@@ -156,7 +156,7 @@ jobs:
 
   push-images:
     name: Push ${{ matrix.image }}:${{ matrix.osg_series }}-${{ matrix.repo }} image
-    if: contains(fromJson('["push", "repository_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
+    if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
