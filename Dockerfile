@@ -4,7 +4,7 @@
 
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=testing
-ARG BASE_OSG_SERIES=3.5
+ARG BASE_OSG_SERIES=3.6
 
 FROM opensciencegrid/software-base:$BASE_OSG_SERIES-el7-$BASE_YUM_REPO AS xcache
 LABEL maintainer OSG Software <help@opensciencegrid.org>
