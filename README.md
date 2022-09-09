@@ -1,4 +1,4 @@
-XCache Docker Images [![Build OSG XCache images](https://github.com/opensciencegrid/docker-xcache/actions/workflows/release-image-builds.yml/badge.svg)](https://github.com/opensciencegrid/docker-xcache/actions/workflows/release-image-builds.yml)
+XCache Docker Images [![Build OSG XCache images](https://github.com/opensciencegrid/docker-xcache/actions/workflows/release-series-builds.yml/badge.svg)](https://github.com/opensciencegrid/docker-xcache/actions/workflows/release-image-builds.yml)
 ====================
 
 XCache provides a caching service for data federations that serve one or more Virtual Organizations (VOs) based on the

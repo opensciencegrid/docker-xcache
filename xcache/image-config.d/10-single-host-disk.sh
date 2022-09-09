@@ -24,7 +24,7 @@ fi
 # Ensure that data and meta disk dirs exist using the prescribed format
 # This allows users to easily transition to a multi-disk setup
 for dirtype in meta data; do
-    # Requires $XC_ROOT_DIR to be set in container environment, which
+    # Requires $XC_ROOTDIR to be set in container environment, which
     # is set by default in the atlas-xcache, cms-xcache, stash-cache,
     # and stash-origin images. oss.space directives can look like:
     # oss.space data /xcache/data*
