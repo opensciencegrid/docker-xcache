@@ -1,4 +1,32 @@
-#!/bin/sh
+#!/bin/bash
+
+Help()
+{
+   # Display Help
+   echo "Renews x509 proxy with 96h validity."
+   echo
+   echo "Syntax: run_x509_updater [-n|h]"
+   echo "options:"
+   echo "n     Number of times to renew"
+   echo "h     Print this Help."
+   echo
+}
+
+rn=999999
+
+# Process the input options.                               #
+while getopts ":hn:" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+      n) # Enter number of times to renew proxy
+         rn=$OPTARG;;
+     \?) # Invalid option
+         echo "Error: Invalid option"
+         exit;;
+   esac
+done
 
 CERTPATH=/etc/grid-certs
 
@@ -21,6 +49,7 @@ while true; do
     fi
   done
 
+  [ -d "/etc/CA" ] && cp -rfn /etc/grid-security/* /etc/CA/
   date
 
   echo 'updating proxy'
@@ -50,6 +79,11 @@ while true; do
       sleep 5
     fi
   done
+
+  ((rn--))
+  if [[ $rn -eq 0 ]]; then
+    break
+  fi
 
   sleep 86000
   

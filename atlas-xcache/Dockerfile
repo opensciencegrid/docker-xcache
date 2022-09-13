@@ -1,4 +1,5 @@
-FROM opensciencegrid/xcache:fresh
+FROM opensciencegrid/xcache:3.6-release
+# FROM opensciencegrid/xcache:fresh
 # FROM opensciencegrid/xcache:upcoming-fresh
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
