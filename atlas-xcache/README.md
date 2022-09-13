@@ -9,7 +9,7 @@ This image, based on the [OSG XCache image](https://hub.docker.com/r/openscience
 This document covers how to configure and start an ATLAS XCache container.
 
 Configuration
--------------
+--------------
 
 Before starting the container, write a file containing the following required environment variables and values for your
 XCache:
