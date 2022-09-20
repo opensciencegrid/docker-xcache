@@ -9,7 +9,7 @@ fi
 
 # supervisord_... functions are defined in xcache/image-config.d/00-functions.sh
 
-if [[ -n ${XC_AUTH_ORIGIN_EXPORT:-} ]]; then
+if /usr/local/bin/pkg-cmp-gt.sh xcache 3.2.0 && [[ -n ${XC_AUTH_ORIGIN_EXPORT:-} ]]; then
   supervisord_enable stash-origin-auth
   supervisord_enable stash-origin-auth-cmsd
 else
