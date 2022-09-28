@@ -168,7 +168,9 @@ COPY stash-origin/scitokens.conf /run/stash-origin-auth/scitokens.conf
 
 FROM atlas-xcache AS atlas-xcache-debug
 # Install debugging tools
-RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+# Previous arg has gone out of scope
+ARG BASE_YUM_REPO=testing
+RUN yum -y install -y --enablerepo="osg-$BASE_YUM_REPO" \
     gdb \
     strace
 
@@ -178,7 +180,9 @@ RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
 
 FROM cms-xcache AS cms-xcache-debug
 # Install debugging tools
-RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+# Previous arg has gone out of scope
+ARG BASE_YUM_REPO=testing
+RUN yum -y install -y --enablerepo="osg-$BASE_YUM_REPO" \
     gdb \
     strace
 
@@ -188,16 +192,20 @@ RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
 
 FROM stash-cache AS stash-cache-debug
 # Install debugging tools
-RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+# Previous arg has gone out of scope
+ARG BASE_YUM_REPO=testing
+RUN yum -y install -y --enablerepo="osg-$BASE_YUM_REPO" \
     gdb \
     strace
 
-#####################
-# stash-cache-debug #
-#####################
+######################
+# stash-origin-debug #
+######################
 
 FROM stash-origin AS stash-origin-debug
 # Install debugging tools
-RUN yum -y install -y --enablerepo="$BASE_YUM_REPO" \
+# Previous arg has gone out of scope
+ARG BASE_YUM_REPO=testing
+RUN yum -y install -y --enablerepo="osg-$BASE_YUM_REPO" \
     gdb \
     strace
