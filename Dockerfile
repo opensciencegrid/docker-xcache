@@ -43,13 +43,6 @@ RUN yum install -y \
         gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
-# If necessary, download the authfile-update version that can do per-instance authfiles
-RUN \
-    if /usr/local/bin/pkg-cmp-lt.sh xcache 3.2.0; then \
-        curl -Lo /usr/libexec/xcache/authfile-update https://raw.githubusercontent.com/opensciencegrid/xcache/V3-branch/src/authfile-update && \
-        chmod +x /usr/libexec/xcache/authfile-update; \
-    fi
-
 ADD xcache/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
 ADD xcache/sbin/* /usr/local/sbin/
