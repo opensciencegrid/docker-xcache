@@ -19,12 +19,13 @@ fi
 if [[ -n ${XC_PUBLIC_ORIGIN_EXPORT:-} || -n ${XC_ORIGINEXPORT:-} ]]; then
   supervisord_enable stash-origin
   supervisord_enable stash-origin-cmsd
-else
+elif [[ -n ${XC_AUTH_ORIGIN_EXPORT:-} ]]; then
+  # we're starting an auth instance only
   supervisord_disable stash-origin
   supervisord_disable stash-origin-cmsd
-fi
-# backward compat:
-if [[ -z ${XC_AUTH_ORIGIN_EXPORT:-} && -z ${XC_PUBLIC_ORIGIN_EXPORT:-} && -z ${XC_ORIGINEXPORT:-} ]]; then
+else
+  # backward compat: none of the three variables are defined so start an unauth
+  # instance (exporting the default path)
   supervisord_enable stash-origin
   supervisord_enable stash-origin-cmsd
 fi
