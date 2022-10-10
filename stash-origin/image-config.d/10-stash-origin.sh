@@ -9,17 +9,20 @@ fi
 
 # supervisord_... functions are defined in xcache/image-config.d/00-functions.sh
 
-if [[ -n ${XC_AUTH_ORIGIN_EXPORT:-} ]]; then
+# declare these if missing
+: "${XC_AUTH_ORIGIN_EXPORT=} ${XC_PUBLIC_ORIGIN_EXPORT=} ${XC_ORIGINEXPORT=}"
+
+if [[ $XC_AUTH_ORIGIN_EXPORT ]]; then
   supervisord_enable stash-origin-auth
   supervisord_enable stash-origin-auth-cmsd
 else
   supervisord_disable stash-origin-auth
   supervisord_disable stash-origin-auth-cmsd
 fi
-if [[ -n ${XC_PUBLIC_ORIGIN_EXPORT:-} || -n ${XC_ORIGINEXPORT:-} ]]; then
+if [[ $XC_PUBLIC_ORIGIN_EXPORT || $XC_ORIGINEXPORT ]]; then
   supervisord_enable stash-origin
   supervisord_enable stash-origin-cmsd
-elif [[ -n ${XC_AUTH_ORIGIN_EXPORT:-} ]]; then
+elif [[ $XC_AUTH_ORIGIN_EXPORT ]]; then
   # we're starting an auth instance only
   supervisord_disable stash-origin
   supervisord_disable stash-origin-cmsd
