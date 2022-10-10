@@ -13,13 +13,13 @@ supervisord_is_disabled () {
 supervisord_enable () {
     local service="$1"
     if supervisord_is_disabled ${service}; then
-        mv -f /etc/supervisord.d/${service}.conf.disabled /etc/supervisord.d/${service}.conf
+        mv -f /etc/supervisord.d/${service}.conf{.disabled,}
     fi
 }
 
 supervisord_disable () {
     local service="$1"
     if supervisord_is_enabled ${service}; then
-        mv -f /etc/supervisord.d/${service}.conf /etc/supervisord.d/${service}.conf.disabled
+        mv -f /etc/supervisord.d/${service}.conf{,.disabled}
     fi
 }
