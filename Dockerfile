@@ -40,6 +40,7 @@ RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="osg-$BASE_YUM_REPO" || \
 
 RUN yum install -y \
         xcache \
+        rsyslog \
         gperftools-devel && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
@@ -49,8 +50,10 @@ ADD xcache/sbin/* /usr/local/sbin/
 ADD xcache/image-config.d/* /etc/osg/image-init.d/
 ADD xcache/xrootd/* /etc/xrootd/config.d/
 
-RUN mkdir -p "$XC_ROOTDIR"
-RUN chown -R xrootd:xrootd /xcache/
+RUN mkdir -p "$XC_ROOTDIR" /var/spool/rsyslog/workdir /var/run/rsyslog
+RUN chown -R xrootd:xrootd /xcache/ /var/spool/rsyslog/workdir /var/run/rsyslog
+
+COPY xcache/supervisord.d/* /etc/supervisord.d/
 
 RUN rm -f /etc/xrootd/macaroon-secret
 
