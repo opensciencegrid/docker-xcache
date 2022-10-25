@@ -1,0 +1,39 @@
+input(
+  type="imfile"
+  File="/var/log/xrootd/stash-origin/xrootd.log"
+  Tag="stash-origin"
+  Facility="local2"
+  Severity="info"
+  startmsg.regex="^[[:digit:]]{6} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2} [[:digit:]]+"
+  ruleset="XrootdLog"
+)
+
+input(
+  type="imfile"
+  File="/var/log/xrootd/stash-origin/cmsd.log"
+  Tag="stash-origin-cmsd"
+  Facility="local2"
+  Severity="info"
+  startmsg.regex="^[[:digit:]]{6} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2} [[:digit:]]+"
+  ruleset="XrootdLog"
+)
+
+input(
+  type="imfile"
+  File="/var/log/xrootd/stash-origin-auth/xrootd.log"
+  Tag="stash-origin-auth"
+  Facility="local2"
+  Severity="info"
+  startmsg.regex="^[[:digit:]]{6} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2} [[:digit:]]+"
+  ruleset="XrootdLog"
+)
+
+input(
+  type="imfile"
+  File="/var/log/xrootd/stash-origin-auth/cmsd.log"
+  Tag="stash-origin-auth-cmsd"
+  Facility="local2"
+  Severity="info"
+  startmsg.regex="^[[:digit:]]{6} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2} [[:digit:]]+"
+  ruleset="XrootdLog"
+)

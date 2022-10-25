@@ -1,0 +1,19 @@
+input(
+  type="imfile"
+  File="/var/log/xrootd/stash-cache/xrootd.log"
+  Tag="stash-cache"
+  Facility="local2"
+  Severity="info"
+  startmsg.regex="^[[:digit:]]{6} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2} [[:digit:]]+"
+  ruleset="XrootdLog"
+)
+
+input(
+  type="imfile"
+  File="/var/log/xrootd/stash-cache-auth/xrootd.log"
+  Tag="stash-cache-auth"
+  Facility="local2"
+  Severity="info"
+  startmsg.regex="^[[:digit:]]{6} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2} [[:digit:]]+"
+  ruleset="XrootdLog"
+)
