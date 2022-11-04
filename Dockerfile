@@ -49,6 +49,9 @@ RUN chmod 0644 /etc/cron.d/*
 ADD xcache/sbin/* /usr/local/sbin/
 ADD xcache/image-config.d/* /etc/osg/image-init.d/
 ADD xcache/xrootd/* /etc/xrootd/config.d/
+ADD xcache/rsyslog.conf /etc/rsyslog.conf
+
+RUN rm -f /etc/rsyslog.d/listen.conf
 
 RUN mkdir -p "$XC_ROOTDIR" /var/spool/rsyslog/workdir /var/run/rsyslog
 RUN chown -R xrootd:xrootd /xcache/ /var/spool/rsyslog/workdir /var/run/rsyslog
@@ -82,6 +85,11 @@ COPY atlas-xcache/sbin/* /usr/local/sbin/
 COPY atlas-xcache/10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY atlas-xcache/supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
 COPY atlas-xcache/image-config.d/10-atlas-xcache.sh /etc/osg/image-init.d/
+COPY atlas-xcache/rsyslog-atlas-xcache.conf /etc/rsyslog.d/atlas-xcache.conf
+
+RUN mkdir -p /var/log/xrootd/atlas-xcache && \
+    touch    /var/log/xrootd/atlas-xcache/xrootd.log && \
+    chown -R xrootd:xrootd /var/log/xrootd/atlas-xcache
 
 ##############
 # cms-xcache #
@@ -105,6 +113,11 @@ COPY cms-xcache/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
 COPY cms-xcache/image-config.d/* /etc/osg/image-init.d/
 COPY cms-xcache/xcache-consistency-check-wrapper.sh /usr/bin/xcache-consistency-check-wrapper.sh
+COPY cms-xcache/rsyslog-cms-xcache.conf /etc/rsyslog.d/cms-xcache.conf
+
+RUN mkdir -p /var/log/xrootd/cms-xcache && \
+    touch    /var/log/xrootd/cms-xcache/xrootd.log && \
+    chown -R xrootd:xrootd /var/log/xrootd/cms-xcache
 
 EXPOSE 1094
 
@@ -132,6 +145,15 @@ COPY stash-cache/image-config.d/* /etc/osg/image-init.d/
 COPY stash-cache/Authfile /run/stash-cache/Authfile
 # Same for scitokens.conf
 COPY stash-cache/scitokens.conf /run/stash-cache-auth/scitokens.conf
+
+COPY stash-cache/rsyslog-stash-cache.conf /etc/rsyslog.d/stash-cache.conf
+
+RUN mkdir -p /var/log/xrootd/stash-cache \
+             /var/log/xrootd/stash-cache-auth && \
+    touch    /var/log/xrootd/stash-cache/xrootd.log \
+             /var/log/xrootd/stash-cache-auth/xrootd.log && \
+    chown -R xrootd:xrootd /var/log/xrootd/stash-cache \
+                           /var/log/xrootd/stash-cache-auth
 
 EXPOSE 8000
 
@@ -164,6 +186,18 @@ COPY stash-origin/xrootd/* /etc/xrootd/config.d/
 # Add a placeholder scitokens.conf file, in case this origin isn't registered
 # and can't pull down a new one
 COPY stash-origin/scitokens.conf /run/stash-origin-auth/scitokens.conf
+
+COPY stash-origin/rsyslog-stash-origin.conf /etc/rsyslog.d/stash-origin.conf
+
+RUN mkdir -p /var/log/xrootd/stash-origin \
+             /var/log/xrootd/stash-origin-auth && \
+    touch    /var/log/xrootd/stash-origin/xrootd.log \
+             /var/log/xrootd/stash-origin/cmsd.log \
+             /var/log/xrootd/stash-origin-auth/xrootd.log \
+             /var/log/xrootd/stash-origin-auth/cmsd.log && \
+    chown -R xrootd:xrootd /var/log/xrootd/stash-origin \
+                           /var/log/xrootd/stash-origin-auth
+
 
 ######################
 # atlas-xcache-debug #
