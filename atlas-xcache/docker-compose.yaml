@@ -1,0 +1,23 @@
+version: '3'
+services:
+
+  xcache:
+    image: docker.io/library/mariadb
+    volumes:
+      - /var/lib/containers/disk01:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: cent
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: cent_db
+    ports:
+      - "3306:3306"
+
+  monitoring:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - /var/lib/containers/disk02:/usr/share/nginx/html
+
+  heartbeats:
