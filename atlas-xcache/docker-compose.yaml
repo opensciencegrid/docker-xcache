@@ -1,23 +1,75 @@
 version: '3'
+
+volumes:
+  x509-data:
+    driver_opts:
+      type: tmpfs
+      o: "size=10Mi"
+      device: tmpfs
+
 services:
 
   xcache:
-    image: docker.io/library/mariadb
+    image: &bimage slateci/xcache:testing
+    pull_policy: always
     volumes:
-      - /var/lib/containers/disk01:/var/lib/mysql
+      - &cert <PATH TO CERT>:/etc/grid-certs/:ro
+      - x509-data:/etc/proxy/:ro
+      - <HOST PATH TO CACHE DISK 1>:/xcache/data_1
+      - <HOST PATH TO CACHE DISK 2>:/xcache/data_2
+      - <HOST PATH TO CACHE DISK N>:/xcache/data_N
+      - &meta <HOST PATH TO CACHE METADATA DISK>:/xcache/meta
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: cent
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: cent_db
+      XC_INSTANCE: &inst <Instance01>
+      XC_RESOURCENAME: &rname <MWT2>
+      XC_SPACE_HIGH_WM: 0.95
+      XC_SPACE_LOW_WM: 0.90
+      XC_PORT: 1094
+      XC_RAMSIZE: 32g
+      XC_BLOCKSIZE: 256k
+      XC_PREFETCH: 0
+      XC_WQ_BLOCKS_PER_LOOP: 10
+      XC_WQ_THREADS: 2
+      XC_MONITOR: &coll collector.atlas-ml.org:9000
     ports:
-      - "3306:3306"
+      - "1094:1094"
 
-  monitoring:
-    build: .
-    ports:
-      - "80:80"
+  x509:
+    image: *bimage
+    pull_policy: always
+    command: [ "/usr/local/sbin/run_x509_updater.sh" ]
     volumes:
-      - /var/lib/containers/disk02:/usr/share/nginx/html
+      - *cert
+      - x509-data:/etc/proxy/:rw
+
+  reporter:
+    image: *bimage
+    pull_policy: always
+    command: [ "/usr/local/sbin/run_cache_reporter.sh" ]
+    environment:
+      XC_RESOURCENAME: *rname
+      XC_INSTANCE: *inst
+      XC_REPORT_COLLECTOR: http://xcache.atlas-ml.org:80
+      XC_MONITOR: *coll
+    volumes:
+      - <HOST PATH TO CACHE DISK 1>:/xcache/data_1
+      - <HOST PATH TO CACHE DISK 2>:/xcache/data_2
+      - <HOST PATH TO CACHE DISK N>:/xcache/data_N
+      - *meta
 
   heartbeats:
+    image: ivukotic/atlas-xcache-heartbeats:latest
+    pull_policy: always
+    command: [ "/usr/local/sbin/run_heartbeats.sh" ]
+    volumes:
+      - *cert
+      - x509-data:/etc/proxy/:ro
+      - <HOST PATH TO CACHE DISK 1>:/xcache/data_1
+      - <HOST PATH TO CACHE DISK 2>:/xcache/data_2
+      - <HOST PATH TO CACHE DISK N>:/xcache/data_N
+      - *meta
+    environment:
+      XC_RESOURCENAME: *rname
+      XC_INSTANCE: *inst
+      ADDRESS: <192.170.227.251>
+      FREQUENCY: 60

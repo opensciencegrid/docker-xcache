@@ -13,6 +13,13 @@ Install [CentOS-stream-9](https://www.centos.org/centos-stream/) on your node(s)
 
 Separately mount all the disks that should be used for caching (JBODs). Have a list of mount directories and total disk size ready.
 
+In addition to running XCache service itself, we require ATLAS instances to run two more processes:
+
+- sending heartbeats to VP/Rucio
+- forwarding monitoring information to ELK stack at UChicago.
+
+This is easiest done using docker and docker-compose.
+
 Install and start __docker__:
 
 ```shell
@@ -40,29 +47,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 ## Configuration
 
-Before starting the container, write a file containing the following required environment variables and values for your
-XCache:
+Copy the certificate cert and key pem files that will be used by the service to eg. /etc/grid-cert/ (<PATH TO CERT>).
 
-- `XC_RESOURCENAME`: The server name used for monitoring and reporting
-- `XC_SPACE_HIGH_WM`: High watermark for disk usage;
-  when usage goes above the high watermark, the cache deletes until it hits the low watermark
-- `XC_SPACE_LOW_WM`: Low watermark for disk usage;
-  when usage goes above the high watermark, the cache deletes until it hits the low watermark
-- `XC_PORT`: TCP port that XCache listens on
-- `XC_RAMSIZE`: Amount of memory to use for blocks in flight
-- `XC_BLOCKSIZE`: The size of the blocks in the cache
-- `XC_PREFETCH`: Number of blocks to prefetch from a file at once
+Download [template configuration file](https://raw.githubusercontent.com/ivukotic/docker-xcache/master/atlas-xcache/docker-compose.yaml).
 
-Running ATLAS XCache
--------------------
-
-In addition to running XCache service itself, we require ATLAS instances to run two more processes:
-
-- sending heartbeats to VP/Rucio
-- forwarding monitoring information to ELK stack at UChicago.
-
-Get the
-Update values in docker-compose.yaml file.
+Edit everything that is surounded  with __< >__.
 
 Start it:
 
@@ -70,17 +59,4 @@ Start it:
 docker-compose up -d
 ```
 
-To run the container, use `docker run` with the following options, replacing the text within angle brackets with your
-own values:
-
-```shell
-$ docker run --env-file=<PATH TO ENV FILE> \
-             --volume <PATH TO HOST CERT>:/etc/grid-security/hostcert.pem \
-             --volume <PATH TO HOST KEY>:/etc/grid-security/hostkey.pem \
-             --volume <HOST PATH TO CACHE DISK 1>:<CONTAINER MOUNT POINT 1> \
-             ...
-             --volume <HOST PATH TO CACHE DISK N>:<CONTAINER MOUNT POINT N> \
-             --publish <HOST PORT>:<XC_PORT> \
-             --hostname <XCACHE HOSTNAME> \
-             opensciencegrid/atlas-xcache:development
-```
+## Running ATLAS XCache
