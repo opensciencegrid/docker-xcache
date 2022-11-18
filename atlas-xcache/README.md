@@ -40,23 +40,48 @@ sudo systemctl start docker
 Install __docker-compose__:
 
 ```shell
-curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 ## Configuration
 
-Copy the certificate cert and key pem files that will be used by the service to eg. /etc/grid-cert/ (<PATH TO CERT>).
+Copy the certificate cert and key pem files that will be used by the service to eg. /etc/grid-cert/usercert.pem and /etc/grid-cert/userkey.pem
 
-Download [template configuration file](https://raw.githubusercontent.com/ivukotic/docker-xcache/master/atlas-xcache/docker-compose.yaml).
+Make sure the files are owned by root and that the mode of the userkey.pem is 400.
 
-Edit everything that is surounded  with __< >__.
+Download [template configuration file](https://raw.githubusercontent.com/ivukotic/docker-xcache/master/atlas-xcache/docker-compose/docker-compose.yaml) and [.env](https://raw.githubusercontent.com/ivukotic/docker-xcache/master/atlas-xcache/docker-compose/.env) file.
+
+Edit every line (except maybe port number and memory) in .env file.
+For every disk you intend to use for xcache you should have one line in .env file that looks like this:
+
+```
+DISK_N=/home/cloud-user/diskN
+```
+
+and in docker-compose.yaml file you should have one line that looks like this:
+
+```
+      - &dN ${DISK_N}:/xcache/data_N
+```
+
+in reporter and heartbeats services of docker-compose.yaml, you should add corresponding volumes like this:
+
+```
+      - *dN
+```
 
 Start it:
 
 ```shell
-docker-compose up -d
+sudo /usr/local/bin/docker-compose up -d
 ```
 
-## Running ATLAS XCache
+## Monitoring ATLAS XCache
+
+Check that liveness signal is coming on this [dashboard](https://atlas-kibana.mwt2.org:5601/s/xcache/app/dashboards?auth_provider_hint=anonymous1#/view/46ff907f-c67d-5537-ae51-0598cbe2218f?_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A300000)%2Ctime%3A(from%3Anow-24h%2Cto%3Anow))).
+
+To monitor load, throughput etc. of the xcache node visit [this dashboard](https://atlas-kibana.mwt2.org:5601/s/xcache/app/dashboards?auth_provider_hint=anonymous1#/view/1c8f4388-7de1-54fb-879f-3d28edec4f99?_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A300000)%2Ctime%3A(from%3Anow-24h%2Cto%3Anow))).
+
+Details on ATLAS XCache usage can be found [here](https://atlas-kibana.mwt2.org:5601/s/xcache/app/dashboards?auth_provider_hint=anonymous1#/view/fa44eab6-9938-56dc-bc48-e877fd3092f2?_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A300000)%2Ctime%3A(from%3Anow-24h%2Fh%2Cto%3Anow))).
