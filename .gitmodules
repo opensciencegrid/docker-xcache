@@ -1,0 +1,3 @@
+[submodule "xrootd-s3"]
+	path = xrootd-s3
+	url = git@github.com:htcondor/xrootd-s3.git
