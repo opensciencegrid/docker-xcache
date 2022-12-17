@@ -4,7 +4,7 @@
 
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=testing
-ARG BASE_OSG_SERIES=3.5
+ARG BASE_OSG_SERIES=3.6
 
 FROM opensciencegrid/software-base:$BASE_OSG_SERIES-el8-$BASE_YUM_REPO AS xcache
 LABEL maintainer OSG Software <help@opensciencegrid.org>
@@ -40,6 +40,7 @@ RUN yum -y install /var/lib/xcache/*.rpm --enablerepo="osg-$BASE_YUM_REPO" || \
 
 RUN yum install -y \
         xcache \
+        rsyslog \
         gperftools-devel
 
 ADD xcache/cron.d/* /etc/cron.d/
@@ -47,9 +48,14 @@ RUN chmod 0644 /etc/cron.d/*
 ADD xcache/sbin/* /usr/local/sbin/
 ADD xcache/image-config.d/* /etc/osg/image-init.d/
 ADD xcache/xrootd/* /etc/xrootd/config.d/
+ADD xcache/rsyslog.conf /etc/rsyslog.conf
 
-RUN mkdir -p "$XC_ROOTDIR"
-RUN chown -R xrootd:xrootd /xcache/
+RUN rm -f /etc/rsyslog.d/listen.conf
+
+RUN mkdir -p "$XC_ROOTDIR" /var/spool/rsyslog/workdir /var/run/rsyslog
+RUN chown -R xrootd:xrootd /xcache/ /var/spool/rsyslog/workdir /var/run/rsyslog
+
+COPY xcache/supervisord.d/* /etc/supervisord.d/
 
 RUN rm -f /etc/xrootd/macaroon-secret
 
@@ -103,3 +109,14 @@ COPY stash-origin/xrootd/* /etc/xrootd/config.d/
 # Add a placeholder scitokens.conf file, in case this origin isn't registered
 # and can't pull down a new one
 COPY stash-origin/scitokens.conf /run/stash-origin-auth/scitokens.conf
+
+COPY stash-origin/rsyslog-stash-origin.conf /etc/rsyslog.d/stash-origin.conf
+
+RUN mkdir -p /var/log/xrootd/stash-origin \
+             /var/log/xrootd/stash-origin-auth && \
+    touch    /var/log/xrootd/stash-origin/xrootd.log \
+             /var/log/xrootd/stash-origin/cmsd.log \
+             /var/log/xrootd/stash-origin-auth/xrootd.log \
+             /var/log/xrootd/stash-origin-auth/cmsd.log && \
+    chown -R xrootd:xrootd /var/log/xrootd/stash-origin \
+                           /var/log/xrootd/stash-origin-auth
