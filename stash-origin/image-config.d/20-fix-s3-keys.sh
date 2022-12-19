@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cp /s3-keys/{access,private}_key /etc/xrootd/
-chown xrootd: /etc/xrootd/{access_private}_key
+cp /s3-secrets/{access,private}_key /etc/xrootd/
+chown xrootd: /etc/xrootd/{access,private}_key
