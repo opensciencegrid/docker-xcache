@@ -68,14 +68,6 @@ RUN yum install -y \
         xrootd-server-libs && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
-ADD xrootd-s3/ /xrootd-s3/
-RUN cd /xrootd-s3 \
-    && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-             -DLIB_INSTALL_DIR:PATH=/usr/lib64 \
-             -DCMAKE_INSTALL_PREFIX:PATH=/ \
-             . \
-    && make && make install  
-
 # Avoid 'Unable to create home directory' messages
 # in the XRootD logs
 WORKDIR /var/spool/xrootd
@@ -120,3 +112,11 @@ RUN mkdir -p /var/log/xrootd/stash-origin \
              /var/log/xrootd/stash-origin-auth/cmsd.log && \
     chown -R xrootd:xrootd /var/log/xrootd/stash-origin \
                            /var/log/xrootd/stash-origin-auth
+
+ADD xrootd-s3/ /xrootd-s3/
+RUN cd /xrootd-s3 \
+    && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+             -DLIB_INSTALL_DIR:PATH=/usr/lib64 \
+             -DCMAKE_INSTALL_PREFIX:PATH=/ \
+             . \
+    && make && make install
