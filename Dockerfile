@@ -174,7 +174,13 @@ ENV XC_IMAGE_NAME stash-origin
 # Files and dirs should be readable to UID/GID 10940:10940 or the world
 ENV XC_FIX_DIR_OWNERS no
 
-RUN yum install -y stash-origin && \
+# Add support for SSSD (SOFTWARE-5464)
+# sssd UID must match between the origin and SSSD sidecar containers
+RUN groupadd -r -g 10996 sssd \
+    && useradd -r -g sssd -u 10996 -d / -s /usr/sbin/nologin -c "System user for sssd" sssd
+
+RUN yum install -y stash-origin \
+                   sssd && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
 
 COPY stash-origin/cron.d/* /etc/cron.d/
