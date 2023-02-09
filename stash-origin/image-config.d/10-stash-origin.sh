@@ -13,9 +13,16 @@ fi
 : "${XC_AUTH_ORIGIN_EXPORT=} ${XC_PUBLIC_ORIGIN_EXPORT=} ${XC_ORIGINEXPORT=}"
 
 if [[ $XC_AUTH_ORIGIN_EXPORT ]]; then
-  supervisord_enable stash-origin-auth
-  supervisord_enable stash-origin-auth-cmsd
+  if [[ -n $XC_ENABLE_MULTIUSER ]]; then
+    supervisord_enable stash-origin-auth-privileged
+    supervisord_enable stash-origin-auth-cmsd-privileged
+  else
+    supervisord_enable stash-origin-auth
+    supervisord_enable stash-origin-auth-cmsd
+  fi
 else
+  supervisord_enable stash-origin-auth-privileged
+  supervisord_enable stash-origin-auth-cmsd-privileged
   supervisord_disable stash-origin-auth
   supervisord_disable stash-origin-auth-cmsd
 fi
