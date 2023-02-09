@@ -180,8 +180,13 @@ RUN groupadd -r -g 10996 sssd \
     && useradd -r -g sssd -u 10996 -d / -s /usr/sbin/nologin -c "System user for sssd" sssd
 
 RUN yum install -y stash-origin \
+                   xrootd-multiuser \
                    sssd && \
     yum clean all --enablerepo=* && rm -rf /var/cache/yum/
+
+# HACK: we want folks to be able to opt into multiuser and this config
+# will blow up non-multiuser setups (SOFTWARE-5478)
+RUN rm /etc/xrootd/config.d/60-osg-multiuser.cfg
 
 COPY stash-origin/cron.d/* /etc/cron.d/
 RUN chmod 0644 /etc/cron.d/*
