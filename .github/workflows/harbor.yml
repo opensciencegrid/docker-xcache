@@ -2,7 +2,8 @@ name: Build and Push XCache image to
 
 on:
   push:
-    branches: master
+    branches:
+      - master
   repository_dispatch:
     types:
       - dispatch-build
