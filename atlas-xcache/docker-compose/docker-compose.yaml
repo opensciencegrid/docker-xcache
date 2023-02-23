@@ -1,0 +1,87 @@
+version: '3'
+
+volumes:
+  x509-data:
+    driver_opts:
+      type: tmpfs
+      o: "size=10m"
+      device: tmpfs
+
+services:
+
+  xcache:
+    image: &bimage hub.opensciencegrid.org/usatlas/atlas-xcache:latest
+    pull_policy: always
+    volumes:
+      - &cert ${PATH_TO_CERT}:/etc/grid-certs:ro
+      - x509-data:/etc/proxy/:ro
+      - &d1 ${DISK_1}:/xcache/data_1
+      - &d2 ${DISK_2}:/xcache/data_2
+      - &dN ${DISK_N}:/xcache/data_N
+      - &meta ${METADATA}:/xcache/meta
+    environment:
+      XC_INSTANCE: ${XC_INSTANCE}
+      XC_RESOURCENAME: ${XC_RESOURCENAME}
+      XC_SPACE_HIGH_WM: 0.95
+      XC_SPACE_LOW_WM: 0.90
+      XC_PORT: ${PORT}
+      XC_RAMSIZE: ${XC_RAMSIZE}
+      XC_BLOCKSIZE: 256k
+      XC_PREFETCH: 0
+      XC_WQ_BLOCKS_PER_LOOP: 10
+      XC_WQ_THREADS: 2
+      XC_MONITOR: &coll collector.atlas-ml.org:9000
+    ports:
+      - "${PORT}:${PORT}"
+    healthcheck:
+      test:
+        - "CMD"
+        - "/usr/local/sbin/heartbeat.sh"
+        - "https://vps.cern.ch/liveness"
+        - ${XC_RESOURCENAME}
+        - ${XC_INSTANCE}
+        - "${ADDRESS}:${PORT}"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  x509:
+    image: *bimage
+    pull_policy: always
+    command: [ "/usr/local/sbin/run_x509_updater.sh" ]
+    volumes:
+      - *cert
+      - x509-data:/etc/proxy/:rw
+
+  reporter:
+    image: *bimage
+    pull_policy: always
+    command: [ "/usr/local/sbin/run_cache_reporter.sh" ]
+    environment:
+      XC_RESOURCENAME: ${XC_RESOURCENAME}
+      XC_INSTANCE: ${XC_INSTANCE}
+      XC_REPORT_COLLECTOR: http://xcache.atlas-ml.org:80
+      XC_MONITOR: *coll
+    volumes:
+      - *d1
+      - *d2
+      - *dN
+      - *meta
+
+  heartbeats:
+    image: ivukotic/atlas-xcache-heartbeats:latest
+    pull_policy: always
+    command: [ "/usr/local/sbin/run_heartbeats.sh" ]
+    volumes:
+      - *cert
+      - x509-data:/etc/proxy/:ro
+      - *d1
+      - *d2
+      - *dN
+      - *meta
+    environment:
+      XC_RESOURCENAME: ${XC_RESOURCENAME}
+      XC_INSTANCE: ${XC_INSTANCE}
+      ADDRESS: ${ADDRESS}
+      FREQUENCY: 60

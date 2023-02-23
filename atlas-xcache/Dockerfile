@@ -13,11 +13,19 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
     yum install -y python3 python3-psutil python3-requests && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
+#RUN yum install -y xrdcl-http
+RUN yum install -y davix-libs
+RUN wget https://xrootd.slac.stanford.edu/binaries/stable/slc/7/x86_64/xrdcl-http-5.5.1-1.el7.x86_64.rpm
+RUN rpm -ivh xrdcl-http-5.5.1-1.el7.x86_64.rpm --force --nodeps
+
+
 COPY gStream2tcp.py stats.py heartbeat.sh dark-data-cleaner.py /usr/local/sbin/
 COPY runme.sh run_cache_reporter.sh run_x509_updater.sh /usr/local/sbin/
 
 COPY config.d/* /etc/xrootd/config.d/
-RUN rm /etc/xrootd/config.d/50-osg-monitoring.cfg
+RUN chmod -x /etc/xrootd/config.d/*
+
+RUN rm /etc/xrootd/config.d/50-osg-monitoring.cfg /etc/xrootd/config.d/50-osg-http.cfg
 
 COPY 10-atlas-xcache-limits.conf /etc/security/limits.d
 COPY supervisord.d/10-atlas-xcache.conf /etc/supervisord.d/
