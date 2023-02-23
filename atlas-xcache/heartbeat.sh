@@ -24,6 +24,8 @@ size=`df -l | grep xcache/data | awk '{sum+=$2;} END{print sum;}'`
 echo $service $site $instanceID $address $size
 curl --request POST "$service" \
     -k \
+    --connect-timeout 5 \
+    --max-time 7 \
     --header 'Content-Type: application/json' \
     --data "{\"site\":\"$site\",\"id\":\"$instanceID\",\"address\":\"$address\",\"size\":\"$size\"}"
 
