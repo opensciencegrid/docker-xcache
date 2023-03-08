@@ -12,6 +12,7 @@ services:
   xcache:
     image: &bimage hub.opensciencegrid.org/usatlas/atlas-xcache:latest
     pull_policy: always
+    network_mode: host
     volumes:
       - &cert ${PATH_TO_CERT}:/etc/grid-certs:ro
       - x509-data:/etc/proxy/:ro
@@ -63,6 +64,7 @@ services:
       XC_INSTANCE: ${XC_INSTANCE}
       XC_REPORT_COLLECTOR: http://xcache.atlas-ml.org:80
       XC_MONITOR: *coll
+    network_mode: host
     volumes:
       - *d1
       - *d2
