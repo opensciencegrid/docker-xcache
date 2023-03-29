@@ -74,7 +74,6 @@ while True:
         continue
 
     parsed = {}
-    parsed['pseq'] = h['pseq']
     parsed['site'] = h['src']['site']
     parsed['host'] = h['src']['host']
 
