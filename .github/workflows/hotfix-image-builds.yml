@@ -4,9 +4,10 @@
 
 name: Build XCache images based off of XRootD hotfix tags
 on:
-  schedule:
-    # Builds take ~15-25 min
-    - cron: '*/30 * * * *'
+  # FIXME: temporarily disable while this workflow is broken
+  # schedule:
+  #   # Builds take ~15-25 min
+  #   - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
