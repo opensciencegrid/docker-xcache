@@ -1,222 +1,122 @@
 ---
-name: Build release series tagged images
-
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - '**'
-  repository_dispatch:
-    types:
-      - dispatch-build
-  workflow_dispatch:
-
-jobs:
-  base-image-build:
-    name: xcache:${{ matrix.osg_series }}-${{ matrix.repo }} image build
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: False
-      matrix:
-        repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
-    steps:
-
-      - uses: actions/checkout@v2
-
-      - name: Cache base image
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.base-buildx-cache
-          key: base-${{ matrix.osg_series}}-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
-          # allow cache hits from previous runs of the current branch,
-          # parent branch, then upstream branches, in that order
-          restore-keys: |
-            base-${{ matrix.osg_series }}-${{ matrix.repo }}-buildx-
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v2.2.2
-        with:
-          context: .
-          build-args: |
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
-          pull: True
-          target: xcache
-          cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
-
-  xcache-image-builds:
-    name: ${{ matrix.image }}:${{ matrix.osg_series }}-${{ matrix.repo }} image build
-    needs: [base-image-build]
-    strategy:
-      fail-fast: False
-      matrix:
-        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
-        repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Load cached base image
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.base-buildx-cache
-          key: base-${{ matrix.osg_series }}-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
-
-      - name: Cache child image
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.${{ matrix.image }}-buildx-cache
-          key: ${{ matrix.image}}-${{matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v2.2.2
-        with:
-          context: .
-          build-args: |
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
-          target: ${{ matrix.image }}
-          cache-from: type=local,src=/tmp/.base-buildx-cache
-          cache-to: type=local,dest=/tmp/.${{ matrix.image }}-buildx-cache,mode=max
-
-  test-stash-cache:
-    name: Test Stash Cache and Origin
-    needs: [xcache-image-builds]
-    runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.repo == 'development' }} 
-    strategy:
-      fail-fast: False
-      matrix:
-        repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Load stash-cache build cache
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.stash-cache-buildx-cache
-          key: stash-cache-${{ matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
-
-      - name: Load stash-origin build cache
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.stash-origin-buildx-cache
-          key: stash-origin-${{ matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Load stash-cache image
-        uses: docker/build-push-action@v2.2.2
-        with:
-          context: .
-          build-args: |
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
-          load: True  # allow access to built images through the Docker CLI
-          tags: stash-cache:latest
-          target: stash-cache
-          cache-from: type=local,src=/tmp/.stash-cache-buildx-cache
-
-      - name: Load stash-origin image
-        uses: docker/build-push-action@v2.2.2
-        with:
-          context: .
-          build-args: |            
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
-          load: True  # allow access to built images through the Docker CLI
-          tags: stash-origin:latest
-          target: stash-origin
-          cache-from: type=local,src=/tmp/.stash-origin-buildx-cache
-
-      - run: ./tests/test_stashcache_origin.sh "stash-origin:latest"
-      - run: ./tests/test_stashcache.sh "stash-cache:latest"
-
-  make-date-tag:
-    runs-on: ubuntu-latest
-    if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
-    outputs:
-      dtag: ${{ steps.mkdatetag.outputs.dtag }}
-    steps:
-    - name: make date tag
-      id: mkdatetag
-      run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
-
-  push-images:
-    name: Push ${{ matrix.image }}:${{ matrix.osg_series }}-${{ matrix.repo }} image
-    if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
-    strategy:
-      matrix:
-        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
-        repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
-    needs: [make-date-tag, test-stash-cache]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Load cached child image
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.${{ matrix.image }}-buildx-cache
-          key: ${{ matrix.image}}-${{ matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
-
-      - name: Generate tag list
-        id: generate-tag-list
-        env:
-          REPO: ${{ matrix.repo }}
-          SERIES: ${{ matrix.osg_series }}
-          IMAGE: ${{ matrix.image }}
-          TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
-        run: |
-          docker_repo=opensciencegrid/$IMAGE
-          tag_list=()
-          for registry in hub.opensciencegrid.org docker.io; do
-            for image_tag in "$SERIES-$REPO" "$SERIES-$REPO-$TIMESTAMP"; do
-              tag_list+=("$registry/$docker_repo":"$image_tag")
+  name: Build release series tagged images
+  
+  on:
+    push:
+      branches:
+        - master
+    pull_request:
+      branches:
+        - '**'
+    repository_dispatch:
+      types:
+        - dispatch-build
+    workflow_dispatch:
+  
+  jobs:
+    make-date-tag:
+      runs-on: ubuntu-latest
+      if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
+      outputs:
+        dtag: ${{ steps.mkdatetag.outputs.dtag }}
+      steps:
+      - name: make date tag
+        id: mkdatetag
+        run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
+    
+    image-builds:
+      name: xcache:${{ matrix.osg_series }}-${{ matrix.repo }} image build
+      runs-on: ubuntu-latest
+      needs: [make-date-tag]
+      strategy:
+        fail-fast: False
+        matrix:
+          image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
+          repo: ['development', 'testing', 'release']
+          osg_series: ['3.6']
+      steps:
+  
+        - uses: actions/checkout@v2
+   
+        - name: Build xcache base image
+          uses: docker/build-push-action@v2.2.2
+          with:
+            context: ./xcache
+            build-args: |
+              BASE_YUM_REPO=${{ matrix.repo }}
+              BASE_OSG_SERIES=${{ matrix.osg_series }}
+            pull: True
+            load: True
+            tags: xcache:latest
+  
+        - name: Generate tag list
+          id: generate-tag-list
+          env:
+            REPO: ${{ matrix.repo }}
+            SERIES: ${{ matrix.osg_series }}
+            IMAGE: ${{ matrix.image }}
+            TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
+          run: |
+            docker_repo=opensciencegrid/$IMAGE
+            tag_list=()
+            for registry in hub.opensciencegrid.org docker.io; do
+              for image_tag in "$SERIES-$REPO" "$SERIES-$REPO-$TIMESTAMP"; do
+                tag_list+=("$registry/$docker_repo":"$image_tag")
+              done
             done
-          done
-          # This causes the tag_list array to be comma-separated below,
-          # which is required for build-push-action
-          IFS=,
-          echo "::set-output name=taglist::${tag_list[*]}"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+            # This causes the tag_list array to be comma-separated below,
+            # which is required for build-push-action
+            IFS=,
+            echo "::set-output name=taglist::${tag_list[*]}"
+  
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
+          with:
+            driver: docker  #If not set to docker driver, it will default to docker-container
+                            #when using load for the build-push-action. 
+    
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+            
+        - name: Log in to OSG Harbor
+          uses: docker/login-action@v1
+          with:
+            registry: hub.opensciencegrid.org
+            username: ${{ secrets.OSG_HARBOR_ROBOT_USER }}
+            password: ${{ secrets.OSG_HARBOR_ROBOT_PASSWORD }}
+  
+        - name: Load stash-cache image
+          uses: docker/build-push-action@v2.2.2
+          with:
+            context: ./stash-cache
+            build-args: |
+              BASE_YUM_REPO=${{ matrix.repo }}
+              BASE_OSG_SERIES=${{ matrix.osg_series }}
+            load: True  # allow access to built images through the Docker CLI
+            tags: stash-cache:latest
+  
+        - name: Load stash-origin image
+          uses: docker/build-push-action@v2.2.2
+          with:
+            context: ./stash-origin
+            build-args: |            
+              BASE_YUM_REPO=${{ matrix.repo }}
+              BASE_OSG_SERIES=${{ matrix.osg_series }}
+            load: True  # allow access to built images through the Docker CLI
+            tags: stash-origin:latest
           
-      - name: Log in to OSG Harbor
-        uses: docker/login-action@v1
-        with:
-          registry: hub.opensciencegrid.org
-          username: ${{ secrets.OSG_HARBOR_ROBOT_USER }}
-          password: ${{ secrets.OSG_HARBOR_ROBOT_PASSWORD }}
-
-      - name: Build ${{ matrix.image}} image
-        uses: docker/build-push-action@v2.2.2
-        with:
-          context: .
-          push: True
-          build-args: |
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
-          tags: "${{ steps.generate-tag-list.outputs.taglist }}"
-          target: ${{ matrix.image }}
-          cache-from: type=local,src=/tmp/.${{ matrix.image }}-buildx-cache
+        - run: ./tests/test_stashcache_origin.sh "stash-origin:latest"
+        - run: ./tests/test_stashcache.sh "stash-cache:latest"
+  
+        - name: Build ${{ matrix.image}} image
+          uses: docker/build-push-action@v2.2.2
+          with:
+            context: ${{matrix.image}}
+            push: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
+            build-args: |
+              BASE_YUM_REPO=${{ matrix.repo }}
+              BASE_OSG_SERIES=${{ matrix.osg_series }}
+            tags: "${{ steps.generate-tag-list.outputs.taglist }}"
