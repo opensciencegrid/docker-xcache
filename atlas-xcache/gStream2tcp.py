@@ -10,7 +10,7 @@ from json.decoder import JSONDecodeError
 import socket
 
 env = os.environ
-if not('XC_MONITOR' in env):
+if not ('XC_MONITOR' in env):
     print('ERROR - needs environment variables XC_MONITOR')
     sys.exit(1)
 
@@ -74,7 +74,6 @@ while True:
         continue
 
     parsed = {}
-    parsed['pseq'] = h['pseq']
     parsed['site'] = h['src']['site']
     parsed['host'] = h['src']['host']
 

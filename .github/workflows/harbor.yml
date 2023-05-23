@@ -1,14 +1,14 @@
-name: Build and Push XCache image to 
+name: Build and Push XCache image to
 
 on:
   push:
-    branches: master
+    branches:
+      - master
   repository_dispatch:
     types:
       - dispatch-build
-      
-jobs:
 
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:
