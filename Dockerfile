@@ -176,8 +176,8 @@ ENV XC_FIX_DIR_OWNERS no
 
 # Add support for SSSD (SOFTWARE-5464)
 # sssd UID must match between the origin and SSSD sidecar containers
-RUN groupadd -r -g 10996 sssd \
-    && useradd -r -g sssd -u 10996 -d / -s /usr/sbin/nologin -c "System user for sssd" sssd
+RUN groupadd -r -g 990 sssd \
+    && useradd -r -g sssd -u 990 -d / -s /usr/sbin/nologin -c "System user for sssd" sssd
 
 RUN yum install -y stash-origin \
                    xrootd-multiuser \
