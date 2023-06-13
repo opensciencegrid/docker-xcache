@@ -1,0 +1,4 @@
+# Cron job running by default once daily at noon,
+# copies active cert and key to correct location and fixes permissions
+
+0 12 * * * root /usr/local/sbin/fix_certs.sh
