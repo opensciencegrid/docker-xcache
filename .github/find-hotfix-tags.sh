@@ -40,4 +40,4 @@ cat dockerhub_tags
 build_candidate=$(comm -23 git_tags dockerhub_tags | head -n 1)
 
 echo "Found hotfix tag build candidate: $build_candidate"
-echo "::set-output name=tag::$build_candidate"
+echo "tag=$build_candidate" >> $GITHUB_OUTPUT
