@@ -152,7 +152,7 @@ jobs:
     steps:
     - name: make date tag
       id: mkdatetag
-      run: echo "::set-output name=dtag::$(date +%Y%m%d-%H%M)"
+      run: echo "dtag=$(date +%Y%m%d-%H%M)" >> $GITHUB_OUTPUT
 
   push-images:
     name: Push ${{ matrix.image }}:${{ matrix.osg_series }}-${{ matrix.repo }} image
@@ -191,7 +191,7 @@ jobs:
           # This causes the tag_list array to be comma-separated below,
           # which is required for build-push-action
           IFS=,
-          echo "::set-output name=taglist::${tag_list[*]}"
+          echo "taglist=${tag_list[*]}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
