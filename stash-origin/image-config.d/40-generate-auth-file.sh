@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # Generate the Authfiles and scitokens.conf file
 if supervisord_is_enabled stash-origin; then
