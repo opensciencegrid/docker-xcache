@@ -4,7 +4,8 @@
 if supervisord_is_enabled stash-origin; then
     /usr/libexec/xcache/authfile-update stash-origin
 fi
-if supervisord_is_enabled stash-origin-auth; then
+if supervisord_is_enabled stash-origin-auth ||
+        supervisord_is_enabled stash-origin-auth-privileged; then
     /usr/libexec/xcache/authfile-update stash-origin-auth
 fi
 
