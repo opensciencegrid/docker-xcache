@@ -2,11 +2,15 @@ FROM sslhep/rucio-client:main
 
 LABEL maintainer Ilija Vukotic <ivukotic@uchicago.edu>
 
+RUN yum install -y xrootd-client
+
 COPY run_heartbeats.sh /usr/local/sbin/
 COPY heartbeat.py /usr/local/sbin/
 COPY rucio.cfg /opt/rucio/etc/
-# ENV X509_USER_PROXY=/etc/proxy/x509up
+
+ENV X509_USER_PROXY=/etc/proxy/x509up
+ENV X509_CERT_DIR=/etc/grid-security/certificates/
 # ENV RUCIO_AUTH_TYPE=x509_proxy
-# ENV RUCIO_ACCOUNT=ivukotic
+# ENV RUCIO_ACCOUNT=xcache
 
 CMD [ "/usr/local/sbin/run_heartbeats.sh" ]

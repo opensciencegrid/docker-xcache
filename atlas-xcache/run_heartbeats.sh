@@ -1,5 +1,8 @@
 #!/bin/sh
 
+X509_USER_PROXY=/etc/proxy/x509up
+X509_CERT_DIR=/etc/grid-security/certificates/
+
 size=`df -l | grep xcache/data | awk '{sum+=$2;} END{print sum;}'`
 
 # sleep until x509 things set up.
