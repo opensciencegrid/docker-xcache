@@ -1,16 +1,12 @@
-FROM rucio/rucio-clients
+FROM sslhep/rucio-client
 
 LABEL maintainer Ilija Vukotic <ivukotic@uchicago.edu>
 
-USER 0:0
-
 COPY run_heartbeats.sh /usr/local/sbin/
 COPY heartbeat.py /usr/local/sbin/
-COPY rucio.cfg ca.crt /opt/rucio/etc/
-
-ENV CERTPATH=/etc/grid-certs
-ENV X509_USER_PROXY=/etc/proxy/x509up
-ENV RUCIO_AUTH_TYPE=x509_proxy
-ENV RUCIO_ACCOUNT=ivukotic
+COPY rucio.cfg /opt/rucio/etc/
+# ENV X509_USER_PROXY=/etc/proxy/x509up
+# ENV RUCIO_AUTH_TYPE=x509_proxy
+# ENV RUCIO_ACCOUNT=ivukotic
 
 CMD [ "/usr/local/sbin/run_heartbeats.sh" ]
