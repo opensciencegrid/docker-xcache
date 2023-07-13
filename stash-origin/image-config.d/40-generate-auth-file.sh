@@ -1,12 +1,25 @@
 #!/bin/bash -x
 
+dump_files () {
+    local containing_dir
+        shopt -s nullglob
+        for f in "$containing_dir"/*; do
+            echo "======= $f ======="
+            cat "$f"
+            echo
+        done
+        shopt -u nullglob
+}
+
 # Generate the Authfiles and scitokens.conf file
 if supervisord_is_enabled stash-origin; then
     /usr/libexec/xcache/authfile-update stash-origin
+    [[ "$?" -ne 0 ]] && dump_files /run/stash-origin
 fi
 if supervisord_is_enabled stash-origin-auth ||
         supervisord_is_enabled stash-origin-auth-privileged; then
     /usr/libexec/xcache/authfile-update stash-origin-auth
+    [[ "$?" -ne 0 ]] && dump_files /run/stash-origin-auth
 fi
 
 
