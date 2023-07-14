@@ -40,7 +40,7 @@ result = s.post(f'{rucio_host}/heartbeats', headers=headers, verify=False, json=
 print('post result:', result.text)
 
 result = s.get(f'{rucio_host}/heartbeats', headers=headers, verify=False)
-res = result.json
+res = result.json()
 # print(res)
 for i in res:
     if i['readable'] == 'xcache':
