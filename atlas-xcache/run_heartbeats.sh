@@ -30,7 +30,7 @@ while true; do
   if [ $RESULT == $XC_RESOURCENAME ]; then
     # echo "Sending Rucio heartbeat"
     # echo "needs: $XC_RESOURCENAME, $XC_INSTANCE, $ADDRESS, $size"
-    python3 /usr/local/sbin/heartbeat.py $XC_RESOURCENAME, $XC_INSTANCE, $ADDRESS, $size
+    python3 /usr/local/sbin/heartbeat.py $XC_RESOURCENAME $XC_INSTANCE $ADDRESS $size
   else
     echo "Something is wrong."
   fi

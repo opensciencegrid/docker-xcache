@@ -1,5 +1,8 @@
 import requests
 import sys
+import json
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 rcfg = open("/opt/rucio/etc/rucio.cfg", "r")
 lines = rcfg.readlines()
@@ -24,20 +27,21 @@ print('payload:', payload)
 
 s = requests.session()
 
-result = s.get(f'{rucio_host}/accounts/xcache', headers=headers, verify=False)
-print(result.text)
+# result = s.get(f'{rucio_host}/accounts/xcache', headers=headers, verify=False)
+# print(result.text)
 
 result = s.post(f'{rucio_host}/heartbeats', headers=headers, verify=False, json={
     'executable': 'xcache',
     'hostname': payload['instance'],
     'pid': 0,
-    'payload': payload,
+    'payload': json.dumps(payload),
     'older_than': 181  # ignore heartbeats older than 3 minutes.
 })
-print(result.text)
+print('post result:', result.text)
 
 result = s.get(f'{rucio_host}/heartbeats', headers=headers, verify=False)
-res = result.text
+res = result.json
+# print(res)
 for i in res:
-    if i['executable'] == 'xcache':
+    if i['readable'] == 'xcache':
         print(i)
