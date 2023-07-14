@@ -15,11 +15,11 @@ done
 ls -lh $X509_USER_PROXY
 
 
-rucio whoami
-
 while true; do 
   date
 
+  rucio whoami
+  
   # echo 'checking xcache'
   # change to actual server address.
   RESULT=$(xrdfs $ADDRESS query config sitename)
