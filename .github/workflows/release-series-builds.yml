@@ -15,13 +15,22 @@ on:
 
 jobs:
   base-image-build:
-    name: xcache:${{ matrix.osg_series }}-${{ matrix.repo }} image build
+    name: xcache:${{ matrix.osg_series.name }}-${{ matrix.repo }} image build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: False
       matrix:
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
+        osg_series:
+          - name: '3.6'
+            os: 'el7'
+          - name: '23'
+            os: 'el9'
+        # FIXME: disable OSG 23 dev until we have fixed the mash
+        # cache + signed RPMs issue in the prod repo
+        exclude:
+          - repo: 'development'
+            osg_series: {name: '23', os: 'el9'}
     steps:
 
       - uses: actions/checkout@v3
@@ -30,11 +39,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.base-buildx-cache
-          key: base-${{ matrix.osg_series}}-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
+          key: base-${{ matrix.osg_series.name }}-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
           # allow cache hits from previous runs of the current branch,
           # parent branch, then upstream branches, in that order
           restore-keys: |
-            base-${{ matrix.osg_series }}-${{ matrix.repo }}-buildx-
+            base-${{ matrix.osg_series.name }}-${{ matrix.repo }}-buildx-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -45,20 +54,30 @@ jobs:
           context: .
           build-args: |
             BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
+            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
+            BASE_OS=${{ matrix.osg_series.os }}
           pull: True
           target: xcache
           cache-to: type=local,dest=/tmp/.base-buildx-cache,mode=max
 
   xcache-image-builds:
-    name: ${{ matrix.image }}:${{ matrix.osg_series }}-${{ matrix.repo }} image build
+    name: ${{ matrix.image }}:${{ matrix.osg_series.name }}-${{ matrix.repo }} image build
     needs: [base-image-build]
     strategy:
       fail-fast: False
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
+        osg_series:
+          - name: '3.6'
+            os: 'el7'
+          - name: '23'
+            os: 'el9'
+        # FIXME: disable OSG 23 dev until we have fixed the mash
+        # cache + signed RPMs issue in the prod repo
+        exclude:
+          - repo: 'development'
+            osg_series: {name: '23', os: 'el9'}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -67,13 +86,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.base-buildx-cache
-          key: base-${{ matrix.osg_series }}-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
+          key: base-${{ matrix.osg_series.name }}-${{ matrix.repo }}-buildx-${{ github.sha }}-${{ github.run_id }}
 
       - name: Cache child image
         uses: actions/cache@v3
         with:
           path: /tmp/.${{ matrix.image }}-buildx-cache
-          key: ${{ matrix.image}}-${{matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
+          key: ${{ matrix.image}}-${{matrix.osg_series.name }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -84,7 +103,8 @@ jobs:
           context: .
           build-args: |
             BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
+            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
+            BASE_OS=${{ matrix.osg_series.os }}
           target: ${{ matrix.image }}
           cache-from: type=local,src=/tmp/.base-buildx-cache
           cache-to: type=local,dest=/tmp/.${{ matrix.image }}-buildx-cache,mode=max
@@ -98,7 +118,16 @@ jobs:
       fail-fast: False
       matrix:
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
+        osg_series:
+          - name: '3.6'
+            os: 'el7'
+          - name: '23'
+            os: 'el9'
+        # FIXME: disable OSG 23 dev until we have fixed the mash
+        # cache + signed RPMs issue in the prod repo
+        exclude:
+          - repo: 'development'
+            osg_series: {name: '23', os: 'el9'}
     steps:
       - uses: actions/checkout@v3
 
@@ -106,13 +135,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.stash-cache-buildx-cache
-          key: stash-cache-${{ matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
+          key: stash-cache-${{ matrix.osg_series.name }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Load stash-origin build cache
         uses: actions/cache@v3
         with:
           path: /tmp/.stash-origin-buildx-cache
-          key: stash-origin-${{ matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
+          key: stash-origin-${{ matrix.osg_series.name }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -123,7 +152,7 @@ jobs:
           context: .
           build-args: |
             BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
+            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
           load: True  # allow access to built images through the Docker CLI
           tags: stash-cache:latest
           target: stash-cache
@@ -135,7 +164,7 @@ jobs:
           context: .
           build-args: |            
             BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
+            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
           load: True  # allow access to built images through the Docker CLI
           tags: stash-origin:latest
           target: stash-origin
@@ -155,13 +184,22 @@ jobs:
       run: echo "dtag=$(date +%Y%m%d-%H%M)" >> $GITHUB_OUTPUT
 
   push-images:
-    name: Push ${{ matrix.image }}:${{ matrix.osg_series }}-${{ matrix.repo }} image
+    name: Push ${{ matrix.image }}:${{ matrix.osg_series.name }}-${{ matrix.repo }} image
     if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
     strategy:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
+        osg_series:
+          - name: '3.6'
+            os: 'el7'
+          - name: '23'
+            os: 'el9'
+        # FIXME: disable OSG 23 dev until we have fixed the mash
+        # cache + signed RPMs issue in the prod repo
+        exclude:
+          - repo: 'development'
+            osg_series: {name: '23', os: 'el9'}
     needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
@@ -171,13 +209,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.${{ matrix.image }}-buildx-cache
-          key: ${{ matrix.image}}-${{ matrix.osg_series }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
+          key: ${{ matrix.image}}-${{ matrix.osg_series.name }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
 
       - name: Generate tag list
         id: generate-tag-list
         env:
           REPO: ${{ matrix.repo }}
-          SERIES: ${{ matrix.osg_series }}
+          SERIES: ${{ matrix.osg_series.name }}
           IMAGE: ${{ matrix.image }}
           TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
         run: |
@@ -216,7 +254,7 @@ jobs:
           push: True
           build-args: |
             BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series }}
+            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
           tags: "${{ steps.generate-tag-list.outputs.taglist }}"
           target: ${{ matrix.image }}
           cache-from: type=local,src=/tmp/.${{ matrix.image }}-buildx-cache
