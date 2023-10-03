@@ -118,7 +118,16 @@ jobs:
       fail-fast: False
       matrix:
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
+        osg_series:
+          - name: '3.6'
+            os: 'el7'
+          - name: '23'
+            os: 'el9'
+        # FIXME: disable OSG 23 dev until we have fixed the mash
+        # cache + signed RPMs issue in the prod repo
+        exclude:
+          - repo: 'development'
+            osg_series: {name: '23', os: 'el9'}
     steps:
       - uses: actions/checkout@v3
 
@@ -181,7 +190,16 @@ jobs:
       matrix:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
         repo: ['development', 'testing', 'release']
-        osg_series: ['3.6']
+        osg_series:
+          - name: '3.6'
+            os: 'el7'
+          - name: '23'
+            os: 'el9'
+        # FIXME: disable OSG 23 dev until we have fixed the mash
+        # cache + signed RPMs issue in the prod repo
+        exclude:
+          - repo: 'development'
+            osg_series: {name: '23', os: 'el9'}
     needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
