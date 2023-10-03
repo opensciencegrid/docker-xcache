@@ -153,6 +153,7 @@ jobs:
           build-args: |
             BASE_YUM_REPO=${{ matrix.repo }}
             BASE_OSG_SERIES=${{ matrix.osg_series.name }}
+            BASE_OS=${{ matrix.osg_series.os }}
           load: True  # allow access to built images through the Docker CLI
           tags: stash-cache:latest
           target: stash-cache
@@ -165,6 +166,7 @@ jobs:
           build-args: |            
             BASE_YUM_REPO=${{ matrix.repo }}
             BASE_OSG_SERIES=${{ matrix.osg_series.name }}
+            BASE_OS=${{ matrix.osg_series.os }}
           load: True  # allow access to built images through the Docker CLI
           tags: stash-origin:latest
           target: stash-origin
@@ -256,6 +258,7 @@ jobs:
           build-args: |
             BASE_YUM_REPO=${{ matrix.repo }}
             BASE_OSG_SERIES=${{ matrix.osg_series.name }}
+            BASE_OS=${{ matrix.osg_series.os }}
           tags: "${{ steps.generate-tag-list.outputs.taglist }}"
           target: ${{ matrix.image }}
           cache-from: type=local,src=/tmp/.${{ matrix.image }}-buildx-cache
