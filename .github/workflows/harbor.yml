@@ -3,7 +3,7 @@ name: Build and Push XCache image to
 on:
   push:
     branches:
-      - master
+      - testing-upgrade
   repository_dispatch:
     types:
       - dispatch-build
@@ -36,4 +36,4 @@ jobs:
         context: atlas-xcache/.
         file: atlas-xcache/Dockerfile
         push: true
-        tags: hub.opensciencegrid.org/usatlas/atlas-xcache:latest
+        tags: hub.opensciencegrid.org/usatlas/atlas-xcache:testing

@@ -3,7 +3,7 @@ name: Build ATLAS xcache image
 on:
   push:
     branches:
-      - "master"
+      - "testing-upgrade"
 
 jobs:
   docker:
@@ -16,7 +16,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6.2
         with:
           image: ivukotic/atlas-xcache
-          tags: latest, ${{ github.sha }}
+          tags: testing, ${{ github.sha }}
           directory: "atlas-xcache"
           dockerfile: "atlas-xcache/Dockerfile"
           registry: docker.io
@@ -27,7 +27,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6.2
         with:
           image: ivukotic/atlas-xcache-heartbeats
-          tags: latest, ${{ github.sha }}
+          tags: testing, ${{ github.sha }}
           directory: "atlas-xcache"
           dockerfile: "atlas-xcache/Dockerfile.heartbeats"
           registry: docker.io
@@ -36,8 +36,8 @@ jobs:
 
       - name: Show XRDCP version
         run: |
-          docker run --rm ivukotic/atlas-xcache:latest xrdcp -version
+          docker run --rm ivukotic/atlas-xcache:testing xrdcp -version
 
       - name: Show Rucio client version
         run: |
-          docker run --rm ivukotic/atlas-xcache-heartbeats:latest rucio --version
+          docker run --rm ivukotic/atlas-xcache-heartbeats:testing rucio --version
