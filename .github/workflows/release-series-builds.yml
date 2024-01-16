@@ -26,11 +26,6 @@ jobs:
             os: 'el7'
           - name: '23'
             os: 'el9'
-        # FIXME: disable OSG 23 dev until we have fixed the mash
-        # cache + signed RPMs issue in the prod repo
-        exclude:
-          - repo: 'development'
-            osg_series: {name: '23', os: 'el9'}
     steps:
 
       - uses: actions/checkout@v3
@@ -73,11 +68,6 @@ jobs:
             os: 'el7'
           - name: '23'
             os: 'el9'
-        # FIXME: disable OSG 23 dev until we have fixed the mash
-        # cache + signed RPMs issue in the prod repo
-        exclude:
-          - repo: 'development'
-            osg_series: {name: '23', os: 'el9'}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -123,11 +113,6 @@ jobs:
             os: 'el7'
           - name: '23'
             os: 'el9'
-        # FIXME: disable OSG 23 dev until we have fixed the mash
-        # cache + signed RPMs issue in the prod repo
-        exclude:
-          - repo: 'development'
-            osg_series: {name: '23', os: 'el9'}
     steps:
       - uses: actions/checkout@v3
 
@@ -198,11 +183,6 @@ jobs:
             os: 'el7'
           - name: '23'
             os: 'el9'
-        # FIXME: disable OSG 23 dev until we have fixed the mash
-        # cache + signed RPMs issue in the prod repo
-        exclude:
-          - repo: 'development'
-            osg_series: {name: '23', os: 'el9'}
     needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
