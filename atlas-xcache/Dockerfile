@@ -15,8 +15,8 @@ RUN yum install -y atlas-xcache --enablerepo="$BASE_YUM_REPO" --enablerepo=osg-c
 
 #RUN yum install -y xrdcl-http
 RUN yum install -y davix-libs
-RUN wget https://xrootd.slac.stanford.edu/binaries/stable/slc/7/x86_64/xrdcl-http-5.6.3-1.el7.x86_64.rpm
-RUN rpm -ivh xrdcl-http-5.6.3-1.el7.x86_64.rpm --force --nodeps
+# RUN wget https://xrootd.slac.stanford.edu/binaries/stable/slc/7/x86_64/xrdcl-http-5.6.3-1.el7.x86_64.rpm
+# RUN rpm -ivh xrdcl-http-5.6.3-1.el7.x86_64.rpm --force --nodeps
 
 
 COPY gStream2tcp.py stats.py heartbeat.sh dark-data-cleaner.py /usr/local/sbin/
