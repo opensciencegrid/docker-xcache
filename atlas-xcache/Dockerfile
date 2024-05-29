@@ -1,4 +1,5 @@
-FROM opensciencegrid/xcache:3.6-release
+# FROM opensciencegrid/xcache:3.6-release
+FROM opensciencegrid/xcache:3.6-development
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
