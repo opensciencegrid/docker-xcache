@@ -23,7 +23,7 @@ jobs:
         repo: ['development', 'testing', 'release']
         osg_series:
           - name: '3.6'
-            os: 'el9'
+            os: 'el8'
           - name: '23'
             os: 'el9'
     steps:
@@ -65,7 +65,7 @@ jobs:
         repo: ['development', 'testing', 'release']
         osg_series:
           - name: '3.6'
-            os: 'el9'
+            os: 'el8'
           - name: '23'
             os: 'el9'
     runs-on: ubuntu-latest
@@ -110,7 +110,7 @@ jobs:
         repo: ['development', 'testing', 'release']
         osg_series:
           - name: '3.6'
-            os: 'el9'
+            os: 'el8'
           - name: '23'
             os: 'el9'
     steps:
@@ -180,7 +180,7 @@ jobs:
         repo: ['development', 'testing', 'release']
         osg_series:
           - name: '3.6'
-            os: 'el9'
+            os: 'el8'
           - name: '23'
             os: 'el9'
     needs: [make-date-tag, test-stash-cache]

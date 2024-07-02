@@ -1,6 +1,6 @@
 # TODO: detect the appropriate OSG repos and OS for build and installation
 # Currently we assume that upstream's version corresponds to what's in
-# osg-upcoming-el9-build and osg-upcoming-testing
+# osg-upcoming-el8-build and osg-upcoming-testing
 
 name: Build XCache images based off of XRootD hotfix tags
 on:
@@ -51,7 +51,7 @@ jobs:
               -v $(pwd)/xrootd/:/xrootd \
               -v $(pwd)/_build_dir:/u/_build_dir \
               --privileged \
-              opensciencegrid/osg-build:el9 \
+              opensciencegrid/osg-build:el8 \
               osg-build --verbose mock --mock-config-from-koji=osg-3.5-upcoming-el7-build _build_dir
       - name: Move hotfix RPMs
         if: steps.hotfix-tags.outputs.tag != 0
