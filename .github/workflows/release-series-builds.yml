@@ -22,8 +22,6 @@ jobs:
       matrix:
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '3.6'
-            os: 'el7'
           - name: '23'
             os: 'el9'
     steps:
@@ -64,8 +62,6 @@ jobs:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '3.6'
-            os: 'el7'
           - name: '23'
             os: 'el9'
     runs-on: ubuntu-latest
@@ -109,8 +105,6 @@ jobs:
       matrix:
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '3.6'
-            os: 'el7'
           - name: '23'
             os: 'el9'
     steps:
@@ -179,8 +173,6 @@ jobs:
         image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '3.6'
-            os: 'el7'
           - name: '23'
             os: 'el9'
     needs: [make-date-tag, test-stash-cache]
