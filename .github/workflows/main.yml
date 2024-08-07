@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.7
 
       - name: Docker Build & Push XCACHE image
-        uses: mr-smithers-excellent/docker-build-push@v6.3
+        uses: mr-smithers-excellent/docker-build-push@v6.4
         with:
           image: ivukotic/atlas-xcache
           tags: testing, ${{ github.sha }}
@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker Build & Push HEARTBEATS image
-        uses: mr-smithers-excellent/docker-build-push@v6.3
+        uses: mr-smithers-excellent/docker-build-push@v6.4
         with:
           image: ivukotic/atlas-xcache-heartbeats
           tags: testing, ${{ github.sha }}
