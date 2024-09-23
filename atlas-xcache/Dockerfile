@@ -1,10 +1,7 @@
-# FROM opensciencegrid/xcache:3.6-release
-# FROM opensciencegrid/xcache:3.6-development
 FROM opensciencegrid/xcache:23-development
 
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
-# Specify the base Yum repository to get the necessary RPMs
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=development
 ARG BASE_OSG_SERIES=23
@@ -17,9 +14,6 @@ RUN yum install -y atlas-xcache --enablerepo="osg-$BASE_YUM_REPO" --enablerepo=o
     yum clean all --enablerepo=* && rm -rf /var/cache/
 
 RUN yum install -y xrdcl-http
-# RUN yum install -y davix-libs
-# RUN wget https://xrootd.slac.stanford.edu/binaries/stable/slc/7/x86_64/xrdcl-http-5.6.3-1.el7.x86_64.rpm
-# RUN rpm -ivh xrdcl-http-5.6.3-1.el7.x86_64.rpm --force --nodeps
 
 
 COPY gStream2tcp.py stats.py heartbeat.sh dark-data-cleaner.py /usr/local/sbin/
