@@ -8,19 +8,19 @@ ARG BASE_OSG_SERIES=23
 ARG BASE_OS=el9
 
 FROM opensciencegrid/software-base:$BASE_OSG_SERIES-$BASE_OS-$BASE_YUM_REPO AS xcache
-LABEL maintainer OSG Software <help@opensciencegrid.org>
+LABEL maintainer="OSG Software <help@osg-htc.org>"
 
 # Previous arg has gone out of scope
 ARG BASE_YUM_REPO=testing
 
 # Default root dir
-ENV XC_ROOTDIR /xcache/namespace
+ENV XC_ROOTDIR=/xcache/namespace
 
 # Default logrotate XRootd logs
-ENV XC_NUM_LOGROTATE 10
+ENV XC_NUM_LOGROTATE=10
 
 # Set namespace, data, and meta dir ownership to XRootD
-ENV XC_FIX_DIR_OWNERS yes
+ENV XC_FIX_DIR_OWNERS=yes
 
 # Create the xrootd user with a fixed GID/UID
 RUN groupadd -o -g 10940 xrootd
@@ -70,12 +70,12 @@ WORKDIR /var/spool/xrootd
 ################
 
 FROM xcache AS atlas-xcache
-LABEL maintainer OSG Software <help@opensciencegrid.org>
+LABEL maintainer="OSG Software <help@osg-htc.org>"
 
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=testing
 
-ENV XC_IMAGE_NAME atlas-xcache
+ENV XC_IMAGE_NAME=atlas-xcache
 
 RUN yum install -y --enablerepo=osg-contrib \
         --exclude=alja-\* \
@@ -98,11 +98,11 @@ RUN mkdir -p /var/log/xrootd/atlas-xcache && \
 ##############
 
 FROM xcache AS cms-xcache
-LABEL maintainer OSG Software <help@opensciencegrid.org>
+LABEL maintainer="OSG Software <help@osg-htc.org>"
 
 ARG BASE_YUM_REPO=testing
 
-ENV XC_IMAGE_NAME cms-xcache
+ENV XC_IMAGE_NAME=cms-xcache
 
 RUN yum install -y \
                 cms-xcache \
@@ -128,11 +128,11 @@ EXPOSE 1094
 ###############
 
 FROM xcache AS stash-cache
-LABEL maintainer OSG Software <help@opensciencegrid.org>
+LABEL maintainer="OSG Software <help@osg-htc.org>"
 
 ARG BASE_YUM_REPO=testing
 
-ENV XC_IMAGE_NAME stash-cache
+ENV XC_IMAGE_NAME=stash-cache
 
 RUN yum install -y stash-cache && \
     yum clean all --enablerepo=* && rm -rf /var/cache/
@@ -165,16 +165,16 @@ EXPOSE 8000
 
 
 FROM xcache AS stash-origin
-LABEL maintainer OSG Software <help@opensciencegrid.org>
+LABEL maintainer="OSG Software <help@osg-htc.org>"
 
 # Specify the base Yum repository to get the necessary RPMs
 ARG BASE_YUM_REPO=testing
 
-ENV XC_IMAGE_NAME stash-origin
+ENV XC_IMAGE_NAME=stash-origin
 
 # Do not stomp on host volume mount ownership
 # Files and dirs should be readable to UID/GID 10940:10940 or the world
-ENV XC_FIX_DIR_OWNERS no
+ENV XC_FIX_DIR_OWNERS=no
 
 # Add support for SSSD (SOFTWARE-5464)
 # sssd UID must match between the origin and SSSD sidecar containers
