@@ -24,6 +24,8 @@ jobs:
         osg_series:
           - name: '23'
             os: 'el9'
+          - name: '24'
+            os: 'el9'
     steps:
 
       - uses: actions/checkout@v3
