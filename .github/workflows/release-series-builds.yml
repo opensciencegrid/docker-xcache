@@ -66,6 +66,8 @@ jobs:
         osg_series:
           - name: '23'
             os: 'el9'
+          - name: '24'
+            os: 'el9'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -108,6 +110,8 @@ jobs:
         repo: ['development', 'testing', 'release']
         osg_series:
           - name: '23'
+            os: 'el9'
+          - name: '24'
             os: 'el9'
     steps:
       - uses: actions/checkout@v3
@@ -177,6 +181,10 @@ jobs:
         osg_series:
           - name: '23'
             os: 'el9'
+            organization: 'opensciencegrid'
+          - name: '24'
+            os: 'el9'
+            organization: 'osg-htc'
     needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
@@ -194,11 +202,16 @@ jobs:
           REPO: ${{ matrix.repo }}
           SERIES: ${{ matrix.osg_series.name }}
           IMAGE: ${{ matrix.image }}
+          ORGANIZATION: ${{ matrix.osg_series.organization }}
           TIMESTAMP: ${{ needs.make-date-tag.outputs.dtag }}
         run: |
-          docker_repo=opensciencegrid/$IMAGE
+          docker_repo=$ORGANIZATION/$IMAGE
           tag_list=()
           for registry in hub.opensciencegrid.org docker.io; do
+            # osg-htc org doesn't exist in docker.io
+            if [[ "$registry" == "docker.io" && "$ORGANIZATION" == "osg-htc" ]]; then
+              continue
+            fi
             for image_tag in "$SERIES-$REPO" "$SERIES-$REPO-$TIMESTAMP"; do
               tag_list+=("$registry/$docker_repo":"$image_tag")
             done
