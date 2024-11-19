@@ -68,6 +68,13 @@ jobs:
             os: 'el9'
           - name: '24'
             os: 'el9'
+        exclude:
+          - osg_series:
+              name: 24
+            image: stash-cache
+          - osg_series:
+              name: 24
+            image: stash-origin
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -109,9 +116,8 @@ jobs:
       matrix:
         repo: ['development', 'testing', 'release']
         osg_series:
+          # TODO build new test suite for osg 24 pelican origin/cache tooling
           - name: '23'
-            os: 'el9'
-          - name: '24'
             os: 'el9'
     steps:
       - uses: actions/checkout@v3
