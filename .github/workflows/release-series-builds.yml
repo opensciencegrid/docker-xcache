@@ -191,6 +191,13 @@ jobs:
           - name: '24'
             os: 'el9'
             organization: 'osg-htc'
+        exclude:
+          - osg_series:
+              name: 24
+            image: stash-cache
+          - osg_series:
+              name: 24
+            image: stash-origin
     needs: [make-date-tag, test-stash-cache]
     runs-on: ubuntu-latest
     steps:
