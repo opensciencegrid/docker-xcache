@@ -116,6 +116,8 @@ RUN chmod 0644 /etc/cron.d/*
 COPY cms-xcache/image-config.d/* /etc/osg/image-init.d/
 COPY cms-xcache/xcache-consistency-check-wrapper.sh /usr/bin/xcache-consistency-check-wrapper.sh
 COPY cms-xcache/rsyslog-cms-xcache.conf /etc/rsyslog.d/cms-xcache.conf
+COPY cms-xcache/sbin/* /usr/local/sbin/
+RUN chmod 0544 /usr/local/sbin/fetch_scitoken.sh
 
 RUN mkdir -p /var/log/xrootd/cms-xcache && \
     touch    /var/log/xrootd/cms-xcache/xrootd.log && \

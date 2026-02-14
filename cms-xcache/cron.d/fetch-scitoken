@@ -1,0 +1,2 @@
+@reboot root /usr/local/sbin/fetch_scitoken.sh &>> /tmp/fetch-cms-scitoken.cron.log
+0 */6 * * * root /usr/local/sbin/fetch_scitoken.sh &>> /tmp/fetch-cms-scitoken.cron.log
