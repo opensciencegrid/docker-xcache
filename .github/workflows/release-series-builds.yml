@@ -22,9 +22,9 @@ jobs:
       matrix:
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '23'
-            os: 'el9'
           - name: '24'
+            os: 'el9'
+          - name: '25'
             os: 'el9'
     steps:
 
@@ -61,20 +61,13 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin]
+        image: [atlas-xcache, cms-xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '23'
-            os: 'el9'
           - name: '24'
             os: 'el9'
-        exclude:
-          - osg_series:
-              name: 24
-            image: stash-cache
-          - osg_series:
-              name: 24
-            image: stash-origin
+          - name: '25'
+            os: 'el9'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -106,66 +99,6 @@ jobs:
           cache-from: type=local,src=/tmp/.base-buildx-cache
           cache-to: type=local,dest=/tmp/.${{ matrix.image }}-buildx-cache,mode=max
 
-  test-stash-cache:
-    name: Test Stash Cache and Origin
-    needs: [xcache-image-builds]
-    runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.repo == 'development' }} 
-    strategy:
-      fail-fast: False
-      matrix:
-        repo: ['development', 'testing', 'release']
-        osg_series:
-          # TODO build new test suite for osg 24 pelican origin/cache tooling
-          - name: '23'
-            os: 'el9'
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Load stash-cache build cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.stash-cache-buildx-cache
-          key: stash-cache-${{ matrix.osg_series.name }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
-
-      - name: Load stash-origin build cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.stash-origin-buildx-cache
-          key: stash-origin-${{ matrix.osg_series.name }}-${{ matrix.repo}}-build-${{ github.sha}}-${{ github.run_id }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.7.0
-
-      - name: Load stash-cache image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          build-args: |
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
-            BASE_OS=${{ matrix.osg_series.os }}
-          load: True  # allow access to built images through the Docker CLI
-          tags: stash-cache:latest
-          target: stash-cache
-          cache-from: type=local,src=/tmp/.stash-cache-buildx-cache
-
-      - name: Load stash-origin image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          build-args: |            
-            BASE_YUM_REPO=${{ matrix.repo }}
-            BASE_OSG_SERIES=${{ matrix.osg_series.name }}
-            BASE_OS=${{ matrix.osg_series.os }}
-          load: True  # allow access to built images through the Docker CLI
-          tags: stash-origin:latest
-          target: stash-origin
-          cache-from: type=local,src=/tmp/.stash-origin-buildx-cache
-
-      - run: ./tests/test_stashcache_origin.sh "stash-origin:latest"
-      - run: ./tests/test_stashcache.sh "stash-cache:latest"
-
   make-date-tag:
     runs-on: ubuntu-latest
     if: contains(fromJson('["push", "repository_dispatch", "workflow_dispatch"]'), github.event_name) && startsWith(github.repository, 'opensciencegrid/')
@@ -182,23 +115,16 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        image: [atlas-xcache, cms-xcache, stash-cache, stash-origin, xcache]
+        image: [atlas-xcache, cms-xcache, xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '23'
-            os: 'el9'
-            organization: 'opensciencegrid'
           - name: '24'
             os: 'el9'
             organization: 'osg-htc'
-        exclude:
-          - osg_series:
-              name: 24
-            image: stash-cache
-          - osg_series:
-              name: 24
-            image: stash-origin
-    needs: [make-date-tag, test-stash-cache]
+          - name: '25'
+            os: 'el9'
+            organization: 'osg-htc'
+    needs: [make-date-tag, xcache-image-builds]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -242,7 +168,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
+
       - name: Log in to OSG Harbor
         uses: docker/login-action@v2.2.0
         with:
