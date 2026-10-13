@@ -64,9 +64,9 @@ jobs:
         image: [atlas-xcache, cms-xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '24'
-            os: 'el9'
           - name: '25'
+            os: 'el9'
+          - name: '26'
             os: 'el9'
     runs-on: ubuntu-latest
     steps:
@@ -118,10 +118,10 @@ jobs:
         image: [atlas-xcache, cms-xcache, xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '24'
+          - name: '25'
             os: 'el9'
             organization: 'osg-htc'
-          - name: '25'
+          - name: '26'
             os: 'el9'
             organization: 'osg-htc'
     needs: [make-date-tag, xcache-image-builds]
