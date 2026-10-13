@@ -22,9 +22,9 @@ jobs:
       matrix:
         repo: ['development', 'testing', 'release']
         osg_series:
-          - name: '24'
-            os: 'el9'
           - name: '25'
+            os: 'el9'
+          - name: '26'
             os: 'el9'
     steps:
 
