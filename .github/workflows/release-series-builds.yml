@@ -124,6 +124,7 @@ jobs:
         osg_series:
           - name: '24'
             os: 'el9'
+            organization: 'osg-htc'
           - name: '25'
             os: 'el9'
             organization: 'osg-htc'
