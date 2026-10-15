@@ -22,6 +22,8 @@ jobs:
       matrix:
         repo: ['development', 'testing', 'release']
         osg_series:
+          - name: '24'
+            os: 'el9'
           - name: '25'
             os: 'el9'
           - name: '26'
@@ -64,6 +66,8 @@ jobs:
         image: [atlas-xcache, cms-xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
+          - name: '24'
+            os: 'el9'
           - name: '25'
             os: 'el9'
           - name: '26'
@@ -118,6 +122,8 @@ jobs:
         image: [atlas-xcache, cms-xcache, xcache]
         repo: ['development', 'testing', 'release']
         osg_series:
+          - name: '24'
+            os: 'el9'
           - name: '25'
             os: 'el9'
             organization: 'osg-htc'
