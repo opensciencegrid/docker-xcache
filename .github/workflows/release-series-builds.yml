@@ -26,6 +26,8 @@ jobs:
             os: 'el9'
           - name: '25'
             os: 'el9'
+          - name: '26'
+            os: 'el9'
     steps:
 
       - uses: actions/checkout@v3
@@ -67,6 +69,8 @@ jobs:
           - name: '24'
             os: 'el9'
           - name: '25'
+            os: 'el9'
+          - name: '26'
             os: 'el9'
     runs-on: ubuntu-latest
     steps:
@@ -122,6 +126,9 @@ jobs:
             os: 'el9'
             organization: 'osg-htc'
           - name: '25'
+            os: 'el9'
+            organization: 'osg-htc'
+          - name: '26'
             os: 'el9'
             organization: 'osg-htc'
     needs: [make-date-tag, xcache-image-builds]
